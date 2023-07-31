@@ -1,0 +1,130 @@
+Problem:
+Given a mxn matrix ,if a element is 0 ,then set its entire row and column to zero.Do it in-place.
+EG: Input: matrix = [[1,1,1],[1,0,1],[1,1,1]]
+Output: [[1,0,1],[0,0,0],[1,0,1]]
+
+Input: matrix = [[0,1,2,0],[3,4,5,2],[1,3,1,5]]
+Output: [[0,0,0,0],[0,4,5,0],[0,3,1,0]]
+
+Brute Force:
+TC: O(N*M)*(N+M)
+O(N*M) for linearly traversing the array and (N+M) because for every tarversal we have to traverse its entire row and column.
+SC: O(1)
+Ask interviewer the range of values in Matrix.
+Let's assume all values are on +ve side of 0 (this solution wont work if range is from INT_MIN to INT_MAX)
+Traverse the entire matrix.
+Whenever we find a 0
+ ->we are gonna traverse its entire row and column, 
+   and replace the values with a value **which cant be part of this matrix**,
+   except for replacing 0 itself. Here we'll replace all values with -1
+   as we are assuming the matrix contains value only 0=<
+   => The reason for not changing 0 to -1 is, that 0 might be affecting some other row/column
+      Hence we might miss out on changing the entire other row/column
+In the last step, change all -1 to 0
+
+void setZeroes(vector<vector<int>>& matrix) 
+{
+int rows=matrix.size();
+int columns=matrix[0].size();
+int i,j,k,l;
+for(i=0;i<rows;i++)
+{
+for(j=0;j<columns;j++)
+{
+if(matrix[i][j]==0) 
+{
+for(k=0;k<columns && matrix[i][k]!=0;k++)matrix[i][k]=-1;
+for(l=0;l<rows && matrix[l][j]!=0;l++)matrix[l][j]=-1;
+}
+}
+}
+for(i=0;i<rows;i++)
+{
+for(j=0;j<columns;j++)if(matrix[i][j]==-1)matrix[i][j]=0;
+}
+}
+
+Better Approach:
+TC: O(N*M + N*M), since we are linearly traversing matrix twice.
+SC: O(N)+O(M)
+
+We'll take 2 dummy arrays. One of the size of rows and the other of size of columns
+We'll linearly traverse the matrix
+Whenever we find a zero,we'll simply set the value at corresponding index of dummy matrix as zero (for both the arrays[row and column])
+Once the linear traversal is complete,we'll do another traversal of matrix
+This time we'll check the value at that index in dummy arrays,corresponding to the index of curr element
+   ->e.g. We are at 1st element . Its index will be (0,0)
+     So we'll check the value of dummyRow[0] and dummyColumn[0]
+     If any of the 2 equals zero, change the value of curr element to be 0
+
+void setZeroes(vector<vector<int>>& matrix) {
+        int *dummyRows=new int[matrix.size()];
+        int *dummyColumns=new int[matrix[0].size()];
+        for(int i=0;i<matrix.size();++i) dummyRows[i]=-1;
+        for(int i=0;i<matrix[0].size();++i) dummyColumns[i]=-1;
+            
+        for(int i=0;i<matrix.size();++i) {
+            for(int j=0;j<matrix[0].size();++j) {
+                if(matrix[i][j]==0) {
+                    dummyRows[i]=0;
+                    dummyColumns[j]=0; 
+                }
+            }
+        }
+        for(int row=0;row<matrix.size();++row) {
+            if(dummyRows[row]==0) {
+                for(int column=0;column<matrix[0].size();++column) {
+                 matrix[row][column]=0;
+                }
+            } 
+        }
+        
+        
+        for(int column=0;column<matrix[0].size();++column) {
+               if(dummyColumns[column]==0) {
+                   for(int row=0;row<matrix.size();++row) {
+                    matrix[row][column]=0;
+                   }
+               }
+          }
+      
+    }
+
+Best Approach:
+TC:O(N*M)+O(N*M)
+SC:O(1)
+This'll be an improvement to our "better" approach
+Instead of taking 2 separate dummy arrays, we'll make use of the matrix's 1st row n 1'st coulmn as dummyRow and dummyColumn respectively
+In the next step we will take a variable col=true;
+Why we are taking this variable?
+Ans: Because lets suppose if matrix[4][0]=0 then matrix[0][0] will also be 0 because of matrix[4][0] since we have to make entire column as 0.
+But at the same time ,we know that matrix[0][0] is also a part of dummyCol .So ,if matrix[0][0] is marked as 0 then we will make entire 0 row  as 0 which will be wrong. 
+So for 0th column we assume col=true and if col=true then we have to make entire column as 0.
+So while traversing I am considering all rows but I am not considering 0th column. For 0th column I have taken col variable.If any row has 0th col value as 0 ,I will make my col=false.
+Now we'll linearly traverse through the matrix and assign 0's to elements of dummyRow and dummyColumn as and when reqd.
+
+If we encounter a 0 in dummyRow or dummyColumn,we'll flip the value of row and column resp. to be 
+In the final step, we'll traverse from the last element.
+  ->This is bcz traversing from front'll update our dummy array first and we'll get incorrect results
+
+col=1;
+for(i=0;i<rows;i++)
+{
+if(matrix[i][0]=0)col=0;
+for(j=1;j<columns;j++)
+{
+if(matrix[i][j]==0)
+{
+matrix[i][0]=matrix[0][j]=0;
+}
+}
+}
+//traversing from back side
+for(i=rows-1;i>=0;i--)
+{
+for(j=columns-1;j>=1;j--)
+{
+if(matrix[i][0]==0 || matrix[0][j]==0)matrix[i][j]=0;
+}
+if(col==0)matrix[i][0]=0;
+}

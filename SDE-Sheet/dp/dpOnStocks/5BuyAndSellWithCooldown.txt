@@ -1,0 +1,86 @@
+Cooldown means you cannot buy right after sell.
+So if we are selling the product then instaed of doing ind+1 we will do ind+2 becuase If I am selling a product in ind then I cannot buy the product on ind+1 but I can buy on ind+2.
+
+
+
+Memoization:
+Time Complexity: O(N*2) 
+Reason: There are N*2 states therefore at max ‘N*2’ new problems will be solved and we are running a for loop for ‘N’ times to calculate the total sum
+Space Complexity: O(N*2) + O(N)
+Reason: We are using a recursion stack space(O(N)) and a 2D array ( O(N*2))
+
+f(ind,buy)
+{
+if(ind==n)return 0;
+if(buy)
+{
+return max(-prices[ind]+f(ind+1,0),0+f(ind+1,1));
+}
+else
+{
+return max(prices[ind]+f(ind+2,1) , 0+f(ind+1,0));
+}
+}
+
+
+Tabulation:
+Time Complexity: O(N*2) 
+Reason: There are two nested loops that account for O(N*2) complexity.
+Space Complexity: O(N*2)
+Reason: We are using an external array of size ‘N*2’. Stack Space is eliminated.
+
+Space Opt:
+Time Complexity: O(N*2)
+Reason: There are two nested loops that account for O(N*2) complexity
+Space Complexity: O(1)
+Reason: We are using three external arrays of size ‘2’.
+
+
+class Solution {
+public:
+        int f(int ind,int buy,vector<int> &prices,vector<vector<int>> &dp)
+        {
+                if(ind>=prices.size())return 0;
+                if(dp[ind][buy]!=-1)return dp[ind][buy];
+                if(buy)
+                {
+                  return dp[ind][buy]=max(-prices[ind]+f(ind+1,0,prices,dp) , 0+f(ind+1,1,prices,dp));
+                }
+                else
+                {
+                  return dp[ind][buy]=max(prices[ind]+f(ind+2,1,prices,dp) , 0+f(ind+1,0,prices,dp));
+                }
+        }
+    int maxProfit(vector<int>& prices) {
+            int n=prices.size();
+            //here we are taking prev1 for dp[ind-1]
+            //and prev2 for dp[ind-2]
+        vector<int> prev1(2,0),prev2(2,0),cur(2,0);
+            //return f(0,1,prices,dp);
+            prev1[0]=0;
+            prev1[1]=0;
+            prev2[0]=0;
+            prev2[0]=0;
+            cur[0]=0;
+            cur[1]=0;
+            
+            for(int ind=n-1;ind>=0;ind--)
+            {
+                    for(int buy=0;buy<=1;buy++)
+                    {
+                 if(buy)
+                {
+                 cur[buy]=max(-prices[ind]+prev1[0] , 0+prev1[1]);
+                }
+                else
+                {
+                  cur[buy]=max(prices[ind]+prev2[1], 0+prev1[0]);
+                }           
+                   }
+                    prev2=prev1;
+                    prev1=cur;
+            }
+            return prev1[1];
+    }
+};
+ 

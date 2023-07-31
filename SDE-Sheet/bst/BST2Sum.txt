@@ -1,0 +1,57 @@
+
+https://www.youtube.com/watch?v=ssL3sHwPeb4&list=PLgUwDviBIf0q8Hkd7bK2Bpryj2xVJk8Vk&index=52
+
+//SEE EXPLANATION FROM VIDEO
+TC:O(N)
+SC:O(H)
+
+class BSTIterator
+{
+  private : 
+        stack<TreeNode *> st;
+        //if reverse==true means we have to apply logic of before else apply logic of next
+        bool reverse=true;
+        public:
+        BSTIterator(TreeNode *root,bool isReverse)
+        {
+            
+        reverse=isReverse;        
+         pushAll(root);
+        }
+        void pushAll(TreeNode *node)
+        {
+                for(;node!=NULL;)
+                {
+            st.push(node);     
+                        //if reverse==true then push all the right elements
+                    if(reverse)node=node->right;
+                        else node=node->left;
+                }
+        }
+        int next()
+        {
+                TreeNode *node=st.top();
+                st.pop();
+                if(reverse) pushAll(node->left);
+                else pushAll(node->right);
+                return node->val;
+        }
+};
+class Solution {
+public:
+    bool findTarget(TreeNode* root, int k) {
+            //l shows next
+        BSTIterator l(root,false);
+                //r shows before
+            BSTIterator r(root,true);
+            int i=l.next();
+            int j=r.next();
+            while(i<j)
+            {
+                    if(i+j==k)return true;
+                    if(i+j > k)j=r.next();
+                    else i=l.next();
+            }
+            return false;
+    }
+};

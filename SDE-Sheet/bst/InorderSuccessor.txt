@@ -1,0 +1,18 @@
+Most Opt. App.
+TC:O(H)
+SC:O(1)
+
+TreeNode * inorderSucc(TreeNode *root,TreeNode *p)
+{
+TreeNode *succ=NULL;
+while(root!=NULL)
+{
+if(p->val >= root->val) root=root->right;
+else
+{
+succ=root;
+root=root->left;
+}
+}
+return succ;
+}

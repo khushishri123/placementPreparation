@@ -1,0 +1,34 @@
+We have to find shortest path in undirected graph having unit weight in bet them.
+We will take dist array of size N and mark every one with INT_MAX accept the source dist[source]=0
+TC:O(N+E)
+SC:O(N)+O(N)
+
+Code in Java:
+void shortestPath(ArrayList<ArrayList<Integer>> adj,int N,int src)
+{
+Queue<Inetger> q=new LinkedList<>();
+int dist[]=new int[N];
+for(int i=0;i<N;i++)
+{
+dist[i]=1000000000;
+}
+dist[src]=0;
+//Initially push src in queue
+q.add(src);
+
+while(!q.isEmpty())
+{
+int node=q.poll();
+for(Integer it:adj.get(node))
+{
+if(dist[it]>=dist[node]+1)
+{
+dist[it]=dist[node]+1;
+q.add(it);
+}
+}
+}
+
+//printing ans
+for(int i=0;i<N;i++)System.out.println(i+" "+dist[i]);
+}

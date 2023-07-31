@@ -1,0 +1,93 @@
+Given an array, print the Next Greater Element (NGE) for every element. The Next greater Element for an element x is the first greater element on the right side of x in the array. Elements for which no greater element exist, consider the next greater element as -1. Examples: 
+
+For an array, the rightmost element always has the next greater element as -1.
+For an array that is sorted in decreasing order, all elements have the next greater element as -1.
+For the input array [4, 5, 2, 25], the next greater elements for each element are as follows.
+Element       NGE
+   4      -->   5
+   5      -->   25
+   2      -->   25
+   25     -->   -1
+
+Method 1 (Simple) 
+Use two loops: The outer loop picks all the elements one by one. The inner loop looks for the first greater element for the element picked by the outer loop. If a greater element is found then that element is printed as next, otherwise, -1 is printed.
+
+Code:
+void printNGE(int arr[],int n)
+{
+int next,i,j;
+for(i=0;i<n;i++)
+{
+next=-1;
+for(j=i+1;j<n;j++)
+{
+if(arr[i]<arr[j])
+{
+next=arr[j];
+break;
+}
+}
+cout<<arr[i]<<"-->"<<next<<endl;
+}
+}
+TC:O(N^2)
+SC:O(1)
+
+Method2:
+We will use stack.We will iterate from the last element.
+Let array be: 4 12 5 3 1 2 5 3 1 2 4 6
+I will start from 6.I will see if there is any element lesser than 6 on the stack.Also there is no greater element in the stack(since initially the stack is empty).So for 6 ,the NGE will be -1.
+Now,I will insert 6 on my stack.
+I will move to 4.
+4 finds if there is lesser elements in stack.So there is no lesser element in stack.So 4 will look at the top most element in the satck which is 6.
+So 4 will say that sincx there is no lesser elements in the satck ,so I take the topmost guy which is 6.
+So for 4 NGE will be 6.
+After then ,we insert 4 in the stack.
+Same story for 2 and 1.
+For 2,NGE will be 4 (because now the top of the satck is 4)
+Now we will insert 2 in stack.
+For 1,NGE will be 2 (because now the top of the satck is 2)
+
+Pattern:Stack will contain elements in an increasing order.
+ 
+Now I move to 3.
+We have to remove all the smaller elements from the stack which are lesser than 3.So I remove 1 and 2.
+So the top element of stack is 4.
+For 3 NGE is 4.
+Push 3 on stack.
+Repeat the same process.
+
+Intuition: I want to maintain an incresing order so that I can remove samller elements because smaller elemenst does not have any sense.
+
+Second variant of this question:
+Now the array is circular ,so for 6 now NGE will be 12.
+Eg: 2 10 12 1 11
+     
+Appr:
+We will extend the array and we will copy all the elements once again.
+2 10 12 1 11 2 10 12 1 11
+0 1  2  3 4  5  6  7 8  9
+Actually we don't have to extend the array we will just do i%n.
+You have to iterate from 0 to 2n-1.
+And to get element your index will be given by i%n.
+But you have to do the process only from 0 to n-1.
+Code:(When array is circular)
+int [] nextGreaterElement(int arr[],int n)
+{
+int nge[n];
+stack<int> st;
+for(i=2*n-1;i>=0;i--)
+{
+while(!st.empty() && arr[i%n]>=st.top())st.pop();
+if(i<n)
+{
+if(st.empty())nge[i]=-1;
+else nge[i]=st.top();
+}
+st.push(arr[i%n]);
+}
+return nge;
+}
+
+TC:O(2N+2N)=O(N)
+SC:O(N) //for stack

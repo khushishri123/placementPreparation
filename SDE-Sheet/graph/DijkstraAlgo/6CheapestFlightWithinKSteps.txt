@@ -1,0 +1,68 @@
+This is very very importaant algo.
+Remember end and starting point are not considered as stops and we can have at max k stops in between starting and ending point.
+Here we cannot implement simple Dijkstra algo .See this test case:
+Step 1: Create graph from given edges.
+0->(1,5),(3,2)
+1->(2,5),(4,1)
+2->
+3->(1,2)
+4->(2,1)
+Everytime when I am going to some different stop , stops will become stops+1 and cost will be added. 
+If we have taken k stops then next should be our destination.
+
+Firstly we will try to store elements in PQ in this order: {dist,node,stops} But this particular ordering will not work because it might possible on compromising some distance I will be able to cover the distance within k stops.
+Workout on above eg.
+distance will not be our first priority of judgement.Instead stops will be out first priority of judgmenet.
+We will be storing in thi manner:
+{stops,node,dist}
+
+But we did not need a PQ,even if we take the queue DS ,the topmost guy will always be the guy with the shortest number of stops.
+PQ will take a extra logN ,so we will take a queue DS.
+The stops are increasing linearly and that's why we can take queue. Evertime they are incresing by 1.
+Note:Whenever we reach the destination do not stop because it might possible that you reach the destination with better price.
+
+TC:E = flights.size();
+since we are using queue logV is omitted.
+
+Code:
+
+	class Solution {
+public:
+    int findCheapestPrice(int n, vector<vector<int>>& flights, int src, int dst, int k) {
+           vector<pair<int,int>> adj[n];
+          for(auto it:flights)
+          {
+                  adj[it[0]].push_back({it[1],it[2]});
+          }
+            
+            //in queue we will be storing {stops,node,dist}
+       queue<pair<int,pair<int,int>>> q;
+            vector<int> dist(n,1e9);
+            dist[src]=0;
+            q.push({0,{src,0}});
+            
+            while(!q.empty())
+            {
+                    auto i=q.front();
+                    q.pop();
+                    int stops=i.first;
+                    int node=i.second.first;
+                    int dis=i.second.second;
+                    
+                    if(stops>k) continue;
+                    for(auto it:adj[node])
+                    {
+                            int adjNode=it.first;
+                            int wt=it.second;
+                            if(dis+wt<dist[adjNode] && stops<=k)
+                            {
+                                    dist[adjNode]=dis+wt;
+                              q.push({stops+1,{adjNode,dist[adjNode]}});
+                            }
+                    }
+            }
+                                           if(dist[dst]==1e9)return -1;
+                                           return dist[dst];
+            
+    }
+};

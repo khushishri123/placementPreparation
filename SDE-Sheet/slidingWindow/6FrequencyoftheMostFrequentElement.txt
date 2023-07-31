@@ -1,0 +1,79 @@
+The frequency of an element is the number of times it occurs in an array.
+
+You are given an integer array nums and an integer k. In one operation, you can choose an index of nums and increment the element at that index by 1.
+
+Return the maximum possible frequency of an element after performing at most k operations.
+
+ 
+
+Example 1:
+
+Input: nums = [1,2,4], k = 5
+Output: 3
+Explanation: Increment the first element three times and the second element two times to make nums = [4,4,4].
+4 has a frequency of 3.
+Example 2:
+
+Input: nums = [1,4,8,13], k = 5
+Output: 2
+Explanation: There are multiple optimal solutions:
+- Increment the first element three times to make nums = [4,4,8,13]. 4 has a frequency of 2.
+- Increment the second element four times to make nums = [1,8,8,13]. 8 has a frequency of 2.
+- Increment the third element five times to make nums = [1,4,13,13]. 13 has a frequency of 2.
+Example 3:
+
+Input: nums = [3,9,6], k = 2
+Output: 1
+
+App:
+Sorting and Sliding Window.
+TC:O(NlogN)
+Why we are doing sorting?
+-> For eg:[1,1,1,2,2,4] and k=2
+We are looking for max no. of 4's . To create max number of 4's ,we need to find values that are lesser than 4.
+And we can find that values on the left side of 4 because the array is sorted.
+Also after sorting the array , we can see that the values closest to 4 are the one's taht can be incremented forst. We have a budget of 2k.Why  would we increment 1,though we know that after consuming 2k's also 1+2=3 ,we can achieve 3 only.
+While 2+2=4 .So, sorting the value  will put them close together where they actually need to be.
+
+Why we are using sliding window?
+-> Firslty we will be having a left and right pointer.
+Right pointer represents the special value that we want to have max. freq.
+The window wil tell us that can we turn every value inside that window into that special value.
+We can expand our window as much we can untill our budget k allows us.
+
+Condition for expanding:
+ (nums[right]*windowLen <= total+k)
+[1,1,1,2,2,4] and k=2
+Let 2 be the value that we want to have max. freq.
+So right is at index 3 and left is at index 0 and nums[right]=2
+2*4 (here 4 is right-left+1)
+2*4 gives us the total after changing all the values inside that window to 2.
+while total represents the true sum of the values.
+2*4 < 5+2
+We are adding k because we are allowed to spend k values.If the condition is false,we cannot expand it and we have to decrease the sum.
+
+Code in Java:
+
+class Solution {
+    public int maxFrequency(int[] nums, int k) {
+        Arrays.sort(nums);
+       long total=0;
+        int maxi=0;
+        int left=0;
+        int right=0;
+        while(right<nums.length)
+        {
+         total+=nums[right];
+// if window is not valid
+         while(nums[right]*(right-left+1) > (total+k))
+         {
+             total-=nums[left];
+             left++;
+         }
+         maxi=Math.max(maxi,right-left+1);
+         right++;
+        }
+        return maxi;
+
+    }
+}

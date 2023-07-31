@@ -1,0 +1,80 @@
+//This question is asked in Google 
+
+You are given an m x n integer matrix grid where each cell is either 0 (empty) or 1 (obstacle). You can move up, down, left, or right from and to an empty cell in one step.
+
+Return the minimum number of steps to walk from the upper left corner (0, 0) to the lower right corner (m - 1, n - 1) given that you can eliminate at most k obstacles. If it is not possible to find such walk return -1.
+
+ 
+
+Example 1:
+
+
+Input: grid = [[0,0,0],[1,1,0],[0,0,0],[0,1,1],[0,0,0]], k = 1
+Output: 6
+Explanation: 
+The shortest path without eliminating any obstacle is 10.
+The shortest path with one obstacle elimination at position (3,2) is 6. Such path is (0,0) -> (0,1) -> (0,2) -> (1,2) -> (2,2) -> (3,2) -> (4,2).
+Example 2:
+
+
+Input: grid = [[0,1,1],[1,1,1],[1,0,0]], k = 1
+Output: -1
+Explanation: We need to eliminate at least two obstacles to find such a walk.
+
+Code:
+
+class Solution {
+public:
+    int shortestPath(vector<vector<int>>& grid, int k) {
+        
+            int n=grid.size();
+            int m=grid[0].size();
+            //we will remain array having size row,col which is like a vis array but here there is a difference, it might possible that we visit the same cell but different value of k remaining. We have to store that k in this remain array. If we are visiting a cell again hen we have to check that the number of k lefts should be greater than previous one ,so that in future we have more k avilable to destroy obstacles. We will push into the queue only when k is greater than 0 and curr value of k is gretaer than previous value.
+            vector<vector<int>> remains(n,vector<int>(m,INT_MIN));
+            
+           int dx[4]={-1,0,1,0};
+            int dy[4]={0,1,0,-1};
+            int steps = 0;
+        // we have a queue storing {x, y, k} 
+        // where x and y are coordinate 
+        // and k is remain number of obstacles you can remove
+        queue<array<int, 3>> q;
+        // we start at (0, 0) with k
+        q.push({0, 0, k});
+        // at the beginning, you can eliminate at most k obstacles
+        remains[0][0] = k;
+        // BFS
+        while (!q.empty()) {
+            for (int it = q.size(); it > 0; it--) {
+                auto cur = q.front(); q.pop();
+                // if we reach the lower right corner (m - 1, n - 1)
+                // then return the minimum number of steps
+                if (cur[0] == n - 1 && cur[1] == m - 1) return steps;
+                // otherwise we can try 4 directions (up, down, left and right)
+                for (int i = 0; i < 4; i++) {
+                    // given we have at (x, y), we can move to (next_x, next_y)
+                    int next_x = cur[0] + dx[i], next_y = cur[1] + dy[i];
+                    // however, first we need to make sure (next_x, next_y) is within the grid
+                    if(next_x < 0 || next_x >= n || next_y < 0 || next_y >= m) continue;
+                    // then, we check if we can eliminate an obstacle and move there
+                    int remain = cur[2] - grid[next_x][next_y];
+                    // we can only do that when `remain` is greater or equal to 0
+                    // and the target remaining k must be less than the current remaining k
+                    if(remain >= 0 && remains[next_x][next_y] < remain) {
+                        // push to the queue for further process
+                        q.push({next_x, next_y, remain});
+                        // update the remaining k
+                        remains[next_x][next_y] = remain;
+                    }
+                }
+            }
+            // increase step count
+            steps += 1;
+        }
+        // if we reach here, 
+        // then it means it is not possible to find such walk 
+        return -1;
+            
+           
+    }
+};

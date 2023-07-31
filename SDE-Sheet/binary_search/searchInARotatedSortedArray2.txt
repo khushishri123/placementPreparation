@@ -1,0 +1,73 @@
+There is an integer array nums sorted in non-decreasing order (not necessarily with distinct values).
+
+Before being passed to your function, nums is rotated at an unknown pivot index k (0 <= k < nums.length) such that the resulting array is [nums[k], nums[k+1], ..., nums[n-1], nums[0], nums[1], ..., nums[k-1]] (0-indexed). For example, [0,1,2,4,4,4,5,6,6,7] might be rotated at pivot index 5 and become [4,5,6,6,7,0,1,2,4,4].
+
+Given the array nums after the rotation and an integer target, return true if target is in nums, or false if it is not in nums.
+
+You must decrease the overall operation steps as much as possible.
+
+ 
+
+Example 1:
+
+Input: nums = [2,5,6,0,0,1,2], target = 0
+Output: true
+Example 2:
+
+Input: nums = [2,5,6,0,0,1,2], target = 3
+Output: false
+
+Before commig over this Problem solve previous version of it.
+33. Search in Rotated Sorted Array
+
+The idea is the same as the previous one without duplicates.
+The only difference is that due to the existence of duplicates,
+arr[l] == arr[mid] could be possible, the first half could be out of order
+(i.e. not in the ascending order, e.g. {3, 1, 2, 3, 3, 3, 3})
+we have to deal this case separately.
+In that case, it is guaranteed that arr[high] also equal to arr[mid],
+so the condition arr[mid] == arr[l] == arr[r] can be checked before the original logic,
+if so then move left and right both towards the middle by 1 and repeat.
+
+ALGORITHM:
+Check for if target == nums[mid], if found return true.
+With duplicates we can have nums[l] == nums[r] so just update the l and r towards middle.
+If not than check for first half is that in order (i.e nums[l] <= nums[mid]
+check if target is in the range of [left, mid -1], if((nums[l] <= target) && (nums[mid] > target)) and search in it.
+if not in first half search in second half.
+Check if target is in range of [mid + 1, right], if((nums[mid] < target) && (nums[r]>= target)) and search in it.
+
+
+Code:
+class Solution {
+public:
+    bool search(vector<int>& nums, int target) {
+        int low=0;
+        int high=nums.size()-1;
+        int mid;
+        while(low<=high)
+        {
+          mid=low+(high-low)/2;
+          if(nums[mid]==target)return true;
+  // with duplicates we can have this condition, just update left & right
+          if(nums[low]==nums[mid] && nums[high]==nums[mid])
+          {
+              low++;
+              high--;
+          }
+          else if(nums[low]<=nums[mid]) //means left part is sorted
+          {
+              //check if target lies between low and mid
+            if(nums[low]<=target && target<nums[mid]) high=mid-1;
+            else low=mid+1;
+          }
+          else //right part is sorted
+          {
+              //check if target lies between mid and high
+              if(nums[mid]<=target && target<=nums[high])low=mid+1;
+              else high=mid-1;
+          }
+        }
+        return false;
+    }
+};

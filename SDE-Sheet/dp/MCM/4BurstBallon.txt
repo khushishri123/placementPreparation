@@ -1,0 +1,118 @@
+You are given n balloons, indexed from 0 to n - 1. Each balloon is painted with a number on it represented by an array nums. You are asked to burst all the balloons.
+If you burst the ith balloon, you will get nums[i - 1] * nums[i] * nums[i + 1] coins. If i - 1 or i + 1 goes out of bounds of the array, then treat it as if there is a balloon with a 1 painted on it.
+Return the maximum coins you can collect by bursting the balloons wisely.
+Example 1:
+Input: nums = [3,1,5,8]
+Output: 167
+Explanation:
+nums = [3,1,5,8] --> [3,5,8] --> [3,8] --> [8] --> []
+coins =  3*1*5    +   3*5*8   +  1*3*8  + 1*8*1 = 167
+
+We will use the concept of partition DP.
+Lets suppose we have following ballons.And we decided to burst 4th ballon:
+[b1 b2 b3 b4 b5 b6]
+
+Then cost=b3*b4*b5
+And then wehave two subproblem remaining i.e [b1 b2 b3] [b5 b6]
+But here it is not like that ,it will not give us ans.
+Becuase here the two subproblems are not independent from each other.
+After bursting ballon b4 ,if we decided to burst ballon b5 then its cost will depends on b3.Similary after bursting b5 ,if we decided to burst b3 then its costs will also depend on b6.So both of these subproblems are not independent.
+
+Basically we are going in this direction:
+[3 1 5 8]->we burst 1
+[3 5 8]->we burst 5
+[3 8]->we burst 3
+[8]->al last we burst 8
+
+So instead of moving top to down why not to start from bottom.
+
+Now to avoid complication we will add 1 to the start and end
+array-> 1 3 1 5 8 1
+index-> 0 1 2 3 4 5
+So instead of diciding who will be the first guy ,we will decide who will be the last guy.
+It is dam sure that it will be like this:
+1 b 1,where b is any ballon.
+Now in our case it will be 8.
+1*8*1
+So if our range or we can say that i=1 and j=4
+So initailly ,my cost will we A[i-1]*A[b]*A[j+1]
+
+In the place of b ,there can be any ballon.
+Then in the second last burst I wil have:
+1 3 8
+We are sure that in the 2nd last burst 8 will be there,that's why it is present on the last state.
+1*3*8=24
+
+Now we decided to burst 5.
+[3 5 8]
+We are sure that 3 and 8 have not been bursted.
+3*5*8=120
+Remaining is just 1
+[3 1 5]
+=3*1*5=15
+
+So actually we are moving in opposite direction.
+
+Now since we are deciding which one will be the last one to burst,now;
+[b1 b2 b3 b4 b5 b6]
+Now if b4 is the last one ,
+then 2nd last can be any one with b4
+[b1 b4] or [b2 b4] or [b3 b4] or [b5 b4] or [b6 b4]
+
+Now they all are independent from each other. b1 is only depenedent on b4 and similarly all are dependent on b4.
+
+=(a[i-1]*a[ind]*a[j+1]) +f(i,ind-1)+f(ind+1,j);
+
+Memoizatoin:
+TC:O(N^3)
+SC:O(N^2)+ASS
+
+ int f(int i,int j,vector<int> &nums,vector<vector<int>> &dp)
+        {
+                if(i>j)return 0;
+                if(dp[i][j]!=-1)return dp[i][j];
+                int maxi=INT_MIN;
+                for(int ind=i;ind<=j;ind++)
+                {
+                        int coins=nums[i-1]*nums[ind]*nums[j+1]+f(i,ind-1,nums,dp)+f(ind+1,j,nums,dp);
+                        maxi=max(maxi,coins);
+                }
+                return dp[i][j]=maxi;
+        }
+    int maxCoins(vector<int>& nums) {
+int n=nums.size();
+nums.push_back(1);
+nums.insert(nums.begin(),1);
+vector<vector<int>> dp(n+1,vector<int>(n+1,-1));
+return f(1,n,nums,dp);
+}
+
+
+Tabulation:
+TC:O(N^3)
+SC:O(N^2)
+ int maxCoins(vector<int>& nums) {
+            int n=nums.size();
+            nums.push_back(1);
+            nums.insert(nums.begin(),1);
+        vector<vector<int>> dp(n+2,vector<int>(n+2,0));
+            //return f(1,n,nums,dp);
+            //In recursion  i was going from 1 to n and j was going from n to 1
+            //In recursion  j was going from n to 1 and j was going from 1 to n
+            for(int i=n;i>=1;i--)
+            {
+                    for(int j=1;j<=n;j++)
+                    {
+                            if(i>j)continue;
+                            int maxi=INT_MIN;
+                for(int ind=i;ind<=j;ind++)
+                {
+                        int coins=nums[i-1]*nums[ind]*nums[j+1]+dp[i][ind-1]+dp[ind+1][j];
+                        maxi=max(maxi,coins);
+                }
+                 dp[i][j]=maxi;
+                    }
+            }
+            return dp[1][n];
+    }
+

@@ -1,0 +1,49 @@
+GCD: Greatest common Divisor
+For eg: gcd(9,12) is 3 becuase it is the highest number that divides both of them.
+Brute Force: TC:O(min(a,b))
+int findGCD(int a,int b)
+{
+//gcd of a no. is atleast 1
+gcd=1;
+
+//we will run a loop till the min of a,b
+for(int i=1;i<=min(a,b);i++)
+{
+if(a%i==0 && b%i==0)gcd=i;
+}
+}
+
+Even if we will start from back the worst case TC will be min(a,b).For eg in the case of 11 and 13.
+
+Best App: Euclidean Algo
+Acc. to this algo, if given two numbers n1,n2 then gcd(n1,n2) will be equal to gcd(n1-n2,n2) where n1>n2
+gcd(a,b)=gcd(a-b,b) where a>b
+But it will take time ,so we will take mod. 
+
+TC:O(logi(min(a,b)))
+here we have taken base i because everytime we are dividing a with b and the value of b is changing.
+Remember one thing whenever you are dividing in a loop then TC will be in terms of log .For eg, if you are dividing a number by 2 then TC will be log base 2(n). If you are dividing by 10 ,then it will be log base 10 (n).
+
+See Code:
+
+ long long gcd(long long A,long long B)
+  {
+      if(B==0)return A;
+      return gcd(B,A%B);
+  }
+    vector<long long> lcmAndGcd(long long A , long long B) {
+        // code here
+        long long k;
+  if(A<B)
+  {
+      k=A;
+      A=B;
+      B=k;
+  }
+        long long g=gcd(A,B);
+        long long l=(A*B)/g;
+        vector<long long> ans;
+        ans.push_back(l);
+        ans.push_back(g);
+        return ans;
+    }

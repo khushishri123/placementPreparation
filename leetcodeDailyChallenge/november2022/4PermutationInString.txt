@@ -1,0 +1,53 @@
+Given two strings s1 and s2, return true if s2 contains a permutation of s1, or false otherwise.
+
+In other words, return true if one of s1's permutations is the substring of s2.
+
+ 
+
+Example 1:
+
+Input: s1 = "ab", s2 = "eidbaooo"
+Output: true
+Explanation: s2 contains one permutation of s1 ("ba").
+Example 2:
+
+Input: s1 = "ab", s2 = "eidboaoo"
+Output: false
+
+
+class Solution {
+public:
+//this question is similar to find all anagrams of the string
+//https://leetcode.com/problems/find-all-anagrams-in-a-string/description/
+    bool checkInclusion(string p, string s) {
+    
+       map<char,int> m;
+            for(auto it:p)m[it]++;
+            int count=m.size();
+            int i=0;
+            int j=0;
+            int n=s.size();
+            int k=p.size();
+            while(j<n)
+            {
+                    if(m.find(s[j])!=m.end())
+                    {
+                            m[s[j]]--;
+                            if(m[s[j]]==0)count--;
+                    }
+                    if(j-i+1<k)j++;
+                    else if(j-i+1==k)
+                    {
+                            if(count==0)return true;
+                            if(m.find(s[i])!=m.end())
+                            {
+                                    m[s[i]]++;
+                                    if(m[s[i]]==1)count++;
+                            }
+                            i++;
+                            j++;
+                    }
+            }
+                    return false;
+    }
+};

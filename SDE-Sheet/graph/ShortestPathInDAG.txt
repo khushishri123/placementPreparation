@@ -1,0 +1,82 @@
+In this we will use TOPO Sort
+We will first find out topo sort using DFS and it will populate out stack.
+After then we will take distance array and mark every one with INT_MAX accept dist[source]=0 .Now we will pop from stack and we will check if 
+dist[node]+it.getWeight() < dist[it.getV()] .If it is true then we will update it.
+
+TC:O(N+E)*2
+SC:O(N)+O(N)
+for stck and dist
+
+import java.util.*;
+class Pair
+{
+public int v; //vertex
+public int w;
+public Pair(int _v,int _w)
+{
+v=_v;
+w=_w;
+}
+}
+class Main
+{
+public static void main(String gg[])
+{
+int n=6;
+ArrayList<ArrayList<Integer>> adj=new ArrayList<>();
+for(int i=0;i<n;i++)adj.get(i).add(new ArrayList<>());
+adj.get(0).add(new Pair(1,2));
+adj.get(0).add(new Pair(4,1));
+adj.get(1).add(new Pair(2,3));
+adj.get(2).add(new Pair(3,6));
+adj.get(4).add(new Pair(5,4));
+adj.get(5).add(new Pair(3,1));
+Main obj=new Main();
+obj.shortestPath(0,adj,n);
+}
+void shortestPath(int src,ArrayList<ArrayList<Integer>> adj,int n)
+{
+Stack<Integer> stack=new Stack<>();
+int dist[]=new int[n];
+Boolean vis[]=new Boolean[N];
+for(int i=0;i<n;i++)vis[i]=false;
+for(int i=0;i<n;i++)
+{
+if(!vis[i])
+{
+topoSort(i,adj,vis,stack);
+}
+}
+
+for(int i=0;i<n;i++)dist[i]=Integer.MAX_VALUE;
+dist[src]=0;
+
+for(!stack.isEmpty())
+{
+int node=(int)stack.pop();
+if(dist[node]!=Integer.MAX_VALUE)
+{
+for(Pair it:adj.get(node))
+{
+if(dist[node]+it.w < dist[it.v]) dist[it.v]=dist[node]+
+}
+}
+}
+//print ans
+}
+
+void topoSort(int node,ArrayList<ArrayList<Integer>> adj,vis,stack)
+{
+vis[node]=1;
+for(Pair it:adj.get(node))
+{
+if(!vis[it.v])
+{
+topoSort(it.v,adj,vis,stack);
+}
+}
+stack.add(node);
+}
+}
+
+

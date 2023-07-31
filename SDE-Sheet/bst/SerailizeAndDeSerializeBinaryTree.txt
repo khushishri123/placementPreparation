@@ -1,0 +1,147 @@
+Serialize means to convert the binary tree into string.
+Basically we will give root to serialize function and it will convert the entire tree into string.
+Deserialize will do just reverse of it.
+
+We will be solving using Level order traversal. It can be solved using any other traversal tech.
+While traversing we might get a node that does not have left or right or both child .So whenever I found NULL I will place '#' in place of it.
+
+Eg: [1,2,13,NULL,NULL,4,5]
+Output:
+Serialize: 1,2,13,#,#,4,5,#,#,#,#,
+This is the string that we will return while serailizing.
+Deserialize:
+Firstly we will check that if the string is NULL, it means root==NULL.
+But if the string is not null ,then pick up the first character before the comma , here we have to pick up 1 and put it into queue.At the same time we create a root node with the value one.
+Next we have to start iterating in the queue. 
+Pop =1
+1->left will be 2 ,so we create a node with value 2. After that we insert 2 into the queue.1->right will be 3 ,so I pick up next guy(which is 3 in our case) and create  a node having value 3.After that I will put 3 in my queue. After that I poped out 2 and 2->left will be the next guy of the string .But next guy is #,it means it is NULL
+So 2-Left=NULL .....
+Remember whenever you create a node ,you insert in the queue DS.
+
+While doing deserialize ,we will use "stringstream" and "getline"  function.
+stringstream : see separate file that I have created on stringstream in the same folder.
+getline: The C++ getline() is a standard library function that is used to read a string or a line from an input stream. It is a part of the <string> header. See getline.txt in this folder.
+
+Code in C++:
+TC:O(N) SC:O(N)
+
+  string serialize(TreeNode* root) {
+            //if my root is NULL then simply return an empty string
+        if(!root) return "";
+            //else we will perform level order traversal
+            string str="";
+            queue<TreeNode *> q;
+            q.push(root);
+            while(!q.empty())
+            {
+                    TreeNode *node=q.front();
+                    q.pop();
+                    if(node==NULL) str.append("#,");
+                    else str.append(to_string(node->val)+',');
+                    if(node!=NULL)
+                    {
+                            q.push(node->left);
+                            q.push(node->right);
+                    }
+            }
+             return str;       
+    }
+
+    // Decodes your encoded data to tree.
+    TreeNode* deserialize(string data) {
+        if(data.size()==0)return NULL;
+            stringstream s(data);
+            string str;
+            getline(s,str,',');
+            TreeNode *root=new TreeNode(stoi(str));
+            queue<TreeNode *> q;
+            q.push(root);
+            
+            while(!q.empty())
+            {
+                   TreeNode *node=q.front();
+                    q.pop();
+                    
+                    //picking left side node data
+                    getline(s,str,',');
+                    if(str=="#")
+                    {
+                            //it means node->left is NULL
+                            node->left=NULL;
+                    }
+                    else
+                    {
+                            TreeNode *leftNode=new TreeNode(stoi(str));
+                            node->left=leftNode;
+                            q.push(node->left);
+                    }
+                    //picking right side node data
+                    getline(s,str,',');
+                    if(str=="#")
+                    {
+                            //it means node->right is NULL
+                            node->right=NULL;
+                    }
+                    else
+                    {
+                            TreeNode *rightNode=new TreeNode(stoi(str));
+                            node->right=rightNode;
+                            q.push(node->right);
+                    }
+                    
+            }
+            return root;
+    }
+
+Code in Java:
+
+	Here we will be using StringBuilder.
+See difference of String , StringBuilder and StringBuffer in separate file.
+
+  public String serialize(TreeNode root) {
+        if(root==null)return "";
+            StringBuilder sb=new StringBuilder();
+            Queue<TreeNode> q=new LinkedList<>();
+            q.add(root);
+           
+            while(!q.isEmpty())
+            {
+                    TreeNode node=q.poll();
+                    if(node==null)
+                    {
+                            sb.append("n "); //necessary to give space because it is our delimiter
+                            continue;
+                    }
+                    sb.append(node.val + " ");
+                    q.add(node.left);
+                    q.add(node.right);
+            }
+            return sb.toString();
+    }
+
+    // Decodes your encoded data to tree.
+    public TreeNode deserialize(String data) {
+        if(data=="")return null;
+           String []values=data.split(" ");
+            Queue<TreeNode> q=new LinkedList<>();
+            TreeNode root=new TreeNode(Integer.parseInt(values[0]));
+            q.add(root);
+            for(int i=1;i<values.length;i++)
+            {
+                    TreeNode node=q.poll();
+                    if(!values[i].equals("n"))
+                    {
+                           TreeNode leftNode=new TreeNode(Integer.parseInt(values[i]));
+                            node.left=leftNode;
+                            q.add(node.left);
+                    }
+                     if(!values[++i].equals("n"))
+                    {
+                       TreeNode rightNode=new TreeNode(Integer.parseInt(values[i]));
+                            node.right=rightNode;
+                            q.add(node.right);
+                    }
+                    
+            }
+            return root;
+    }

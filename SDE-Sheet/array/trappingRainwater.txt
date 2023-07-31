@@ -1,0 +1,70 @@
+Problem Statement:
+Given integers representing an elevation map where the width of each bar is 1, compute how much water it can trap after raining.
+example Input: height = [0,1,0,2,1,0,1,3,2,1,2,1]
+Output: 6
+
+Brute Force:
+For every index,we are going to find out the unit of water it is going to store.We can calculate it by: 
+   min(left(i),right(i))-a[i]
+where, left(i)= Maximum building at the left 
+right(i)= Maximum building at the right 
+a[i]= current height
+For finding left max height ,we have to look from i to 0
+For finding right max height ,we have to look from i to n-1
+ 
+TC: O(N^2) because for every i we will iterate the entire array
+SC: O(1)
+
+Better Approach:
+We will use prefix Max and suffix max
+eg:
+we are given array: 0 1 0 2 1 0 1 3 2 1 2 1 
+Ans: 6
+Here Prefix Max will look like:
+Prefix Max: 0 1 1 2 2 2 2 3 3 3 3 3 {Max till that index from left, see left hand side}
+in case of suufix we will start from back
+Suffix Max: 3 3 3 3 3 3 3 3 2 2 2 1 {Max till that index from right ,see right hand side }
+we actually skipped the nested loop in which we are traversing for the entire right and left
+Now we can say that left max at index 3 is 2
+and right max at index 3 is 3.
+At last , compute min(left(i),right(i))-a[i] for every index.
+
+TC: O(N)+O(N)+O(N) =O(N)
+first O(N) to compute Prefix array ,second to compute suffix array and third to iterate the entire array once.
+SC:O(2N)
+
+Best Approach:
+we will use 2 pointer approach
+we are going to take 5 variables:
+l,r,leftMax,rightMax and res
+leftMax will give me the max height on left hand side till l index
+rightMax will give me the max height on right hand side till r index
+res is to store how much unit of water we have trapped
+Logic:
+Initailly:
+l=0;
+r=n-1;
+leftMax=0;
+rightMax=0;
+res=0;
+
+while(l<=r)
+{
+if(a[l]<=a[r])
+{
+if(leftMax<=a[l])leftMax=a[l];
+else res+=leftMax-a[l];
+l++;
+}
+else
+{
+if(rightMax<=a[r])rightMax=a[r];
+else res+=rightMax-a[r];
+r--;
+}
+}
+Intuition: 
+Every time either we are considering leftMax-a[l] or rightMax-a[r] because we have have to take the Min of left(i) and right(i).We came to that l index only when we knew that there is some building on right hand side whose height is greater than or equal to the leftMax and vice versa.
+
+TC: O(N)
+SC: O(1)

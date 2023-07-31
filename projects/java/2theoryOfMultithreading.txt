@@ -1,0 +1,80 @@
+Multitasking:
+When multplile applications execute parallely, then it is said as Multitasking.
+Multithreading:
+When two or processes within an application runs simultaneously,it is said as Multithreading.
+Benefit of Multithreading:
+-> It is about utilizing the idle time of CPU.
+Now the question arises that how to determine when the CPU goes in idle mode? Also if we learnt that how to determine when the CPU gors in idle mode, how which time we will perform this act? So instead of decreasing the time ,time will be increased.
+
+->Practically ,it is not feasible to implement the techniques of determing whether the main proceesor is in idle mode or not? because you have to do this task again and again. How you are going to decide in which time it should be done and in what time span it should be done?
+Solution of this problem is time slicing. Time slicing is not because we have only one processor .We do time slicing becuase it is not practically feasible to determine when he main processor is in idle mode?
+
+->Execution of Multithreading:
+->java psp
+When we write java psp then JVM creates a thread class object. Let say it as main thread. In this object a stack is available. In this stack we can push functions and pop instructions.JVM loads main function on the main thread. To load means to push.
+See entire process from copy Java-99 lecture.
+
+Remember , because of any of the instruction lying on a thread , a function is called then that function will be loaded on the same thread. All the instructions of that function will be executed on the same thread.To implement Multithreading , we will create Thread class object and load that function on it.
+
+Thread class para. const. has a parameter of type Runnable and Runnable is an interface .So if you created a class aaa ,then your class should implement Runnable.Since you are implementing Runnable ,you have to define run method.This is the method that will be loaded on different thread. And from this method you can call that method which you want to load on different thread.
+t.start(): Because of start method , run method will be loaded on thread. 
+See code:
+clas aaa implements Runnable
+{
+aaa() //M.T.
+{
+Thread t=new Thread(this); //M.T.
+t.start();//M.T
+}
+public void run()
+{
+for(int i=1;i<=50;i++)S.O.P(i+" "); //New thread
+}
+}
+class psp
+{
+public static void main(String gg[])
+{
+aaa a=new aaa(); //M.T.
+}
+}
+
+See which instructions will be executed on which from copy.
+Detail explanation of start method:
+There is a property of Thread class called "target".In the para. const of thread it is written:
+Thread(add)
+{
+this.target=add;
+}
+When we call the start method,then target me jiska address hai,vo jis class se bana hai,uski run method ko thread pe load kar diya jayega.
+To target me aaa class ke object ka address hai,vo aaa class se bana hai, to uski run method ko load kar diya jayega.
+
+
+Second way:
+class aaa extends Thread
+{
+aaa()
+{
+//here compiler will write super()
+start();
+}
+public void run()
+{
+}
+}
+
+In the constructor , compiler will write super(); aaa is a thread becuase it has extended thread. It will now contain stack in it.
+In default const also,it may have written: this.target=this;
+
+Reasons for Context Switching:
+1) Process Completion
+2) Time Completion
+3) sleep mode
+4) Thread is killed
+5) Thread is suspended
+6) Thread is in wait mode
+
+To put it in a sleep mode and suspend it are two different things.
+When resources required by a process running on a thread ,are not available then that thread will be suspended,same reason goes for wait mode.
+
+Whenever a new thread is introduced then the internal queue reshuffles.So,there is no gurantee that which thread will be executed first.sleep() is a static method of thread class and it haas been declared  with throws keyword followed by InterruptedException which is a checked Exception.

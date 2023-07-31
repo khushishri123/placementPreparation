@@ -1,0 +1,60 @@
+Network Programming: 
+Network Programming is a programming in which there is a client and a server.A client is a software that requests servics from the server.A server is a software taht provides services to the client.On receiving request,it processes request and send the response to the client.
+
+Client->request initiate-> O.S->Network->O.S.->Server
+
+Server is the end point of request while client is end point of response.
+We have to start server before the client . Remember server should be in the listening mode to accept request.
+O.S. provides us 1 to 65,535 port numbers.Server provides different applications. Each application is running on a unique port number.
+
+For doing Network Programming wer have to import java.net.*;
+Server side:
+1) Create a server socket .To create write:
+2) Bind it to port number.Write:
+ServerSocket serverSocket=new ServerSocket(5500);
+3) Put it in the listening mode for accepting request.A good programmer won't use 1 to 1024 port numbers as they provide sustem services.
+Write:
+Socket socket= serverSocket.accept();
+
+Client Side:
+1) Create a socket
+2)Connect it to the server socket.For connecting, IP+port number will be required.
+Socket socket=new Socket("localhost",5500);
+In place of localhost you can also write 127.0.0.1
+3) Prepares request
+4) get the reference of OutputStream
+Write:
+OutputStream os=so0cket.getOutputStream();
+5) Attack OutputStream with the OutputStreamWriter:
+OutputStreamWriter osw=new OutputStreamWriter(os);
+6) Write request and flush it.
+osw.write(request);
+osw.flush();
+
+Server Side:
+4) Get the reference of InputStream
+InputStream is=socket.getInputStream();
+5) Attack InputStream with the InputStreamReader:
+InputStreamReader isr=new InputStreamReader(is);
+6) Read and buffer.For buffering we will use StringBuffer.
+StringBuffer sb=new StringBuffer();
+while(true)
+{
+x=isr.read();
+if(x==-1)break; // breaking condition
+if(x=='#')break;
+sb.append((char)x);
+}
+7)Parse and process
+8)Prepare response.
+9) Repeat the same process.
+
+
+Now when the server receives a request then that incoming request is diverted to some another socket so that the serverSocket is free to receive some another request.Give eg of call center
+
+Remember there are multiple processors in out device.Every input and output device has a separate processor.There only one main processor but we can't say that there is only one processor.
+
+
+ 
+
+

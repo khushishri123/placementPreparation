@@ -1,0 +1,65 @@
+Given a boolean 2D matrix grid of size n * m. You have to find the number of distinct islands where a group of connected 1s (horizontally or vertically) forms an island. Two islands are considered to be distinct if and only if one island is equal to another (not rotated or reflected)
+Input:
+grid[][] = {{1, 1, 0, 0, 0},
+            {1, 1, 0, 0, 0},
+            {0, 0, 0, 1, 1},
+            {0, 0, 0, 1, 1}}
+Output:
+1
+Explanation:
+Island 1, 1 at the top left corner is same as island
+1, 1 at the bottom right corner.
+
+OBSERVATION:
+If the shape of the land is same then we will say that they are same .And we will count them as 1 ,not 2.
+So we will use set to store unique shape.But now the question is that how to find out shape.
+See above observation:
+   0 1
+0  1 1
+1  1 1
+
+Take (0,0) as base,then distance to other will be:  (0,1)
+But it will become: 0-0 and 1-0 ,so we will store {0,1}
+Workout on this .
+
+Code:
+
+void dfs(int row,int col,int n,int m,vector<vector<int>> &grid,vector<vector<int>> &vis,vector<pair<int,int>> &vec,int row0,int col0)
+  {
+      vis[row][col]=1;
+      vec.push_back({row-row0,col-col0});
+      int dx[4]={-1,1,0,0};
+      int dy[4]={0,0,-1,1};
+      for(int i=0;i<4;i++)
+      {
+          int nx=dx[i]+row;
+          int ny=dy[i]+col;
+          if(nx>=0 && nx<n && ny>=0 && ny<m && !vis[nx][ny] && grid[nx][ny]==1)
+          {
+              dfs(nx,ny,n,m,grid,vis,vec,row0,col0);
+          }
+      }
+  }
+    int countDistinctIslands(vector<vector<int>>& grid) {
+        // code here
+        int n=grid.size();
+        int m=grid[0].size();
+        vector<vector<int>> vis(n,vector<int>(m,0));
+        set<vector<pair<int,int>>> st;
+        for(int i=0;i<n;i++)
+        {
+            for(int j=0;j<m;j++)
+            {
+                if(!vis[i][j] && grid[i][j]==1)
+                {
+                    vector<pair<int,int>> vec;
+                    dfs(i,j,n,m,grid,vis,vec,i,j);
+                    st.insert(vec);
+                }
+            }
+        }
+        return st.size();
+    }
+
+
+

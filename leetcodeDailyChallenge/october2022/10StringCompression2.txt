@@ -1,0 +1,153 @@
+Run-length encoding is a string compression method that works by replacing consecutive identical characters (repeated 2 or more times) with the concatenation of the character and the number marking the count of the characters (length of the run). For example, to compress the string "aabccc" we replace "aa" by "a2" and replace "ccc" by "c3". Thus the compressed string becomes "a2bc3".
+
+Notice that in this problem, we are not adding '1' after single characters.
+
+Given a string s and an integer k. You need to delete at most k characters from s such that the run-length encoded version of s has minimum length.
+
+Find the minimum length of the run-length encoded version of s after deleting at most k characters.
+
+ 
+
+Example 1:
+
+Input: s = "aaabcccd", k = 2
+Output: 4
+Explanation: Compressing s without deleting anything will give us "a3bc3d" of length 6. Deleting any of the characters 'a' or 'c' would at most decrease the length of the compressed string to 5, for instance delete 2 'a' then we will have s = "abcccd" which compressed is abc3d. Therefore, the optimal way is to delete 'b' and 'd', then the compressed version of s will be "a3c3" of length 4.
+Example 2:
+
+Input: s = "aabbaa", k = 2
+Output: 2
+Explanation: If we delete both 'b' characters, the resulting compressed string would be "a4" of length 2.
+Example 3:
+
+Input: s = "aaaaaaaaaaa", k = 0
+Output: 3
+Explanation: Since k is zero, we cannot delete anything. The compressed string is "a11" of length 3.
+
+
+
+
+After reviewing this question, I didn't realize this is an DP. And actually the first idea come to my mind is greedy, but I quickly realize there are several corner cases that fails my greedy algorithm. Then I started my manual simulation, and the code below are my journey of solving this problem, having a brute-force workable solution first -> TLE -> optimization -> TLE -> optimization again, then finally AC this question.
+
+The bruteforce algorithm is straightforward, for each character in the string, there are only two options we could do -- delete, or concatenate.
+Below is my brute-force solution, the helper function will return how much length it needs to compress string starting from cur, with remaining k modifications. Here I need to carry two more states --
+char last, and int cnt. The idea here is when I do concatenation, I need to know whether it could be combined with the previous string, and cnt will deal with the number, like a9 to a10 actually requires one more length.
+
+
+int getLengthOfOptimalCompression(string s, int k) {
+        return helper(s, 0, 'A', 0, k);
+    }
+    int helper(string s, int cur, char last, int cnt, int k) {
+        int answer = 101;
+        if (k < 0) return 101;
+        if (cur >= s.size()) {
+            return 0;    
+        }
+        // delete
+        answer = min(answer, helper(s, cur + 1, last, cnt, k - 1));
+        // concat
+        if (s[cur] != last) {
+            answer = min(answer, 1 + helper(s, cur + 1, s[cur], 1, k));
+        } else {
+            if (cnt == 1 || cnt == 9 || cnt == 99) {
+                answer = min(answer, 1 + helper(s, cur + 1, last, cnt + 1, k));
+            } else {
+                answer = min(answer, helper(s, cur + 1, last, cnt + 1, k));
+            }
+        }
+        return answer;
+    }
+};
+It FAIL the OJ with TLE. The reason is straightforwad, the helper function might do redundant work, as the state might be calculated already. The optimization that came to my mind is to store the state of each helper function, it that has been computed before, directly return the result.
+
+// dp[cur][last][cnt][k]
+int dp[101][27][101][101];
+class Solution {
+public:
+    int getLengthOfOptimalCompression(string s, int k) {
+        for (int i = 0;i < 101;++i) {
+            for (int j = 0;j < 27;++j) {
+                for (int k = 0;k < 101;++k) {
+                    for (int m = 0;m < 101;++m) {
+                        dp[i][j][k][m] = -1;
+                    }
+                }
+            }
+        }
+        return helper(s, 0, 'z' + 1, 0, k);
+    }
+    int helper(string s, int cur, char last, int cnt, int k) {
+        int answer = 101;
+        if (k < 0) return 101;
+        if (cur >= s.size()) {
+            return 0;    
+        }
+        if (dp[cur][last - 'a'][cnt][k] != -1) return dp[cur][last - 'a'][cnt][k];
+        // delete
+        answer = min(answer, helper(s, cur + 1, last, cnt, k - 1));
+        // concat
+        if (s[cur] != last) {
+            answer = min(answer, 1 + helper(s, cur + 1, s[cur], 1, k));
+        } else {
+            if (cnt == 1 || cnt == 9 || cnt == 99) {
+                answer = min(answer, 1 + helper(s, cur + 1, last, cnt + 1, k));
+            } else {
+                answer = min(answer, helper(s, cur + 1, last, cnt + 1, k));
+            }
+        }
+        return dp[cur][last - 'a'][cnt][k] = answer;
+    }
+};
+Sadly, it still failed OJ with TLE. It took me some time to come up with the optimization for this version. I am storing 101 state of cnt, but what really matters are only three state -- 1, 9, 99. If the cnt is not that three value, the length won't be changed. Because of that, I don't need 101 state of cnt, I only need 11 of them, and test the 99 case separately.
+
+int dp[101][27][12][101];
+class Solution {
+public:
+    int getLengthOfOptimalCompression(string s, int k) {
+        if (s.size() == 100) {
+            bool all_same = true;
+            for (int i = 1;i < s.size();++i) {
+                if (s[i] != s[i - 1]) {
+                    all_same = false;
+                    break;
+                }
+            }
+            if (all_same) return 4;
+        }
+        if (k >= s.size()) return 0;
+        for (int i = 0;i < 101;++i) {
+            for (int j = 0;j < 27;++j) {
+                for (int k = 0;k < 12;++k) {
+                    for (int m = 0;m < 101;++m) {
+                        dp[i][j][k][m] = -1;
+                    }
+                }
+            }
+        }
+        return helper(s, 0, 'z' + 1, 0, k);
+    }
+    int helper(string& s, int cur, char last, int cnt, int k) {
+        int answer = 101;
+        
+        if (k < 0) return 101;
+        if (cur >= s.size()) {
+            return 0;    
+        }
+        if (cnt >= 10) cnt = 10;
+        if (dp[cur][last - 'a'][cnt][k] != -1) return dp[cur][last - 'a'][cnt][k];
+        // delete
+        answer = helper(s, cur + 1, last, cnt, k - 1);
+        // concat
+        if (s[cur] != last) {
+            answer = min(answer, 1 + helper(s, cur + 1, s[cur], 1, k));
+        } else { 
+            if (cnt == 1 || cnt == 9) {
+                answer = min(answer, 1 + helper(s, cur + 1, last, cnt + 1, k));
+            } else {
+                answer = min(answer, helper(s, cur + 1, last, cnt + 1, k));
+            }
+        }
+        return dp[cur][last - 'a'][cnt][k] = answer;
+    }
+};
+Finally AC the question, just a side note, when passing down the string to helper function, remember to pass by reference, it will fail the OJ if pass by value.

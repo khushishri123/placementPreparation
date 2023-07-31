@@ -1,0 +1,80 @@
+Count the number of subarrays with given xor K
+Problem Statement: Given an array of integers A and an integer B. Find the total number of subarrays having bitwise XOR of all elements equal to k.
+
+Link: https://takeuforward.org/data-structure/count-the-number-of-subarrays-with-given-xor-k/
+https://www.codingninjas.com/studio/problems/subarrays-with-xor-k_6826258?utm_source=striver&utm_medium=website&utm_campaign=a_zcoursetuf
+
+Brute Force: Generate all subarrays and then find xor
+Time Complexity: O(N3) approx., where N = size of the array.
+Code:
+int subarraysWithXorK(vector<int> a, int k) {
+    int n = a.size(); //size of the given array.
+    int cnt = 0;
+
+    // Step 1: Generating subarrays:
+    for (int i = 0; i < n; i++) {
+        for (int j = i; j < n; j++) {
+
+            //step 2:calculate XOR of all
+            // elements:
+            int xorr = 0;
+            for (int K = i; K <= j; K++) {
+                xorr = xorr ^ a[K];
+            }
+
+            // step 3:check XOR and count:
+            if (xorr == k) cnt++;
+        }
+    }
+    return cnt;
+}
+
+
+Better App: TC: O(N^2)
+int subarraysWithXorK(vector<int> a, int k) {
+    int n = a.size(); //size of the given array.
+    int cnt = 0;
+
+    // Step 1: Generating subarrays:
+    for (int i = 0; i < n; i++) {
+        int xorr = 0;
+        for (int j = i; j < n; j++) {
+
+            //step 2:calculate XOR of all
+            // elements:
+            xorr = xorr ^ a[j];
+
+            // step 3:check XOR and count:
+            if (xorr == k) cnt++;
+        }
+    }
+    return cnt;
+}
+
+
+Best:
+TC:O(N)
+SC:O(N)
+
+Code:
+int subarraysWithSumK(vector < int > a, int b) {
+    // Write your code here
+    int xr=0;
+    //in the map I will store the current xor
+    map<int,int> mpp;
+    mpp[xr]++;
+    int count=0;
+    for(int i=0;i<a.size();i++)
+    {
+        xr=a[i]^xr;
+        if(mpp.find(xr^b)!=mpp.end())
+        {
+            count+= mpp[xr^b];
+        }
+        mpp[xr]++;
+    }
+    return count;
+
+}
+
+

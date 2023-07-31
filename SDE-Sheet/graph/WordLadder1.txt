@@ -1,0 +1,59 @@
+A transformation sequence from word beginWord to word endWord using a dictionary wordList is a sequence of words beginWord -> s1 -> s2 -> ... -> sk such that:
+Every adjacent pair of words differs by a single letter.
+Every si for 1 <= i <= k is in wordList. Note that beginWord does not need to be in wordList.
+sk == endWord
+Given two words, beginWord and endWord, and a dictionary wordList, return the number of words in the shortest transformation sequence from beginWord to endWord, or 0 if no such sequence exists.
+
+Example 1:
+Input: beginWord = "hit", endWord = "cog", wordList = ["hot","dot","dog","lot","log","cog"]
+Output: 5
+Explanation: One shortest transformation sequence is "hit" -> "hot" -> "dot" -> "dog" -> cog", which is 5 words long.
+
+App:
+We will use a set and a queue.
+Let starting word be hit.So either h or i or t can be changed.
+And if h changed then we have to check that which combination exists in the given wordList .
+So we will try every possible combination:
+ait,bit,....,zit and everytime we will check that whether it exists it the set ,if it exists then I will remove it from queue and push it into the queue.
+In the begining we will push beginWord.
+
+TC:O(N)*O(wordLength)*26
+{here O(n) IS BECAUSE OF QUEUE becuase at max we can push all  the words in the queue, wordLength because we are running a loop upto wordLength and since we ae trying every posiible combinaton that's why,26}
+SC:O(N)*O(N)
+
+Code:
+int ladderLength(string beginWord, string endWord, vector<string>& wordList) {
+     unordered_set<string> s(wordList.begin(),wordList.end());
+            queue<pair<string,int>> q;
+            //initially pushing begin word in the queue
+            q.push({beginWord,1});
+            //since wqe have pushed start word in queueu we will remove it from set
+            s.erase(beginWord);
+            while(!q.empty())
+            {
+                    string word=q.front().first;
+                    int steps=q.front().second;
+                    q.pop();
+                    if(word==endWord)return steps;
+                    string original=word;
+                    //O(N) * O(wordLength) *26
+                    for(int i=0;i<word.size();i++)
+                    {
+                            for(char c='a';c<='z';c++)
+                            {
+                                    //we will check every possible combination
+                                    word[i]=c;
+                                    //if it exists in set then we will put it queue
+                                    //and remove it from set
+                                    if(s.find(word)!=s.end())
+                                    {
+                                            q.push({word,steps+1});
+                                            s.erase(word);
+                                    }
+                            }
+                            word=original;
+                    }
+            }
+            return 0;
+    }
+

@@ -1,0 +1,78 @@
+Given two strings s and t of lengths m and n respectively, return the minimum window substring of s such that every character in t (including duplicates) is included in the window. If there is no such substring, return the empty string "".
+
+The testcases will be generated such that the answer is unique.
+
+A substring is a contiguous sequence of characters within the string.
+
+ 
+
+Example 1:
+
+Input: s = "ADOBECODEBANC", t = "ABC"
+Output: "BANC"
+Explanation: The minimum window substring "BANC" includes 'A', 'B', and 'C' from string t.
+Example 2:
+
+Input: s = "a", t = "a"
+Output: "a"
+Explanation: The entire string s is the minimum window.
+Example 3:
+
+Input: s = "a", t = "aa"
+Output: ""
+Explanation: Both 'a's from t must be included in the window.
+Since the largest window of s only has one 'a', return empty string.
+ 
+Intuition:
+
+We want all the characters of string t in strong s.
+So we need to make the count of each character as zero.T oavoid traversing of map again and again ,we will use count.Initially count=map.size()
+Whenever the count of char becomes 0,we will decrement count.Whenever the count of any variable becomes negative ,it shows that they are extra.
+We can remove that variable untill its count  is negative.
+So to remove a character ,we have to check that whether it is present in the map.If not present then we can surely remove it.If it is present in map then we have to make sure that it is extra.Means its count should be negative.
+
+ string minWindow(string s, string t) {
+       vector<int> needToFind(256,0);
+        vector<int> hasFound(256,0);
+        int begin,end;
+        int windowLen;
+        int minWinLen=INT_MAX;
+        int minWinBegin;
+        int minWinEnd;
+            int count=0;
+        //populate needToFind ds
+        for(int i=0;i<t.size();i++)needToFind[t[i]]++;
+        
+        for(begin=0,end=0;end<s.size();end++)
+        {
+            if(needToFind[s[end]]==0)continue;
+            hasFound[s[end]]++;
+            if(hasFound[s[end]] <= needToFind[s[end]])count++;
+            
+            //now if count==t.length then reduce window size
+            if(count==t.size())
+            {
+                while(needToFind[s[begin]]==0 || hasFound[s[begin]] > needToFind[s[begin]])
+                {
+                    if(hasFound[s[begin]] > needToFind[s[begin]])
+                    {
+                        hasFound[s[begin]]--;
+                    }
+                    begin++;
+                }
+                
+                //update my minWinLen
+               windowLen=end-begin+1;
+            //    cout<<"Window Len is: "<<windowLen<<endl;
+                if(minWinLen>windowLen)
+                {
+                    minWinBegin=begin;
+                    minWinEnd=end;
+                    minWinLen=windowLen;
+                }
+            }
+        }
+        cout<<"minWinBegin: "<<minWinBegin<<endl;
+        cout<<"minWinEnd: "<<minWinEnd<<endl;
+        return (count==t.size())? s.substr(minWinBegin,minWinLen) : "";
+    }

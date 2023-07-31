@@ -1,0 +1,33 @@
+See explanation from copy.
+Way 1:
+Thread t=new Thread(){
+public void run()
+{
+}
+};
+t.start();
+
+Way 2:
+Thread t=new Thread(new Runnable(){
+public void run()
+{
+}
+});
+t.start();
+
+Way 3:
+Runnable r=()->{
+public void run()
+{
+}
+};
+Thread t=new Thread(r);
+t.start();
+
+Way 4:
+Thread t=new Thread(()->{
+public void run()
+{
+}
+});
+t.start();

@@ -1,0 +1,103 @@
+Now this time we want output like this:
+Producer:201
+Consumer:201
+Producer:202
+Consumer:202
+.
+.
+.
+
+This time we require a monitor that allows a thread to work when the other thread is in wait mode.Ek baar Producer thread chalni chahiye ,ek baar Consumer thread chalni chahiye.
+This time we will make use of 2 methods:
+wait(): It is used to put the thread in wait mode on which it is running.
+notify(): It is used to bring the next waiting thread out of the wait mode.
+Along with this we have onbe more method:
+notifyAll():It is used to bring all waiting threads out of wait mode.
+
+Also to keep the track that which method is in the wait mode ,we will use a boolean variable "b"
+if b==false means not yet produced
+if b==true means true but not yet consumed.
+See from copy for more explanation,Lec: 102
+
+wait or notify method should be either called from a synchronized block or  the method from which these methods has been called should be declared as synchronized .Otherwise ,IllegalMonitorStateException will be generated.
+
+Code:
+class mdm
+{
+private int num=0;
+private boolean b=false;
+synchronized public void set(int num)
+{
+if(b==true) //means a num has been already produced,so we will keep this {          //thread in wait mode
+try
+{
+wait();
+}catch(InterruptedException ie)
+{
+S.O.P
+}
+}
+this.num=num;
+S.O.P(num);
+b=true;
+notify(); //it will bring the consumer thread out of wait mode.
+}
+synchronized public int get()
+{
+if(b==false)
+{
+try
+{
+}catch(InterruptedException ie)
+{
+}
+}
+S.O.P("Consumed: "+this.num);
+b=false;
+notify();
+return this.num;
+}
+}
+class Producer extends Thread
+{
+private mdm medium;
+Producer(mdm medium)
+{
+this.medium=medium;
+start();
+}
+public void run()
+{
+for(int i=1;i<=50;i++)
+{
+this.medium.set(i);
+}
+}
+}
+
+class Consumer extends Thread
+{
+private mdm medium;
+Consumer(mdm medium)
+{
+this.medium=medium;
+start();
+}
+public void run()
+{
+int x,y;
+for(x=1;x<=50;x++)
+{
+y=medium.get();
+}
+}
+}
+class eg3psp
+{
+public static void main(String gg[])
+{
+mdm medium=new mdm();
+Producer p=new Producer(medium);
+Consumer c=new Consumer(medium);
+}
+}

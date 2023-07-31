@@ -1,0 +1,23 @@
+When do we use recursion?
+When we have to count all possible ways or when we have to find the best out of all possible ways ,then we use recursion.
+
+Shortcut to find recursion:
+1) Try to represent the problem in terms of index.
+2) Do all possible stuffs on that index according to the problem statement
+3) If you have to count all ways ,then do sum of all the stuffs
+4) if you have to find min,then find min of all stuffs .Similarly for max.
+
+If I am writing a recursion then it should give all possible ways to reach at that index.
+TC:O(N);
+SC:O(N)
+int climbStairs(int n) {
+        int f[n+2];
+        f[0]=1;
+        f[1]=1;
+        int i;
+        for(i=2;i<=n;i++)
+        {
+            f[i]=f[i-1]+f[i-2];
+        }
+        return f[n];
+    }

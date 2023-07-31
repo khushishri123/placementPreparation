@@ -1,0 +1,175 @@
+Rcursive Sol:
+In recursion,we move from top to down ,so we will start from N-1 th day and will go upto 0th day.f(day,last) shows the maximum ponts that I can achieve till that day.
+
+f(day,last)
+{
+int maxi=0;
+//base case
+if(day==0)
+{
+//just we have to return the max but we cannot perform the activity that //we have already performed on the next day
+for(i=0;i<=2;i++)
+{
+if(i!=last)maxi=max(maxi,points[0][i]);
+}
+return maxi;
+}
+maxi=0;
+for(i=0;i<=2;i++)
+{
+if(i!=last)
+{
+point=points[day][i]+f(day-1,i);
+maxi=max(maxi,point);
+}
+}
+return point;
+}
+
+Steps to memoize a recursive solution:
+
+If we draw the recursion tree, we will see that there are overlapping subproblems. In order to convert a recursive solution to the following steps will be taken:
+
+Create a dp array of size [n][4]. There are total ‘n’ days and for every day, there can be 4 choices (0,1,2 and 3). Therefore we take the dp array as dp[n][4].
+Whenever we want to find the answer of particular parameters (say f(day,last)), we first check whether the answer is already calculated using the dp array(i.e dp[day][last]!= -1 ). If yes, simply return the value from the dp array.
+If not, then we are finding the answer for the given value for the first time, we will use the recursive relation as usual but before returning from the function, we will set dp[day][last] to the solution we get.
+Code:
+
+int f(int day, int last, vector<vector<int>> &points,vector<vector<int>> &dp) {
+
+  if (dp[day][last] != -1) return dp[day][last];
+
+  if (day == 0) {
+    int maxi = 0;
+    for (int i = 0; i <= 2; i++) {
+      if (i != last)
+        maxi = max(maxi, points[0][i]);
+    }
+    return dp[day][last] = maxi;
+  }
+
+  int maxi = 0;
+  for (int i = 0; i <= 2; i++) {
+    if (i != last) {
+      int activity = points[day][i] + f(day - 1, i, points, dp);
+      maxi = max(maxi, activity);
+    }
+
+  }
+
+  return dp[day][last] = maxi;
+}
+
+int ninjaTraining(int n, vector < vector < int > > & points) {
+
+  vector < vector < int > > dp(n, vector < int > (4, -1));
+  return f(n - 1, 3, points, dp);
+}
+
+
+Time Complexity: O(N*4*3)
+
+Reason: There are N*4 states and for every state, we are running a for loop iterating three times.
+
+Space Complexity: O(N) + O(N*4)
+
+Reason: We are using a recursion stack space(O(N)) and a 2D array (again O(N*4)). Therefore total space complexity will be O(N) + O(N) ≈ O(N)
+
+Tabulation:
+Declare a dp[] array of size [n][4]
+First initialize the base condition values. We know that base condition arises when day = 0. Therefore, we can say that the following will be the base conditions
+dp[0][0] = max(points[0][1], points[0][2]) 
+dp[0][1] = max(points[0][0], points[0][2]) 
+dp[0][2] = max(points[0][0], points[0][1]) 
+dp[0][3] = max(points[0][0], points[0][1] and points[0][2]) 
+Set an iterative loop which traverses dp array (from index 1 to n) and for every index set its value according to the recursive logic
+
+Code:
+
+int ninjaTraining(int n, vector < vector < int > > & points) 
+{
+int dp[n][4];
+dp[0][0]=max(points[0][1],points[0][2]);
+dp[0][1]=max(points[0][0],points[0][2]);
+dp[0][2]=max(points[0][0],points[0][1]);
+dp[0][3]=max(points[0][0],max(points[0][1],points[0][2]));
+
+for(day=1;day<n;day++)
+{
+for(last=0;last<=3;last++)
+{
+dp[day][last]=0;
+for(task=0;task<=2;task++)
+{
+if(task!=last)
+{
+activity=points[day][task]+dp[day-1][task];
+dp[day][last]=max(dp[day][last],activity);
+}
+}
+}
+}
+return dp[n-1][3];
+}
+
+Time Complexity: O(N*4*3)
+
+Reason: There are three nested loops
+
+Space Complexity: O(N*4)
+
+Reason: We are using an external array of size ‘N*4’’.
+
+
+Part 3: Space Optimization
+
+If we closely look the relation,
+
+dp[day][last] =  max(dp[day][last],points[day][task] + dp[day-1][task])
+
+Here the task can be anything from 0 to 3 and day-1 is the previous stage of recursion. So in order to compute any dp array value, we only require the last row to calculate it
+
+
+So rather than storing the entire 2D Array of size N*4, we can just store values of size 4(say prev). 
+We can then take a dummy array, again of size 4 (say temp) and calculate the next row’s value using the array we stored in step 1.
+After that whenever we move to the next day, the temp array becomes our prev for the next step.
+At last prev[3] will give us the answer.
+
+
+
+int ninjaTraining(int n, vector < vector < int > > & points) {
+
+  vector < int > prev(4, 0);
+
+  prev[0] = max(points[0][1], points[0][2]);
+  prev[1] = max(points[0][0], points[0][2]);
+  prev[2] = max(points[0][0], points[0][1]);
+  prev[3] = max(points[0][0], max(points[0][1], points[0][2]));
+
+  for (int day = 1; day < n; day++) {
+
+    vector < int > temp(4, 0);
+    for (int last = 0; last < 4; last++) {
+      temp[last] = 0;
+      for (int task = 0; task <= 2; task++) {
+        if (task != last) {
+          temp[last] = max(temp[last], points[day][task] + prev[task]);
+        }
+      }
+    }
+
+    prev = temp;
+
+  }
+
+return prev[3];
+}
+
+Time Complexity: O(N*4*3)
+
+Reason: There are three nested loops
+
+Space Complexity: O(4)
+
+Reason: We are using an external array of size ‘4’ to store only one row.
+

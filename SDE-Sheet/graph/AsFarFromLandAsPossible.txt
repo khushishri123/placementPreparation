@@ -1,0 +1,54 @@
+Given an n x n grid containing only values 0 and 1, where 0 represents water and 1 represents land, find a water cell such that its distance to the nearest land cell is maximized, and return the distance. If no land or water exists in the grid, return -1.
+
+The distance used in this problem is the Manhattan distance: the distance between two cells (x0, y0) and (x1, y1) is |x0 - x1| + |y0 - y1|.
+
+Example 1:
+Input: grid = [[1,0,1],[0,0,0],[1,0,1]]
+Output: 2
+Explanation: The cell (1, 1) is as far as possible from all the land with distance 2.
+
+Example 2:
+Input: grid = [[1,0,0],[0,0,0],[0,0,0]]
+Output: 4
+Explanation: The cell (2, 2) is as far as possible from all the land with distance 4.
+
+We will apply BFS.
+Intuition:
+Initially we will push all 1's inside my queue .After the completion of first traversal ,then I have pushed all 0's inside my queue whose distance is 1 . After the completion of second traversal ,I have pushed all 0's that have distance of 2 from 1 and so on.
+
+ int maxDistance(vector<vector<int>>& grid) {
+        int n=grid.size();
+            int m=grid[0].size();
+            queue<pair<int,int>> q;
+            int dist=0;
+            for(int i=0;i<n;i++)
+            {
+                    for(int j=0;j<m;j++)if(grid[i][j]==1)q.push({i,j});
+            }
+            int dx[]={-1,0,1,0};
+            int dy[]={0,1,0,-1};
+//if grid does not contain any 0,then we have to return -1.     
+       if(q.size()== n*m)return -1;
+            while(!q.empty())
+            {
+                    int size=q.size();
+                    while(size--)
+                    {
+                             int x=q.front().first;
+                    int y=q.front().second;
+                    q.pop();
+                            for(int i=0;i<4;i++)
+                            {
+                                    int nx=dx[i]+x;
+                                    int ny=dy[i]+y;
+                                    if(nx>=0 && ny>=0 && nx<n && ny<n && grid[nx][ny]==0)
+                                    {
+                                            q.push({nx,ny});
+                                            grid[nx][ny]=1;
+                                    }
+                            }
+                    }
+                    dist++;
+            }
+            return dist-1;
+    }

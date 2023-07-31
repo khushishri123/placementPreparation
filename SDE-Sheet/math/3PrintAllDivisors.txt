@@ -1,0 +1,40 @@
+In this case we will loop till sqrt(n).
+For eg: n=36
+i*no.=n
+
+1*36=36
+2*18=36
+3*12=36
+4*9=36
+6*6=36
+
+After that we will see repetation,
+9*4=36
+12*3=36
+18*2=36
+36*1=36
+
+So all i are divisores of 36 .
+So i and n/i will be divisors but in case of 6*6=36 , i=6 and 36/6=6 so we will consider only once.
+
+Code: Here we have to written sum of all the divisors.
+
+long long findDivisors(int n)
+ {
+        
+        long long sum=0;
+        for(int i=1;i*i<=n;i++)
+        {
+            //remember if n%i==0 then we will get two factors 
+            //one is i and the other will be n/i but remember that 
+            //n/i != i for eg : let n=36 ,so 6*6=36 ,our i=6 and n/i=6
+            //but we will consider it only once
+            if(n%i==0)
+            {
+                sum+=i;
+                if(n/i != i)sum+=(n/i);
+            }
+        }
+        return sum;
+ }
+

@@ -1,0 +1,131 @@
+N Queen Problem | Return all Distinct Solutions to the N-Queens Puzzle
+Problem Statement: The n-queens is the problem of placing n queens on n × n chessboard such that no two queens can attack each other. Given an integer n, return all distinct solutions to the n -queens puzzle. Each solution contains a distinct boards configuration of the queen’s placement, where ‘Q’ and ‘.’ indicate queen and empty space respectively.
+Eg:
+Input: n = 4
+
+Output: [[".Q..","...Q","Q...","..Q."],["..Q.","Q...","...Q",".Q.."]]
+
+Rules for n-Queen in chessboard
+1) Every row should contain one queen
+2) Every row should contain one column
+3) No two queens can attack each other
+
+A queen can attack in 8 possible ways
+
+Appraoch1:
+Intuition: Using the concept of Backtracking, we will place Queen at different positions of the chessboard and find the right arrangement where all the n queens can be placed on the n*n grid
+At the very first time I will consider all possible ways where I can place a queen at the 1st column.If n=4 then I have 4 ways to place the queen .Either I can place at 1st row or 2nd or 3rd or 4th.
+If I placed at 1st row of 0th col,then  This is the position where we can see no possible arrangement is found where all queens can be placed since, at the 3rd column, the Queen will be killed at all possible positions of row.
+
+If I placed at 2nd row of 0th col,then One of the correct possible arrangements is found. So we will store it as our answer.
+
+If I placed at 3rd row of 0th col,then One of the correct possible arrangements is found. So we will store it as our answer.
+
+If I placed at 4th row of 0th col,This is the position where we can see no possible arrangement is found where all queens can be placed since, at the 4th column, the Queen will be killed at all possible positions of row.
+
+TC:O(N! *(3N))
+SC:O(!N*N)
+
+Code:
+bool isSafe(int row,int col,vector<string> &board,int n)
+{
+int r=row;
+int c=col;
+while(row>=0 && col>=0)
+{
+if(board[row][col]=='Q')return false;
+row--;
+col--;
+}
+row=r;
+col=c;
+while(col>=0)
+{
+if(board[row][col]=='Q')return false;
+col--;
+}
+row=r;
+col=c;
+while(row<n && col>=0)
+{
+if(board[row][col]=='Q')return false;
+row++;
+col--;
+}
+return true;
+}
+
+void solve(int col,vector<vector<string>> &ans,vector<string> &board,int n)
+{
+if(col==n)
+{
+ans.push_back(board);
+return;
+}
+for(int row=0;row<n;row++)
+{
+if(isSafe(row,col,board,n))
+{
+board[row][col]='Q';
+solve(col+1,ans,board,n);
+board[row][col]='.';
+}
+}
+}
+vector<vector<string>> solveQueens(int n)
+{
+vector<vector<string>> ans;
+vector<string> board(n);
+string s(n,'.');
+for(int i=0;i<n;i++)board[i]=s;
+solve(0,ans,board,n);
+return ans;
+}
+
+Optimized App:
+Intuition: This is the optimization of the issafe function. In the previous issafe function, we need o(N) for a row, o(N) for the column, and o(N) for diagonal. Here, we will use hashing to maintain a list to check whether that position can be the right one or not.
+For checking Left row elements,we will take a vector of n elements (left)and if I am placing a Queen at a row index r,then I will mark it left[r]=1 and afterwards if that particular row index is already marked then I could not mark Queen there.
+
+For checking lower diagonal,in the grid we will fill the sum of indices of row  and columns.
+We check that diagonal elements are same in the grid .
+If we are  taking n*n grid we an have maximum value upto 2*n-1 ,for 8*8 grid ,max value can be 15 means hash size will we 15.
+
+For checking upper diagonal ,in the grid we will fill the (n-1)+(col-row)
+We check that diagonal elements are same in the grid .
+If we are  taking n*n grid we an have maximum value upto 2*n-1 ,for 8*8 grid ,max value can be 15 means hash size will we 15.
+TC:O(N!*N)
+SC:O(N)+O(2N)+O(2N)
+
+Code:
+
+void solve(int col, vector < string > & board, vector < vector < string >> & ans, vector < int > & leftrow, vector < int > & upperDiagonal, vector < int > & lowerDiagonal, int n) {
+      if (col == n) {
+        ans.push_back(board);
+        return;
+      }
+      for (int row = 0; row < n; row++) {
+        if (leftrow[row] == 0 && lowerDiagonal[row + col] == 0 && upperDiagonal[n - 1 + col - row] == 0) {
+          board[row][col] = 'Q';
+          leftrow[row] = 1;
+          lowerDiagonal[row + col] = 1;
+          upperDiagonal[n - 1 + col - row] = 1;
+          solve(col + 1, board, ans, leftrow, upperDiagonal, lowerDiagonal, n);
+          board[row][col] = '.';
+          leftrow[row] = 0;
+          lowerDiagonal[row + col] = 0;
+          upperDiagonal[n - 1 + col - row] = 0;
+        }
+      }
+    }
+    vector<vector<string>> solveNQueens(int n) {
+        vector<vector<string>> ans;
+        vector<string> board(n);
+        string s(n,'.');
+        for(int i=0;i<n;i++)
+        {
+            board[i]=s;
+        }
+        vector<int> left(n,0),upper(2*n-1,0),lower(2*n-1,0);
+        solve(0,board,ans,left,upper,lower,n);
+        return ans;
+    }

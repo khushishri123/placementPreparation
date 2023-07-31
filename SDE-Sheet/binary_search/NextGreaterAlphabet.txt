@@ -1,0 +1,23 @@
+Given a characters array letters that is sorted in non-decreasing order and a character target, return the smallest character in the array that is larger than target.
+
+Note that the letters wrap around.
+
+For example, if target == 'z' and letters == ['a', 'b'], the answer is 'a'.
+Eg:
+Input: letters = ["c","f","j"], target = "j"
+Output: "c"
+Code: TC:O(logN)
+char nextGreatestLetter(vector<char>& letters, char target) {
+            int low,high;
+            int n=letters.size();
+            if(target==letters[n-1])return letters[0];
+            low=0;
+            high=n-1;
+            while(low<=high)
+            {
+                    int mid=low+(high-low)/2;
+                    if(letters[mid]<=target)low=mid+1;
+                    else high=mid-1;
+            }
+            return letters[low%n];
+            }

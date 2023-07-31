@@ -1,0 +1,83 @@
+Question: https://leetcode.com/problems/check-if-array-is-sorted-and-rotated/description/
+
+Given an array nums, return true if the array was originally sorted in non-decreasing order, then rotated some number of positions 
+(including zero). Otherwise, return false.
+
+There may be duplicates in the original array.
+
+Note: An array A rotated by x positions results in an array B of the same length such that A[i] == B[(i+x) % A.length], where % is 
+the modulo operation.
+
+Example 1:
+
+Input: nums = [3,4,5,1,2]
+Output: true
+Explanation: [1,2,3,4,5] is the original sorted array.
+You can rotate the array by x = 3 positions to begin on the the element of value 3: [3,4,5,1,2].
+Example 2:
+
+Input: nums = [2,1,3,4]
+Output: false
+Explanation: There is no sorted array once rotated that can make nums.
+Example 3:
+
+Input: nums = [1,2,3]
+Output: true
+Explanation: [1,2,3] is the original sorted array.
+You can rotate the array by x = 0 positions (i.e. no rotation) to make nums.
+
+Intuition
+We need to find how many times, the array is breaking the ascending order. If it is breaking just once then 
+it or it does't break even once then it is sorted. So we can return true. Otherwise false.
+
+Explanation:
+There could be three cases where we can return true --
+
+The given array is properly sorted. Ex- [1,2,5,6,9]
+In this case the ascending order does not breaks inside the array. So cnt=0 , But when we check the last element and the first element, cnt becomes 1.👇
+
+if(nums[n-1]>nums[0]){
+            cnt++;
+        }
+The given array is sorted but rotated. Ex- [5,6,9,1,2]
+In this case the ascending order breaks inside the array, So cnt becomes
+
+But nums[n-1]<nums[0] So cnt doesn't increases. So cnt=1👇
+int cnt=0;
+        for(int i=1;i<n;i++){
+            if(nums[i-1]>nums[i]){
+                cnt++;
+            }
+        }
+All the values of array are equal. Ex- [1,1,1,1]
+In this case the ascending doesn't breaks in the array. And nums[n-1]==nums[0] . So cnt=0
+
+So while returning if the cnt <= 1 then it will return true otherwise false.
+
+Complexity
+Time complexity: O(N)
+Space complexity: O(1)
+
+
+Code:
+
+class Solution {
+public:
+    bool check(vector<int>& nums) {
+        //we have 3 conditions: all are equal then count will be 0
+        // nums is in ascecnding order , so this condition will be fulfilled 
+        //nums[n-1]>nums[0] for eg: 1,2,3,4,5 , then also we will increment the count
+        // array is sorted but rotated: we will increment the value of count by 1 if 
+        // nnums[i] < nums[i-1], for eg: [6,9,1,2,3] so when i is at 2 index , nums[2]<nums[1] so we will increment the value by 1, 
+        //so if the value of count<=1 then true or false
+        int n=nums.size();
+        int i;
+        int count=0;
+        for(i=1;i<n;i++)
+        {
+            if(nums[i]< nums[i-1]) count++;
+        }
+        if(nums[n-1] > nums[0]) count++;
+        return count>1?false:true;
+    }
+};

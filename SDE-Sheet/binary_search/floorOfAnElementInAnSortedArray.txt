@@ -1,0 +1,21 @@
+given an array and an element.We have to find floor of that element in the given array.
+Input: [1,2,4,6,8] ,element=5
+Output: 4
+Floor of 5 = either 5 is present in array or if not present then greatest number smaller than 5
+Ceil of 5=smaller number greater than 5
+
+We will binary search because array is sorted.
+if arr[mid]<element then since I have to find find largest one I will shift low =mid+1;
+else high=mid-1;
+
+Code:
+low=0;
+high=n-1;
+while(low<=high)
+{
+mid=low+(high-low)/2;
+if(arr[mid]==target)return mid;
+if(arr[mid]<target)low=mid+1;
+if(arr[mid]>target)high=mid-1;
+}
+return high;

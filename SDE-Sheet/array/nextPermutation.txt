@@ -1,0 +1,62 @@
+First solution could be the usage of next_permutation function.
+But since this is an inbuilt function,it might not be good to put this up.
+next_permutation(iter_begin,iter_end);
+
+//Brute
+//Time complexity= O(n!*n)
+  -> There are n! orders and n is the length of every array
+//Space complexity= O(1)
+
+We can simply generate all the possible permutations.
+And then linearly iterate to find the current element. The permutation next to current element will be the reqd points.
+
+//Optimal
+//Time complexity= O(n)+O(n)+O(n) Linear time
+//Space complexity= O(1)
+
+->Start Traversing from the end of the input element say "a"
+->We have to find the first element such that a[i]<a[i+1]
+->Mark the index at'ch we find such a value say "index1"
+->Again traverse linearly from the end of a.
+->This time We have to find the first element'ch is greater than the element at index1. i.e. a[i]>a[index1]
+->Mark the index at'ch we find such a value say "index2"
+->Swap the values at index1 and index2
+->In the last step reverse everything from index1+1 to end
+
+void nextPermutation(int []A)
+{
+if(A==null || A.length==0)return;
+int i,j;
+i=A.length-2;
+while(i>=0 && A[i]>=A[i+1])i--;
+if(i>=0)
+{
+j=A.length-1;
+while(A[j]<=A[i])j--;
+swap(A,i,j);
+}
+reverse(A,i+1,A.length-1);
+}
+void swap(int []A,int i,int j)
+{
+int temp;
+temp=A[i];
+A[i]=A[j];
+A[j]=temp;
+}
+void reverse(int A,int i,int j)
+{
+while(i<j)swap(A,i,j);
+}
+
+Intuition: Based on dictionary order
+When we check out the lexicography of words,from the end,we see it goes on increasing for a certain part and after reaching max it goes on decreasing
+Let's say we have just 3 elems in array [1,2,3] then 3 itself can be considered the max
+The index at'ch max is present can be considered as our breaking point. And everything to its left will be the prefix'ch we have to change.
+In our particular eg, 3 (index 2) will be the breaking point and everything to its left i.e. 1 and 2 will comprise of prefix
+We have to change the element just to the left of breaking point by a no. greater than the no. currently at this position. (Greater no cz we need next permutation.) **This is what we've done in #1
+And we know for sure such a no. will exist at just the right of breaking point (As the pattern itself is first increasing then decreasing) **This is what we've done in #2
+And,since we want the generated permutation to be smallest possible in the set of all valid answers, what we'll do is we'll reverse the order of values from max to end so that they get sorted in decreasing fashion. And we'll effectively get the smallest answer #3
+
+**But what if there's no breakpoint or max value as discussed above? eg [7,6,5,4,3,2,1]
+->This means no next permutation exists,then the only step to get executed is #3 and we'll simply reverse everything to get the least value possible.

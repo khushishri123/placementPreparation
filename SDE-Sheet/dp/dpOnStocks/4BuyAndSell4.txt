@@ -1,0 +1,33 @@
+This question is variant of BuyAndSell3 because in that question we are allowed to have atmost 2 tarnsaction but here we are allowed to have k transactios.
+The only difference will be cap can go upto k .
+
+TC:O(N*2*K)
+SC:O(2*K)
+int maxProfit(int k, vector<int>& prices) {
+        //this time I will take a 3d array becuase now I have to store 3 things i.e. index,buy(which can be either 0 or 1) ,cap(capacity which is 2,so its posiible values are 0,1,2)
+            int n=prices.size();
+            vector<vector<int>> prev(2,vector<int>(k+1,0));
+                       vector<vector<int>> cur(2,vector<int>(k+1,0));
+            //return f(0,1,2,prices,dp);
+            for(int ind=n-1;ind>=0;ind--)
+            {
+                    for(int buy=0;buy<=1;buy++)
+                    {
+                            for(int cap=1;cap<=k;cap++)
+                            {
+                                    int profit=0;
+                if(buy)
+                {
+                        profit=max(-prices[ind]+prev[0][cap], 0+prev[1][cap]);
+                }
+                else
+                {
+                profit=max(prices[ind]+prev[1][cap-1],prev[0][cap]);
+                }
+                cur[buy][cap]=profit;
+                            }
+                    }
+                    prev=cur;
+            }
+                                   return prev[1][k];
+    }

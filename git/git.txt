@@ -1,0 +1,348 @@
+1) Git is a distributed version control system . Distrted version control system means everyone has one copy of entire repo.Git is a software.
+We have to learn some commands of Git.
+Git simply save the changes.
+{Humne release notes ko view nahi kiya ,humne launch gate kiya}
+
+2) Git bash is a terminal like command prompt,linux terminal .Git Bash works like unix . Unix means like mac is Unix based ,linux is unix based .
+Unix has following commands:
+ls,pwd,
+you can use python through Git Bash.You can do so many things through Git Bash.It is not only for Git.
+
+3) Now I have created a folder on desktop named as Git in which we will demonstrate everything.
+Now I have opened this pc and now I wnat to open Git in this newly created folder .So , I right click on the folder and clikced on Git Bash here .Bash is a terminal and UI is a an interface but we will use Bash always.
+When we use Git for the first time we have to tell email and name.For that we have git config command .
+
+4) COMMAND 1) git config 
+Use: git config --global user.name Khushi
+git config --global user.email shrivastavak057@gmail.com
+
+We have done this because if we someone wants to know who has made this changes then he can easily find out that.
+
+Now to know whether the email is set or not ?
+Type: git config --global user.email
+
+5) Now to configure Notepad in git we have watched a video that i saved in Saved messages option of Telegram
+
+To open Notepad in git we have to write :
+notepad nameOfTheFile
+or 
+notepad .
+ 
+6) we have written :
+git init 
+Because of this it will initialize an empty repository.It will show this message:
+Initialized empty Git repository in C:/Users/acer/Desktop/Git/.git/
+
+Command 2) ls -lnrt
+It will show all the files
+.git folder ke andar vo saara data deta hai.It will save all the files inside it.
+
+7) we have created abc.html
+notepad abc.html
+He have writtern a asimple code of html
+Then we have wriiten:
+git status
+Then it will show that there are some untracked files.
+To understand what is untracked files ,commit ,unmoddified files,modified,stagged we have use a image.(See screenshot)
+
+Untracked files: It means that we are not tracking the file with the help of git.Then git will not take care of your file.Our file is in this stage.
+When we add the the file then we say to git that look at our file and record the changes.We will not record lock files,binary files and those files which will automatically get generated.
+Now to add the file we will put the file in stagging area.
+Staging area is like a ground in which the things will commit
+For eg: I have index1.html index2.html inde3.html and index4.html
+        But I want to do some work in 3 and 4.html So I will staged only 1         and 2.html and then I will do commit.
+Once we commit ,then git will record your file.Now it is an unmodified file.Now either we can edit this file or we can leave it there only.
+
+If you edited this file then it will be modified .You can remove also if you wish.If the file is modified then again we have to staged that file and then we can commit.
+
+7) Now to add the file to staging area:
+git add abc.html
+Now to commit:
+git commit
+As soon as we hit enter after writing the above line ,an editor will get opened. To write something on this editor you have to press i
+Then at top you you have to write : 
+-->initial commit
+Then press esc and at end:
+-->:wq
+We will exit from this
+initial commit is the message that we have given to this file,to this change.This message shows that what changes we have done in our file.
+
+
+8) Again we will write:
+-->git status
+then it will show that there is nothing to commit.
+
+9) Now we have written:
+-->touch kkk.html
+-->touch ddd.html
+-->touch ppp.html
+-->touch sss.html
+touch is a command that create blank files.
+
+Now to add all the files to the staging area ,command is:
+--> git add -A
+{write A in capital}
+Now we have to commit all these files.
+Now before commiting I want to change something in kkk.html
+-->git status
+Now it will show that kkk.html is modified.
+So again we will do:
+--> git add -A  or git add kkk.html
+-->git status
+
+10)Now again we have to do commit
+But now we will use a shortcut to do commit
+-->git commit -m "Added more htmls"
+So it will commit.
+-->git status
+So If we don't want to deal with vim editor then we should use 'm' flag.
+
+11) To Zoom press Ctr+ and if you wnat to clear the terminal then write clear
+12) To recover any html there is checkout command.Checkout command ek file ya sari file jo hai , usme jo working directory hai usko last commit se match karva deta hai.Reme,ber checkout will only work when you have not added the file to the staging area.
+-->git checkout kkk.html
+Checkout means to match whatever is the last commit.
+So commit only when you are sure that you have made necessary changes.
+
+13) Now to apply checkout for all the files:
+-->git checkout -f
+By writing -f ,all the files will be matched with the last commit.
+
+14) About git log command :
+git log will tell you that what you have commited
+-->git log
+Now lets suppose there are 1000 commit and to filter git log and you want to see last 5 commits:
+-->git log -p -5
+
+15) about git diff:
+It will compare working dir. to staging area,if you made some changes on the file.
+-->git diff
+It will show changes that you made in a file. If working directory and staging area are same ,then it will show nothing.
+
+Now we you want to compare the stagging area with the last commit
+-->git diff --staged
+It will compare the staging area with the last commit.
+git diff is a diff tool. diff tool shows you the difference.
+
+16) To directly commit without adding to the staging area:
+-->git commit -a -m "Skipped staging area and fixed"
+
+17) to list all the files:
+-->ls
+
+18) to remove a file after commiting:
+Remember you have to add the file to the staging area atleast once to commit
+-->git rm --cached waste.html
+It will again put the file in untracked file.
+Now to delete the file from wroking dir too:
+But before executing git rm ,you have add the file in staging area:
+-->git add -A
+-->git rm waste.html
+rm command will remove from the working dir and staging area.
+if you will execute git rm then it will delete the file in working dir also.
+-->git status
+It will show that you have deleted the file,then again you have to commit
+-->git commit -m "Removed waste file"
+
+19) About short status:
+git status tells you about branch master,which files are in staging area and which are not tracked files.
+short status gives you the summarize status
+To see what -s shows ,firstly change any file(kkk.html)
+-->git status -s
+It will show this output:
+ M kkk.html
+Here M means Modified.We have modified kkk.html.M will be in red
+Now I have written:
+--> git add kkk.html
+-->git status -s
+Now it will show M in green
+-->notepad kkk.html  (do some changes again)
+-->git status -s
+Now it will show 2 M ,first M shows staging area and the second M shows the working dir. First M shows that your file has been modified in staging area.While 2nd M shows that you file has been modified in working dir.
+-->git add kkk.html
+-->git status
+Now it will show M in green and there will be no M for working dir.
+
+20)About git ignore
+To ignore a file we use it.
+I windows you cannot make a file named as .gitignore because if you will try to make a file in folder then it will consider it as a web defined name and its extension is .gitignore.So in terminal we will write:
+-->touch .gitignore
+It will create a file named as .gitignore
+In a project there are some files which you does not want to track like automaticlly generated lock file
+Now I will create a log file:
+-->touch mylogs.log
+To push a file means to send the file to the server.
+To pull a file means to take the file from the server.
+
+Now to ignore mylogs.log we have to write mylogs.log in .gitignore
+So if you want that to ignore  mylogs.log if it is present in any folder, then it will ignore it.
+Now we will execute:
+-->git status
+Then it will show only about .gitignore .It will not show about mylogs.log because we have kept it inside .gitignore.Also to open .gitignore ,open it through This PC.
+-->git add -A
+Again it will show only about .gitignore.
+-->git commit -a -m "Ignore some files and added .gitignore"
+-->git status
+Now I want that any file having ext. .log should get ignored.
+Then write in .gitignore:
+ *.log
+-->git status 
+Then it will show only about .gitignore.If you make any changes to logs/mylogs.log ,it will not show anything about that file.
+
+Similarly if you wnat to ignore all the cpp files,then you can write:
+ *.cpp
+Also if I want that only in the folder where gitignore is present ,mylogs.log should be ignored then I have to write in .gitignore:
+/mylogs.log
+Other folder may contain mylogs.log
+To execute it ,we will create a folder named as logs.
+
+To ignore a directory you have to write in .gitignore:
+ignore/ (Here ignore is the name of that folder,slash means it is a folder)
+I have created a file index.html in ignore folder by writing:
+-->touch ignore/index.html
+-->git status
+It will show that index.html is untracked.But I want to ignore that dir.So I will write in .gitignore:
+ ignore/
+-->git status
+Then it will not show about index.hmtl
+-->git commit -m "Commit Message"
+
+21) Branches:
+We will create a branch.
+With the help of branch we will create our new copy and we will work on that copy.Because of this nothing will be happened to the master branch.
+By default,master is our main branch.
+Whatever is the work ,it is done in the master branch.
+So we wnat to create a branch,becuase we wnat to add feature 1 ,then I will write:
+-->git branch feature1
+-->git branch
+Then it will show that feature1 is now master.Output:
+ feature1
+* master
+But it will show master in green it menas that we are in master branch right now,But we can go to featuer branch also,by writing:
+-->git checkout feature1
+It will show that switched to branch 'feature1'
+-->git status
+It will show that nothing to commit .
+So we can proceed the work without changing the master branch.
+
+22) So now if I want to merge feature1 with the master branch,I will write:
+Let I have done some changes in kkk.hmtl
+
+-->notepad kkk.html (done some changes)
+-->git status
+-->git add -A
+-->git commit -m "Adding some features in kkk.html"
+-->git status
+
+Lets I have done some mistake and by chance I have updated kkk.html.
+I want my previous kkk.html that was present in master branch.So,I will write:
+-->git checkout master
+So I will switch to master branch.
+
+23) Now to merge feature1 into master,I will come in master:
+-->git checkout master
+-->git log -p -2
+See last 2 commits
+-->git merge feature1
+
+24) Now we will use such a command which wioll create a new branch and will dirctly switch to that new branch:
+-->git checkout -b flaskIntegration
+{flask is a framework in python}
+-->git branch
+So we have done 2 things : we have cretaed flaskIntegration branch and we have switched to this branch also.
+
+
+
+GITHUB:
+
+1)Github is a hosting service for git repositories.
+We can host the git repository that we have created here.
+Github is of Microsoft.
+username: khushishri123
+
+Now to create a new repository,I will click on + button at the top right corner.
+Click on new Repo.
+
+2) remote repository
+If we push the local repository that we have created inside the remote repo.
+remote means a url where we will host our repo.So we are connecting our local git repo. with the remote git repository.To add simply copy this line and paste in git:
+
+-->git remote add origin https://github.com/khushishri123/githubInOneVideo.git
+{Above 2 lines are a single line ,we have copied it from github}
+
+origin is the short name for this url.
+-->git remote
+It will origin
+-->git remote -v
+It will show url.
+-->git push origin master
+It will push master branch ,where there is origin.
+It will show error that you cannot access that repository because it is private.
+So in github you will take read/write access in that repo.
+And to take access you have to go to settings on the right corner
+On the left side you will find 	SSH and GPG keys.
+We will give access of our github account to our computer.
+We want that there should be automatic read and write in github account .
+So we will deploy SSH .
+See steps how we deployed this SSH key from downloads (See downloads)
+
+Firstly we will switch to SSH in github and we will change our url in git.
+-->git remote set url origin git@github.com:khushishri123/githubInOneVideo.git
+-->git remote
+-->git remote -v
+Now the urls will be changed
+-->git push -u origin master
+Now in our github account all the files will come that are present in our master branch.
+Now we have created several branches ,so now to add all of them to github:
+-->git checkout flaskIntegration
+-->git push -u origin flaskIntegration
+
+
+3) git clone
+see from video
+-->git clone "paste the url" "name of the folder in which it will paste"
+
+
+Remember github cannot work without git but git can work without github
+
+Process to upload a project on github:
+Click on new repo. on github and enter details
+Open git bash in the folder which you want to upload
+-->git config user.name "Khushi Shrivastava"
+-->git config user.email shrivas..
+-->git init
+-->touch .gitignore
+-->git add -A
+-->git commit -m "Initial Commit"
+
+On github copy SSH link
+-->git remote add origin "paste that link"
+
+Search on google "Generating SSH key on github "
+click on first link(see video for referral)
+
+update the email and paste the link on git bash
+-->cat "paste the generated public key"
+copy the output
+On github ,Click on setting and SSK and GPC key
+click on new ssh key
+provide title and paste the generated output here
+
+-->git push origin master.
+
+
+done
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

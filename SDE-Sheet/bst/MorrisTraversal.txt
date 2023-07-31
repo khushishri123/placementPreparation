@@ -1,0 +1,27 @@
+For doing Inorder,Preorder ,it is used.
+Recursive traversal have:
+TC:O(N) and SC:O(N)
+Morris  Traversal:
+TC:O(N) and SC:O(1)
+
+Morris traversal uses the concept of trhreaded binary tree. 
+Observe that from  the last node of any subtree we go back to the root.
+
+Case 1: When root->left is NULL.
+Then root itself is a part of my Inorder traversal because the pattern of inorder taraversal is Left Root Right ,so left is Null then root is part of my ans. So print root and move to right .
+
+Case 2: When left!=NULL
+Before moving to the left node ,We have to connect  the rightmost guy on left subtree to the current node. 
+
+Eg: [1,2,3,4,5,null,null,null,null,null,6]
+Inorder will [4,2,5,6,1,3]
+So if I am standing on 1 then we have to connect(make a thread bet 6 and 1) 6 with 1 (Draw BST then see which is the right most guy of the left subtree, it is 6 acco. to our ex.) 
+After that we will shift curr to the left.
+curr=curr->left;
+But if the thread already exists,then We will remove that thread.
+So if the rightmost guy of the left subtree does not have a thread ,so connect the thread.Once you have connect the thread move left.
+If on the rightmost guy ,there already exists a thread ,then remove that thread and move to the right side.
+curr=curr->right;
+
+
+

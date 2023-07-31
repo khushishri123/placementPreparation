@@ -1,0 +1,126 @@
+A trie (pronounced as "try") or prefix tree is a tree data structure used to efficiently store and retrieve keys in a dataset of strings. There are various applications of this data structure, such as autocomplete and spellchecker.
+
+Implement the Trie class:
+
+Trie() Initializes the trie object.
+void insert(String word) Inserts the string word into the trie.
+boolean search(String word) Returns true if the string word is in the trie (i.e., was inserted before), and false otherwise.
+boolean startsWith(String prefix) Returns true if there is a previously inserted string word that has the prefix prefix, and false otherwise.
+ 
+
+Example 1:
+
+Input
+["Trie", "insert", "search", "search", "startsWith", "insert", "search"]
+[[], ["apple"], ["apple"], ["app"], ["app"], ["app"], ["app"]]
+Output
+[null, null, true, false, true, null, true]
+
+Explanation
+Trie trie = new Trie();
+trie.insert("apple");
+trie.search("apple");   // return True
+trie.search("app");     // return False
+trie.startsWith("app"); // return True
+trie.insert("app");
+trie.search("app");     // return True
+
+
+Approach: Trie struct has 2 variables Node *links[26] (for storing characters); assuming all words have lowercase letters and a bool flag. The flag is always false except when the word ends.
+
+
+
+Insert: The last reference trie’s flag has to be to true since the word is completed. The diagram shows the insertion of the word “apple”.
+
+The basic idea of insertion is that if the reference trie does not exist create a new trie and if it does simply traverse to it.
+
+Search: Search if the word is present in the trie or not,
+
+Start from the root and traverse through the word. while traversing through the word check if the reference trie for that character exists or not. If it exists move to the reference trie, else return false. Once the word is traversed character by character return the flag at that particular trie.
+
+startsWith: Check if the word inserted previously has the prefix “prefix” or not.
+
+It is similar to a search operation. Start from the root of the trie and traverse through the “prefix”.If the reference trie for a character is not present return false else transverse to the reference trie.Once the “prefix’ is traversed completely character by character return true.
+
+Code:
+
+
+
+
+
+struct Node
+{
+     Node *links[26];
+     bool flag;
+        
+        bool containsKey(char ch)
+        {
+                return (links[ch-'a']!=NULL);
+        }
+        void put(char ch,Node *node)
+        {
+                links[ch-'a']=node;
+        }
+        Node * get(char ch)
+        {
+                return links[ch-'a'];
+        }
+        void setEnd()
+        {
+                flag=true;
+        }
+        bool isEnd()
+        {
+                return flag;
+        }
+};
+class Trie {
+        private:
+                Node *root;
+public:
+    Trie() {
+        root=new Node();
+    }
+    //TC:O(len)
+    void insert(string word) {
+        Node *node=root;
+            for(int i=0;i<word.length();i++)
+            {
+                    if(!node->containsKey(word[i]))
+                    {
+                            node->put(word[i],new Node());
+                    }
+                    node=node->get(word[i]);
+            }
+            node->setEnd();
+    }
+    //TC:O(len)
+    bool search(string word) {
+        Node *node=root;
+            for(int i=0;i<word.length();i++)
+            {
+                    if(!node->containsKey(word[i]))return false;
+                    node=node->get(word[i]);
+            }
+            return node->isEnd();
+    }
+    
+        //TC:O(len)
+    bool startsWith(string prefix) {
+        Node *node=root;
+            for(int i=0;i<prefix.length();i++)
+            {
+                    if(!node->containsKey(prefix[i]))return false;
+                    node=node->get(prefix[i]);
+            }
+            return true;
+    }
+};
+
+/**
+ * Your Trie object will be instantiated and called as such:
+ * Trie* obj = new Trie();
+ * obj->insert(word);
+ * bool param_2 = obj->search(word);
+ * bool param_3 = obj->startsWith(prefix);
+ */

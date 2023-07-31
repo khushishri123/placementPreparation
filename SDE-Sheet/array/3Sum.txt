@@ -1,0 +1,111 @@
+Given an integer array nums, return all the triplets [nums[i], nums[j], nums[k]] such that i != j, i != k, and j != k, and nums[i] + nums[j] + nums[k] == 0.
+
+Notice that the solution set must not contain duplicate triplets.
+
+Example 1:
+
+Input: nums = [-1,0,1,2,-1,-4]
+Output: [[-1,-1,2],[-1,0,1]]
+
+Brute force:
+TC:O(N^3)
+SC:O(3*k) ,where k is the no.of unique triplets.
+Code:
+vector<vector<int>> threeSum(vector<int> &nums)
+{
+vector<vector<int>> ans;
+vector<int> temp;
+for(int i=0;i<nums.size()-2;i++)
+{
+for(int j=i+1;j<nums.size()-1;j++)
+{
+for(int k=j+1;k<nums.size();k++)
+{
+temp.clear();
+if(nums[i]+nums[j]+nums[k]==0)
+{
+temp.push_back(nums[i]);
+temp.push_back(nums[j]);
+temp.push_back(nums[k]);
+}
+if(temp.size()!=0)ans.push_back(temp);
+}
+}
+}
+return ans;
+}
+
+Better Approach:
+We will use hashing.We will create hash table  to store number of times an element is repeating.
+
+wkt a+b+c=0
+a=-(b+c)
+so we will run two loops and we will see that whether 'a' exists in hash table
+Insert the result in set just to store unique trip-lets
+While stroring the result in set ,remember that you have to store in sorted order to avoid repeatation.
+For eg: if you found a triplet as -1,2,-1 ,then store it as -1,-1,2 in set
+for(i=0;i<n-1;i++)
+{
+hash[arr[i]]--;
+for(j=i+1;j<n;j++)
+{
+hash[arr[j]]--;
+check(if -(arr[i]+arr[j]) exists in hash table)
+hash[arr[j]]++;
+}
+hash[arr[i]]++;
+}
+TC:O(N^2 logN) (logN is the insertion time of set)
+SC:O(M)+O(N)
+o(M) for storing in set and O(N) for hash table
+
+Best:
+Use 2 pointer app.
+Intuition:In our intuitive approach, we were considering all possible triplets. But do we really need to do that? I say we fixed two pointers i and j and came out with a combination of [-1,1,1] which doesn’t satisfy our condition. However, we still check for the next combination of say [-1,1,2] which is worthless. (Assuming the k pointer was pointing to 2).
+
+Approach:
+We could make use of the fact that we just need to return the triplets and thus could possibly sort the array. This would help us use a modified two-pointer approach to this problem.
+
+Eg) Input :  [-1,0,1,2,-1,-4]
+
+After sorting, our array is : [-4,-1,-1,0,1,2]
+
+Notice, we are fixing the i pointer and then applying the traditional 2 pointer approach to check whether the sum of three numbers equals zero. If the sum is less than zero, it indicates our sum is probably too less and we need to increment our j pointer to get a larger sum. On the other hand, if our sum is more than zero, it indicates our sum is probably too large and we need to decrement the k pointer to reduce the sum and bring it closer to zero.
+
+TC:O(N^2) 
+SC:O(M) //to store ans
+Code:
+ vector<vector<int>> threeSum(vector<int>& nums)
+{
+vector<vector<int>> ans;
+sort(nums.begin(),nums.end())
+int i,low,high,sum;
+for(i=0;i<(int)(nums.size())-2;i++)
+{
+if(i==0 || (i>0 && nums[i]!=nums[i-1]))
+{
+low=i+1;
+high=(int)(nuns.size())-1;
+sum=0-nums[i];
+while(low<high)
+{
+if(nums[low]+nums[high]==sum)
+{
+vector<int> temp;
+temp.push_back(nums[i]);
+temp.push_back(nums[low]);
+temp.push_back(nums[high]);
+ans.push_back(temp);
+
+while(low<high && nums[low]==nums[low+1])low++;
+while(low<high && nums[high]==nums[high-1])high--;
+low++;
+high--;
+}
+else if(nums[low]+nums[high]<sum)low++;
+else high--;
+}
+}
+}
+return ans;
+}

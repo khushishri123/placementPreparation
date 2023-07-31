@@ -1,0 +1,57 @@
+Given an undirected graph and an integer M. The task is to determine if the graph can be colored with at most M colors such that no two adjacent vertices of the graph are colored with the same color. Here coloring of a graph means the assignment of colors to all vertices. Print 1 if it is possible to colour vertices and 0 otherwise.
+Input:
+N = 4
+M = 3
+E = 5
+Edges[] = {(0,1),(1,2),(2,3),(3,0),(0,2)}
+Output: 1
+Explanation: It is possible to colour the
+given graph using 3 colours.
+
+TC:O(N^M),there are N nodes and we are trying M colors for every nodes.
+SC:O(N)+O(N)
+for color array and auxilary space.
+
+Solution 1: Backtracking
+Approach:
+Basically starting from vertex 0 color one by one the different vertices. 
+Base condition:
+If I have colored all the N nodes return true.
+Recursion:
+Trying every color from 1 to m with the help of a for a loop.
+Is safe function returns true if it is possible to color it with that color i.e none of the adjacent nodes have the same color.
+In case this is an algorithm and follows a certain intuition, please mention it. 
+Color it with color i then call the recursive function for the next node if it returns true we will return true.
+And If it is false then take off the color.
+Now if we have tried out every color from 1 to m and it was not possible to color it with any of the m colors then return false.
+
+Code:
+bool isSafe(int node,int color[],bool graph[101][101],int n,int i)
+{
+for(int k=0;k<n;k++)
+{
+if(k!=node && graph[k][node]==1 && color[k]==i)return false;
+}
+return true;
+}
+bool solve(int node,int color[],bool graph[101][101],int n,int m)
+{
+if(node==n)return true;
+for(int i=1;i<=m;i++)
+{
+if(isSafe(node,color,graph,n,i))
+{
+color[node]=i;
+if(solve(node+1,color,graph,n,m))return true;
+color[node]=0;
+}
+}
+return false;
+}
+
+bool graphColoring(bool graph[101][101],int n,int m)
+{
+int color[n]={0};
+if(solve(0,color,graph,n,m))return true;
+else return false;
+}

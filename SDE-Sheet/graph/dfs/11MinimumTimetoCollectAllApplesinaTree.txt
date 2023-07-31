@@ -1,0 +1,69 @@
+Given an undirected tree consisting of n vertices numbered from 0 to n-1, which has some apples in their vertices. You spend 1 second to walk over one edge of the tree. Return the minimum time in seconds you have to spend to collect all apples in the tree, starting at vertex 0 and coming back to this vertex.
+
+The edges of the undirected tree are given in the array edges, where edges[i] = [ai, bi] means that exists an edge connecting the vertices ai and bi. Additionally, there is a boolean array hasApple, where hasApple[i] = true means that vertex i has an apple; otherwise, it does not have any apple.
+
+ 
+
+Example 1:
+
+
+Input: n = 7, edges = [[0,1],[0,2],[1,4],[1,5],[2,3],[2,6]], hasApple = [false,false,true,false,true,true,false]
+Output: 8 
+Explanation: The figure above represents the given tree where red vertices have an apple. One optimal path to collect all apples is shown by the green arrows.  
+Example 2:
+
+
+Input: n = 7, edges = [[0,1],[0,2],[1,4],[1,5],[2,3],[2,6]], hasApple = [false,false,true,false,false,true,false]
+Output: 6
+Explanation: The figure above represents the given tree where red vertices have an apple. One optimal path to collect all apples is shown by the green arrows.  
+Example 3:
+
+Input: n = 7, edges = [[0,1],[0,2],[1,4],[1,5],[2,3],[2,6]], hasApple = [false,false,false,false,false,false,false]
+Output: 0
+
+Explanation: We will be using DFS
+
+It starts by creating an adjacency list representation of the tree from the given edges. An adjacency list is a data structure that is used to represent a graph, where each element of the list represents a node of the graph and contains a list of the nodes it is connected to.
+
+Then it calls the helper function "minTimeToCollectApples" which takes four arguments:
+index: the current node being processed
+adj: the adjacency list representation of the tree
+hasApple: a list of booleans indicating whether each node has an apple or not
+parent: the parent of the current node
+The function starts by initializing a variable "total" to zero. It then iterates over all the neighbors of the current node (excluding the parent) and recursively calls the function on each of the neighbors. This way it explores all the path from the current node to all the children nodes.
+
+Then, if the current node is not the root of the tree and it has an apple or any of its children has an apple, it adds 2 to the "total" variable as this represent that we need to take 2 steps: one step to reach the apple and one step back to the parent.
+
+Finally, it returns the "total" variable.
+
+Code:
+class Solution {
+public:
+//we will be using DFS
+int dfs(int ind,vector<int> adj[],vector<bool> &hasApple,int parent)
+{
+    int total=0;
+for(auto it:adj[ind])
+{
+    if(it==parent)continue;
+    total+=dfs(it,adj,hasApple,ind);
+}
+//if ind==0 then we don't have to add any edge ,total>0 means one of its child has Apples
+if(ind!=0 && (total>0 || hasApple[ind]==true))
+{
+    //then we will add 2 because one second will be required to move from parent to child and 1 second to return back
+    total+=2;
+}
+return total;
+}
+    int minTime(int n, vector<vector<int>>& edges, vector<bool>& hasApple) {
+        vector<int> adj[n];
+        for(auto e:edges)
+        {
+            adj[e[0]].push_back(e[1]);
+            adj[e[1]].push_back(e[0]);
+        }
+        //the last parameter is parent
+        return dfs(0,adj,hasApple,0);
+    }
+};

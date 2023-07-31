@@ -1,0 +1,93 @@
+
+
+Appr 1:
+Try every possible combination and sort it or use priority queue.
+TC:O(N^2log(N^2))
+SC:O(N^2)
+
+App 2:
+In this app we will optimise our SC.
+In this we will use PQ to maintain min heap.Now we will store only N elements in our min heap and in second iteration of outer loop if I find element to be lesser than current sum ,then I will update it.
+TC:O(n^2)
+SC:O(n)
+
+This is the code to get N max sum continuous elements where N is the size of both the arrays.
+vector<int> maxSumContinuous(int arr1[],int arr2[],int n)
+{
+vector<int> ans(n);
+priority_queue<int,vector<int>,greater<int>> pq;
+
+//we are storing only N elements
+for(int j=0;j<n;j++)
+{
+pq.push(arr1[0]+arr2[j]);
+}
+
+for(i=1;i<n;i++)
+{
+for(j=0;j<n;j++)
+{
+int sum=arr1[i]+arr2[j];
+if(pq.top()<sum)
+{
+pq.pop();
+pq.push(sum);
+}
+}
+
+for(int i=n-1;i>=0;i--)
+{
+ans.push_back(pq.top());
+pq.pop();
+}
+return ans;
+}
+
+App 3: (Sorting, Max heap, Map) 
+Instead of brute forcing through all the possible sum combinations we should find a way to limit our search space to possible candidate sum combinations.
+1. Sort both arrays array A and array B.
+2. Create a max heap i.e priority_queue in C++ to store the sum combinations along with the indices of elements from both arrays A and B which make up the sum. Heap is ordered by the sum.
+3. Initialize the heap with the maximum possible sum combination i.e (A[N – 1] + B[N – 1] where N is the size of array) and with the indices of elements from both arrays (N – 1, N – 1). The tuple inside max heap will be (A[N-1] + B[N – 1], N – 1, N – 1). Heap is ordered by first value i.e sum of both elements.
+4. Pop the heap to get the current largest sum and along with the indices of the element that make up the sum. Let the tuple be (sum, i, j).
+4.1. Next insert (A[i – 1] + B[j], i – 1, j) and (A[i] + B[j – 1], i, j – 1) into the max heap but make sure that the pair of indices i.e (i – 1, j) and (i, j – 1) are not
+already present in the max heap. To check this we can use set in C++.
+4.2 Go back to 4 until K times.
+
+TC:O(NlogN) //assuming k<=N
+SC:O(2N)
+Code:
+
+vector<int> Solution::solve(vector<int> &A, vector<int> &B, int C){
+    vector<int> ans;
+    priority_queue<pair<int,pair<int,int>>> pq;
+    set<pair<int,int>> s;
+    sort(A.begin(),A.end());
+    sort(B.begin(),B.end());
+    int N=A.size();
+    int sum=A[N-1]+B[N-1];
+    pq.push({sum,{N-1,N-1}});
+    s.insert({N-1,N-1});
+    for(int count=0;count<C;count++)
+    {
+        pair<int,pair<int,int>> temp=pq.top();
+        pq.pop();
+        int i=temp.second.first;
+        int j=temp.second.second;
+        ans.push_back(temp.first);
+        pair<int,int> temp1={i-1,j};
+        sum=A[i-1]+B[j];
+        if(s.find(temp1)==s.end())
+        {
+            pq.push({sum,temp1});
+            s.insert(temp1);
+        }
+        pair<int,int> temp2={i,j-1};
+         sum=A[i]+B[j-1];
+        if(s.find(temp2)==s.end())
+        {
+            pq.push({sum,temp2});
+            s.insert(temp2);
+        }
+    }
+    return ans;
+}

@@ -1,0 +1,67 @@
+An image is represented by an m x n integer grid image where image[i][j] represents the pixel value of the image.
+You are also given three integers sr, sc, and color. You should perform a flood fill on the image starting from the pixel image[sr][sc].
+To perform a flood fill, consider the starting pixel, plus any pixels connected 4-directionally to the starting pixel of the same color as the starting pixel, plus any pixels connected 4-directionally to those pixels (also with the same color), and so on. Replace the color of all of the aforementioned pixels with color.
+Return the modified image after performing the flood fill.
+
+Eg:
+Input: [[1,1,1],[1,1,0],[1,0,1]] , sr=1 ,sc=1 ,newColor= 2
+Outut: [[2,2,2],[2,2,0],[2,0,1]]
+
+From the centre of the image 
+(with position (sr, sc) = (1, 1)), all pixels 
+connected by a path of the same colour as the 
+starting pixel are colored with the new colour.
+ 
+Note the bottom corner is not colored 2, 
+because it is not 4-directionally connected to 
+the starting pixel.
+
+Approach:
+To perform a “flood fill”, consider the starting pixel, plus any pixels connected 4-directionally to the starting pixel of the same colour as the starting pixel, plus any pixels connected 4-directionally to those pixels (also with the same colour as the starting pixel), and so on.
+
+We know about both the traversals, Breadth First Search (BFS) and Depth First Search (DFS). We can follow BFS also, where we start at a given point and colour level wise, i.e., we go simultaneously to all its neighbours. We can use any of the traversals to solve this problem, in our case we will be using DFS just to explore multiple approaches. 
+
+The algorithm steps are as follows:
+
+Initial DFS call will start with the starting pixel (sr, sc) and make sure to store the initial colour. 
+Now, either we can use the same matrix to replace the colour of all of the aforementioned pixels with the newColor or create a replica of the given matrix. It is advised to use another matrix because we work on the data and not tamper with it. So we will create a copy of the input matrix. 
+Check for the neighbours of the respective pixel that has the same initial colour and has not been visited or coloured. DFS call goes first in the depth on either of the neighbours.
+We go to all 4 directions and check for unvisited neighbours with the same initial colour. To travel 4 directions we will use nested loops, you can find the implementation details in the code. 
+DFS function call will make sure that it starts the DFS call from that unvisited neighbour, and colours all the pixels that have the same initial colour, and at the same time it will also mark them as visited. 
+In this way, “flood fill” will be performed. It doesn’t matter how we are colouring the pixels, we just want to colour all of the aforementioned pixels with the newColor. So, we can use any of the traversal techniques.
+
+Consider the following example to understand how DFS traverses the pixels and colours them accordingly.
+
+How to set boundaries for 4 directions?
+
+The 4 neighbours will have following indexes:
+Now, either we can apply 4 conditions or follow the following method. 
+
+From the above image, it is clear that delta change in row is -1, +0, +1, +0. Similarly, the delta change in column is 0, +1, +0, -1.  So we can apply the same logic to find the neighbours of a particular pixel (<row, column>). 
+
+Time Complexity: O(NxM + NxMx4) ~ O(N x M)
+
+For the worst case, all of the pixels will have the same colour, so DFS function will be called for (N x M) nodes and for every node we are traversing for 4 neighbours, so it will take O(N x M x 4) time.
+
+Space Complexity: O(N x M) + O(N x M)
+
+O(N x M) for copied input array and recursive stack space takes up N x M locations at max. 
+
+Code:
+
+ public int[][] floodFill(int[][] image, int sr, int sc, int newColor) {
+        int color=image[sr][sc];
+        if(color!=newColor)dfs(image,sr,sc,color,newColor);
+        return image;
+    }
+    public void dfs(int [][]image,int r,int c,int color,int newColor)
+    {
+        if(image[r][c]==color)
+        {
+            image[r][c]=newColor;
+            if(r>=1)dfs(image,r-1,c,color,newColor);
+if(c>=1)dfs(image,r,c-1,color,newColor);
+if(r+1<image.length) dfs(image,r+1,c,color,newColor);
+            if(c+1<image[0].length)dfs(image,r,c+1,color,newColor);
+        }
+}

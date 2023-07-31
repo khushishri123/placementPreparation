@@ -1,0 +1,56 @@
+Given an array of integers preorder, which represents the preorder traversal of a BST (i.e., binary search tree), construct the tree and return its root.A binary search tree is a binary tree where for every node, any descendant of Node.left has a value strictly less than Node.val, and any descendant of Node.right has a value strictly greater than Node.val.
+A preorder traversal of a binary tree displays the value of the node first, then traverses Node.left, then traverses Node.right.
+
+Input: preorder = [8,5,1,7,10,12]
+Output: [8,5,10,1,7,null,12]
+
+Brute Force:
+Wkt 8 is the root of the bst.Now I will move to 5.Since 5 is lesser than 8 ,it will come on the left side of 8.So 5->left=8. Similarly I will do for all elements.
+TC: O(N^N){since there are N nodes and for each node we are deciding wether it will go on left or right}
+SC:O(1)
+
+Better App:
+WKT inorder traversal gives us elements in sorted order.So we will get inorder if we sort preorder.
+After than we can contruct BST by using inorder and preorder.
+See document bstFromInorderAndPreorder.txt
+TC:O(NlogN)+O(N)
+SC:O(N)
+
+Best app:
+The logic is same as that of validate bst
+In this we will consider ,ub=INT_MAX.
+For eg:
+preorder=[8 5 1 7 10 12]
+initailly ub=INT_MAX.
+The root of bst will be 8.
+Now there can be left or not.
+For left the ub(upperbound) will be 8 because I know that all the elements that are smaller than 8 will come on the left hand side.So ,for the elements on the left hand side the ub will be 8.
+I come at 5. 5<ub ,so it will be the left node of 8.Now again ther can be left part of 5 or not.
+For left of 5,the ub will be 5.
+I come at 1.Now 1<ub,so 1 is the left node of 5.
+But 7 cannot be on the left of 1.So we will return a null.
+Now whether 7 can go on right of 1?
+No,because for right upper boundary will be 5.Whenever you go to the right ,you passes the same upper bound.So the left and right of 1 are NULL.
+Now I will go to the right of 5 and for its right ub will be 8.So here I can place 7 because 7<ub.
+Similarly we can create the entire BST.
+
+So ,when you are going to the left ,the ub will be the node's value.
+when you are going to the right ,the ub will be the ub of node.
+
+TC:O(3N){because at a worst case ,you are visiting a node atmost 3 times}.
+  =O(N)
+SC:O(1)
+
+TreeNode *bstFromPreorder(vector<int> &A)
+{
+int i=0;
+return build(A,i,INT_MAX); //initially my upper bound  will be INT_MAX
+}
+TreeNode *build(vector<int> &A,int &i,int bound)
+{
+if(i==A.size() || A[i]>bound)return NULL;
+TreeNode *root=new TreeNode(A[i++]);
+root->left=build(A,i,root->val);
+root->right=build(A,i,bound);
+return root;
+}

@@ -1,0 +1,46 @@
+Given a binary tree root and a linked list with head as the first node. 
+
+Return True if all the elements in the linked list starting from the head correspond to some downward path connected in the binary tree otherwise return False.
+
+In this context downward path means a path that starts at some node and goes downwards.
+Input: head = [4,2,8], root = [1,4,4,null,2,2,null,1,null,6,8,null,null,null,null,1,3]
+Output: true
+
+Explanation: We will apply DFS+BFS.
+We will apply DFS to  find the root in BST which matches the head of the linked list ,then we will apply BFS to chech the remaining el;ememst of the linked list.
+In dfs function:
+if head.val==root.val then we will apply bfs to check the remaining elements of linkedlist and for that we have created bfs function which will return a boolean value and if it return true then only linked list is a part of BST
+If value at head is not equal to value at root ,then we will try on left and right side by calling dfs function again and if any of them return ture then we will return true.
+
+Code:
+bool isSubPath(LinkedList *head,TreeNode *root)
+{
+return dfs(head,root);
+}
+
+bool dfs(LinkedList *head,TreeNode *root)
+{
+if(root==NULL)return false;
+if(head->val==root->val && bfs(head,root))return true; 
+return dfs(head,root->left) || dfs(head,root->right);
+}
+
+bool bfs(LinkedList *head,TreeNode *root)
+{
+queue<TreeNode *> q;
+LinkedList *curr=head->next;
+q.push(root);
+while(!q.empty() && curr!=NULL)
+{
+int size=q.size();
+for(int i=0;i<size;i++)
+{
+TreeNode *node=q.front();
+q.pop();
+if(node->left!=NULL && node->left->val==curr->val)q.push(node->left);
+if(node->right!=NULL && node->right->val==curr->val)q.push(node->right);
+}
+if(!q.empty())curr=curr->next;
+}
+return curr==NULL;
+}

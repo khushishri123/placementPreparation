@@ -1,0 +1,126 @@
+Given an m x n board of characters and a list of strings words, return all words on the board.
+
+Each word must be constructed from letters of sequentially adjacent cells, where adjacent cells are horizontally or vertically neighboring. The same letter cell may not be used more than once in a word.
+
+ 
+
+Example 1:
+
+
+Input: board = [["o","a","a","n"],["e","t","a","e"],["i","h","k","r"],["i","f","l","v"]], words = ["oath","pea","eat","rain"]
+Output: ["eat","oath"]
+Example 2:
+
+
+Input: board = [["a","b"],["c","d"]], words = ["abcb"]
+Output: []
+
+
+Here we will use the concept of trie and DFS .Firstly we will put all the words inside the trie. We are using trie to avoid iteration over words.
+If trie does not contain the character that we are looking for thenwe will return. This time we will simultaneously check for all the words.
+
+class Solution {
+public:
+struct Node
+{
+Node *links[26];
+bool flag;
+string str="";
+bool containsKey(char c)
+{
+    return links[c-'a'];
+}
+bool isEnd()
+{
+    return flag;
+}
+void setEnd()
+{
+    flag=true;
+}
+void put(char c,Node *node)
+{
+    links[c-'a']=node;
+}
+Node* get(char c)
+{
+    return links[c-'a'];
+}
+void setWord(string &word)
+{
+    str=word;
+}
+string & getWord()
+{
+    return str;
+}
+};
+
+Node *root=new Node();
+
+void insert(string &word)
+{
+    Node *node=root;
+    for(int i=0;i<word.size();i++)
+{
+    if(!node->containsKey(word[i]))
+    {
+        node->put(word[i],new Node());
+    }
+    node=node->get(word[i]);
+}
+node->setWord(word);
+node->setEnd();
+}
+
+void dfs(int i,int j,Node *node,vector<vector<char>> &grid,vector<vector<bool>> &vis,set<string> &res)
+{
+    int n=grid.size();
+    int m=grid[0].size();
+
+    if(i<0 || j<0 || i>=n || j>=m || vis[i][j])return ;
+    if(!node->containsKey(grid[i][j]))return;
+   node=node->get(grid[i][j]);
+
+if(node->isEnd())
+{
+    res.insert(node->str);
+//node->falg is set to false to avoid duplicacy,otherwise it will give us 
+//TLE
+    node->flag=false;
+}
+    vis[i][j]=true;
+
+    dfs(i-1,j,node,grid,vis,res);
+    dfs(i,j+1,node,grid,vis,res);
+    dfs(i+1,j,node,grid,vis,res);
+    dfs(i,j-1,node,grid,vis,res);
+//backtrack
+vis[i][j]=false;
+
+}
+
+
+    vector<string> findWords(vector<vector<char>>& grid, vector<string>& words) {
+  //firstly we have to put all the words in the trie
+  
+ for(auto &it:words)
+ {
+     insert(it);
+ } 
+ int n=grid.size();
+int m=grid[0].size();
+vector<vector<bool>> vis(n,vector<bool>(m,false));
+set<string> res;
+
+for(int i=0;i<n;i++)
+{
+    for(int j=0;j<m;j++)
+    {
+        dfs(i,j,root,grid,vis,res);
+    }
+}
+vector<string> ans(res.begin(),res.end());
+return ans;
+    }
+};

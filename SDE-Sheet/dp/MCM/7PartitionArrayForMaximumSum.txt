@@ -1,0 +1,67 @@
+Given an integer array arr, partition the array into (contiguous) subarrays of length at most k. After partitioning, each subarray has their values changed to become the maximum value of that subarray.
+
+Return the largest sum of the given array after partitioning. Test cases are generated so that the answer fits in a 32-bit integer.
+Example 1:
+Input: arr = [1,15,7,9,2,5,10], k = 3
+Output: 84
+Explanation: arr becomes [15,15,15,9,10,10,10]
+
+
+Now we have to partition the array such that none of the partition has length greater than k(in our eg: greater than 3, At max it can be 3)
+See abov example:
+Let suppose ,we do partition in such a way:
+[1,15 | 7,9,2 | 5,10]
+Now whenever we do a partition ,the entire subarray will chnage to max.
+In 1st subaaray,max=15
+In 2nd subaaray,max=9
+In 3rd subaaray,max=10
+So it will become like this:
+[15,15 | 9,9,9 | 10,10]
+WKT there can be various partitions ,so whenever wkt where there are various ways we try out all possible ways,ie we perform recursion.
+f(0)-> give me the max sum if you have the array from 0 till the end.
+Remember that my length cannot exceed k and partition changes itself to max value.
+Cost of that subarray= len*maxi;
+So we will keep a counter for length and we will also keep track of maxi.
+Current Subarray cost=len*maxi and for forward subaaray: f(j+1)
+
+//Memoization:
+        //TC:O(N*K) SC:O(N)+O(N)
+        //Tabulation:
+        //TC:O(N*K) SC:O(N)
+        int f(int i,int n,vector<int> &arr,int k,vector<int> &dp)
+        {
+                if(i==n)return 0;
+                if(dp[i]!=-1)return dp[i];
+                int maxi=INT_MIN;
+                int len=0;
+                int ans=INT_MIN;
+                for(int j=i;j<min(n,i+k);j++)
+                {
+                        len++;
+                        maxi=max(maxi,arr[j]);
+                        int sum=len*maxi+f(j+1,n,arr,k,dp);
+                        ans=max(ans,sum);
+                }
+                return dp[i]=ans;
+        }
+    int maxSumAfterPartitioning(vector<int>& arr, int k) {
+            int n=arr.size();
+        vector<int> dp(n+1,0);
+            //return f(0,n,arr,k,dp);
+            for(int i=n-1;i>=0;i--)
+            {
+                int maxi=INT_MIN;
+                int len=0;
+                int ans=INT_MIN;
+                for(int j=i;j<min(n,i+k);j++)
+                {
+                        len++;
+                        maxi=max(maxi,arr[j]);
+                        int sum=len*maxi+dp[j+1];
+                        ans=max(ans,sum);
+                }
+                 dp[i]=ans;
+            }
+            return dp[0];
+    }
+ 

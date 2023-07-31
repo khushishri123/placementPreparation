@@ -1,0 +1,67 @@
+This question has came in Google.
+Idea: Since in the question the enqueue time can be in any order ,so firstly we will sort the input array on the basis of there enqueue time.
+Now since CPU will pick that job which has shortest processing time, we will be using min heap.
+Workout: [[1,2],[2,4],[3,2],[4,1]]
+So the input array is already sorted.
+Not at time t=1,we have only one job so we will push it in the min heap and since the CPU is idle we will pop it and assign it to the CPU.
+Also this process will complete its execution at t=3,so we will push all the jobs having enqueue time less than or equal to the 't'.
+So,Now min heap will contain jobs in this order,also along with the job we will push index because we have to return index. 
+   Min heap:
+   [[3,2],2]
+   [[2,4],1]
+But now you can see that enqueue time is not actually important to store ,the only things that are important are processing time and index.
+Min heap will be maintained on the basis of processing time.
+     Min heap:
+    [2,2] //2 is the procesing time and 2 is the index
+    [4,1] //4 is the processing time and 1 is the index.
+Now we wil pop [2,2]
+now t=3+2=5
+ans.push_back(index);
+and we will push all the jobs having enqueue time less than or equal to t.
+So we will push [4,1],4
+Min heap:
+[1,4] //1 is the processing time and 4 is the index
+[4,1]//2 is the processing time and 1 is the index
+
+Again pop the top element : [1,4]
+t=5+1=6
+ans.push_back(4)
+and push all the jobs having enq. time less or equal to t
+
+
+ vector<int> getOrder(vector<vector<int>>& tasks) {
+vector<int> ans;
+        int n=tasks.size();
+if(n==0)return ans;
+//pushing index along with the tasks
+for(int i=0;i<n;i++)tasks[i].push_back(i);
+//sorting input array on the basis of enqueue time
+sort(tasks.begin(),tasks.end());
+//this is the pair of processing time and index and it is a min heap
+priority_queue<pair<int,int>,vector<pair<int,int>>,greater<pair<int,int>>> pq;
+
+long long int t=tasks[0][0];
+int i=0;
+
+while(!pq.empty() || i<n)
+{
+while(i<n && tasks[i][0]<=t)
+{
+    pq.push({tasks[i][1],tasks[i][2]});
+    i++;
+}
+if(pq.empty())
+{
+    t=tasks[i][0];
+}
+else
+{
+    pair<int,int> p=pq.top();
+    pq.pop();
+    ans.push_back(p.second);
+    t+=p.first;
+}
+}
+
+      return ans;
+}

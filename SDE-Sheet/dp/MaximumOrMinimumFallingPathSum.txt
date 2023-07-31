@@ -1,0 +1,150 @@
+https://takeuforward.org/data-structure/minimum-maximum-falling-path-sum-dp-12/
+
+We are given an ‘N*M’ matrix. We need to find the maximum path sum from any cell of the first row to any cell of the last row.
+At every cell we can move in three directions: to the bottom cell (↓), to the bottom-right cell(↘), or to the bottom-left cell(↙).
+
+See description from link
+
+Recursive code:
+f(int i,int j,vector<vector<int>> &grid)
+{
+//base cases
+if(j<0 || j>=m)return -1e8;
+if(i==0) return grid[0][j];
+
+//doing all possible stuffs
+int up=grid[i][j]+f(i-1,j,grid);
+int leftDiagonal=-1e8;
+if(j-1>=0)leftDiagonal=grid[i][j]+f(i-1,j-1,grid);
+int rightDiagonal=-1e8;
+if(j+1<m)rightDiagonal=grid[i][j]+f(i-1,j+1,grid);
+//returning max
+return max(up,max(leftDiagonal,rightDiagonal));
+}
+int getMaxPathSum(vector<vector<int> > &matrix){   
+    int n = matrix.size();
+    int m = matrix[0].size();
+    int maxi = INT_MIN;
+//calling f for every col of n-1 th row
+    for(int j=0; j<m;j++){
+        int ans = f(n-1,j,m,matrix);
+        maxi = max(maxi,ans);
+    }
+    
+    return maxi;
+}
+
+TC:O(3^n) because the maximum length of recursion is n (n is no. of rows) and every time I have 3 options to choose.
+SC:O(n)
+
+Memoization:
+
+int getMaxUtil(int i, int j, int m, vector<vector<int>> &matrix, 
+vector<vector<int> > &dp){
+    
+    // Base Conditions
+    if(j<0 || j>=m)
+        return -1e9;
+    if(i==0)
+        return matrix[0][j];
+    
+    if(dp[i][j]!=-1) return dp[i][j];
+    
+    int up = matrix[i][j] + getMaxUtil(i-1,j,m,matrix,dp);
+    int leftDiagonal = matrix[i][j] + getMaxUtil(i-1,j-1,m,matrix,dp);
+    int rightDiagonal = matrix[i][j] + getMaxUtil(i-1,j+1,m,matrix,dp);
+    
+    return dp[i][j]= max(up,max(leftDiagonal,rightDiagonal));
+    
+}
+
+int getMaxPathSum(vector<vector<int> > &matrix){
+    
+    int n = matrix.size();
+    int m = matrix[0].size();
+    
+    vector<vector<int>> dp(n,vector<int>(m,-1));
+    
+    int maxi = INT_MIN;
+    
+    for(int j=0; j<m;j++){
+        int ans = getMaxUtil(n-1,j,m,matrix,dp);
+        maxi = max(maxi,ans);
+    }
+    
+    return maxi;
+}
+
+TC:O(N*M)
+Reason: At max, there will be M*N calls of recursion to solve a new problem
+SC:O(N*M)+O(N)
+Reason: We are using a recursion stack space: O(N), where N is the path length and an external DP Array of size ‘N*M’.
+
+int getMaxPathSum(vector<vector<int> > &matrix){
+int n = matrix.size();
+int m = matrix[0].size();
+vector<vector<int>> dp(n,vector<int>(m,-1));
+//for 0th row
+for(int j=0;j<m;j++)dp[0][j]=matrix[0][j];
+
+//running from 1st row
+for(int i=1;i<n;i++)
+{
+for(int j=0;j<m;j++)
+{
+    int up = matrix[i][j] + dp[i-1][j];
+    int leftDiagonal = -1e8;
+if(j-1>=0)leftDiagonal=matrix[i][j] + dp[i-1][j-1];
+    int rightDiagonal = -1e8;
+if(j+1<m)rightDiagonal=matrix[i][j] + dp[i-1][j+1];
+dp[i][j]=max(up,max(ledtDiagonal,rightDiagonal));
+}
+}
+
+int maxi = INT_MIN;
+for(int j=0; j<m;j++){
+maxi = max(maxi,dp[n-1][j]);
+}
+return maxi;
+}
+
+Time Complexity: O(N*M)
+Reason: There are two nested loops
+Space Complexity: O(N*M)
+Reason: We are using an external array of size ‘N*M’. The stack space will be eliminated.
+
+Space Optimization:
+
+int getMaxPathSum(vector<vector<int> > &matrix){
+int n = matrix.size();
+int m = matrix[0].size();
+vector<int> prev(m,-1));
+//for 0th row
+for(int j=0;j<m;j++)prev[j]=matrix[0][j];
+
+//running from 1st row
+for(int i=1;i<n;i++)
+{
+vector<int>cur(m,-1);
+for(int j=0;j<m;j++)
+{
+    int up = matrix[i][j] + prev[j];
+    int leftDiagonal = -1e8;
+if(j-1>=0)leftDiagonal=matrix[i][j] + prev[j-1];
+    int rightDiagonal = -1e8;
+if(j+1<m)rightDiagonal=matrix[i][j] + prev[j+1];
+cur[j]=max(up,max(ledtDiagonal,rightDiagonal));
+}
+prev=cur;
+}
+int maxi = INT_MIN;
+for(int j=0; j<m;j++){
+maxi = max(maxi,ans);
+}
+return maxi;
+}
+
+Time Complexity: O(N*M)
+Reason: There are two nested loops
+Space Complexity: O(M)
+Reason: We are using an external array of size ‘M’ to store only one row.

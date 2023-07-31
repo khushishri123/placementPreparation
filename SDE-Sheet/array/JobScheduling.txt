@@ -1,0 +1,65 @@
+Given a set of N jobs where each jobi has a deadline and profit associated with it.
+
+Each job takes 1 unit of time to complete and only one job can be scheduled at a time. We earn the profit associated with job if and only if the job is completed by its deadline.
+
+Find the number of jobs done and the maximum profit.
+
+Note: Jobs will be given in the form (Jobid, Deadline, Profit) associated with that Job.
+
+
+Example 1:
+
+Input:
+N = 4
+Jobs = {(1,4,20),(2,1,10),(3,1,40),(4,1,30)}
+Output:
+2 60
+Explanation:
+Job1 and Job3 can be done with
+maximum profit of 60 (20+40).
+
+Here we will first sort the arr on the basis of profit.Then I try to allocate the job on the last day of its deadline so that I can perform max no. of jobs.
+
+static bool myComp(Job &a,Job &b)
+    {
+     return a.profit>b.profit;
+    }
+    //Function to find the maximum profit and the number of jobs done.
+    vector<int> JobScheduling(Job arr[], int n) 
+    { 
+        // your code here
+        vector<int> ans;
+        sort(arr,arr+n,myComp);
+        int maxiDead=arr[0].dead;
+        for(int i=1;i<n;i++)maxiDead=max(maxiDead,arr[i].dead);
+        vector<int> dp(maxiDead+1,-1);
+    
+        for(int i=0;i<n;i++)
+        {
+            int profit=arr[i].profit;
+            int dead=arr[i].dead;
+    
+           for(int ind=dead;ind>0;ind--)
+           {
+    
+               if(dp[ind]==-1)
+               {
+                   dp[ind]=i;
+                   break;
+               }
+           }
+        }
+        int maxi=0;
+        int count=0;
+        for(int i=0;i<=maxiDead;i++)
+        {
+            if(dp[i]!=-1)
+            {
+                maxi+=arr[dp[i]].profit;
+                count++;
+            }
+        }
+        ans.push_back(count);
+        ans.push_back(maxi);
+        return ans;
+    } 

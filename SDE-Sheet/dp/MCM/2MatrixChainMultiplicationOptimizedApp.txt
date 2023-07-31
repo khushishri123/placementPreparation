@@ -1,0 +1,49 @@
+In this we will solve MCM using Tabulation 
+Rules:
+1)Copy the base cases
+in recursion our base case was:
+if(i==j)return 0
+So here we have taken a dp array of size N*N,then our base case will be
+
+for(int i=0;i<N;i++)dp[i][i]=0;
+
+2)Write down the chaging parameters
+Its i and j
+
+3) Copy the recurrence.
+
+Now we have see that how i and j are changing:
+W.K.T initially we are passing 1,n-1 .
+Top Down means breaking bigger problems into smaller ones.
+So in recurrence we initially take entire array and break it into smaller ones.
+Means to the base case.
+Bottom Up: Opp.,take the smaller problem and then build up again and again to get the bigger one.
+
+So out i will go from n-1 to 1.
+j will go from i+1 to 0 becuase j will be always on the right of i.
+	
+TC:O(N^3)
+SC:O(N^2)
+
+Code:
+ int matrixMultiplication(int N, int arr[])
+    {
+       vector<vector<int>> dp(N,vector<int>(N,0));
+       //return f(1,N-1,arr,dp);
+       for(int i=N-1;i>=1;i--)
+       {
+           //remember my j should always be greater than i
+           for(int j=i+1;j<N;j++)
+           {
+               int mini=1e9;
+                for(int k=i;k<j;k++)
+    {
+        int steps=arr[i-1]*arr[k]*arr[j]+f(i,k,arr,dp)+f(k+1,j,arr,dp);
+        mini=min(mini,steps);
+    }
+    dp[i][j]=mini;
+          }
+       }
+       return dp[1][N-1];
+    }
+

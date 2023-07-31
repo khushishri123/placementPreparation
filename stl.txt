@@ -1,0 +1,39 @@
+STL: Standard template library
+STL is set of C++ TEMPLATE CLASSES to provide programming DS and functions such as vector, lists,stack, etc.
+
+To sort a array:  sort(a,a+n)
+To sort a vector:  sort(vec.begin(),vec.end())
+
+1.) Pair
+-> Pair is used to combine two values that may be of different type.
+-> declared in <utility>
+-> pair<int,char> p;
+   p.first=10;
+   p.second='A';
+-> pair g2(g1) //to copy  
+-> g2={10,'a'}; //another way to initialize
+
+2.) Vector
+-> Vector are dynamic arrays with the ability to resize itself when a record is inserted or deleted.
+-> While declaring vector,we did not have to specify size .
+-> Inserting at the end takes differential time, as sometimes there may be a need of extending the array. 
+-> Removing the last element takes only constant time because no resizing happens. 
+-> Inserting and erasing at the beginning or in the middle is linear in time.
+-> vector<int> vec;
+vec.push_back(10);
+or vec[i]=10;
+//for iterating
+for(auto it=vec.begin();it!=vec.end();it++)cout<<*it<<endl;
+
+-> front() – Returns a reference to the first element in the vector
+   back() – Returns a reference to the last element in the vector
+   pop_back()- used to pop or remove elements from the back .
+   insert()- vector_name.insert (position, val)
+   eg: vec.insert(vec.begin()+2,10); 
+   erase()- myvector.erase(iterator1, iterator2);
+
+-> 2D vector
+vector< vector<int> > vect{{1, 2},{3, 4, 5},{6}};
+
+3.) 
+

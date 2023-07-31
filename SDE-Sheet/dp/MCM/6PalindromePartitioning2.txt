@@ -1,0 +1,77 @@
+Given a string s, partition s such that every substring of the partition is a palindrome.
+Return the minimum cuts needed for a palindrome partitioning of s.
+Example 1:
+Input: s = "aab"
+Output: 1
+Explanation: The palindrome partitioning ["aa","b"] could be produced using 1 cut.
+
+Wkt every individual substring is a palindrome.
+But we have to find the min. partitions that we requires to make a string palindrome. 
+For eg; S="bababcbadcede"
+Output: 4
+bab _abcba_d _c _ede - we will require 4 partitions
+Such type of problems are solved by front partitions.
+b ababacbadcede
+We will put 1st partition after b and ask that whether its palindrome?
+=1+f(abaabcbadcede)
+Now since we start from front and do a partition,now we have to find the number of partitions for the remaining ones.
+Now I move to 2nd index.
+ba babcbadcede
+But we cannot partition it because ba is not a palindrome.
+We move to 3rd index:
+bab abcbadcede
+We can consider it as a partition because bab is a palindrome
+=1+f(abcbadcede)
+
+Earlier we are facing TLE ,so to aoid TLE pass string by reference to the isPalindrome function.
+
+Code :
+Memoization:
+TC:O(N^3)
+SC:O(N)+O(N)
+Tabulation:
+TC:O(N^2)
+SC:O(N)
+
+   bool isPalindrome(string &s,int i,int j)
+        {
+                for(;i<j;i++,j--)
+                {
+                        if(s[i]!=s[j])return false;
+                }
+                return true;
+        }
+        int f(int i,int n,string s,vector<int> &dp)
+        {
+                if(i==n)return 0;
+                if(dp[i]!=-1)return dp[i];
+                int mini=INT_MAX;
+                for(int j=i;j<n;j++)
+                {
+                        if(isPalindrome(s,i,j))
+                        {
+                                int cost=1+f(j+1,n,s,dp);
+                                mini=min(mini,cost);
+                        }
+                }
+                return dp[i]=mini;
+        }
+    int minCut(string s) {
+            int n=s.size();
+        vector<int> dp(n+1,0);
+            //return f(0,n,s,dp)-1;
+            for(int i=n-1;i>=0;i--)
+            {
+                    int mini=INT_MAX;
+                for(int j=i;j<n;j++)
+                {
+                        if(isPalindrome(s,i,j))
+                        {
+                                int cost=1+dp[j+1];
+                                mini=min(mini,cost);
+                        }
+                }
+                dp[i]=mini;
+            }
+            return dp[0]-1;
+    }

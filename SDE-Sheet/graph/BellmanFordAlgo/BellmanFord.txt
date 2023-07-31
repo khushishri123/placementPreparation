@@ -1,0 +1,92 @@
+Dijktra algo will fail for negative edges.Bellman Ford Algo helps us to detect negative cycles. It is only applicable for Directed graph.
+
+Remember  that edge weights can be in any order.Relax all the edges N-1 times sequentially.
+Now relaxtion means:
+if(dist[u]+wt<dist[v])
+{
+dist[v]=dist[u]+w;
+}
+
+We will require a distance array with everything initailized to infinity dis[src]=0;
+If n=6 then we have to do 5 relaxations and everytime we have to go for every edges.
+Workout on following eg:
+(u,v,wt)->
+(3,2,6)
+(5,3,1)
+(0,1,5)
+(1,5,-3)
+(1,2,-2)
+(3,4,-2)
+(2,4,3)
+
+After doing all the 5 iterations ,dist array will be storing all shortest distance.
+
+Ques.1) Why N-1 iterations?
+Ans.1-N-1 edges because you might get egdes like this where 0 is in last:
+(3,4,1)
+(2,3,1)
+(1,2,1)
+(0,1,1)
+In 1st iteration 0 will update 1 ,in 2nd 1 will update 2 ,in 3rd 2 will update 3 and in 4th ,3 will update 4.
+So after N-1 iteratiuons our distance array is ready.
+
+Ques.2)How to detect -ive cycles?
+Ans.2- Eg of -ive cylce:
+  (1,2,-2)
+  (2,3,-1)
+  (3,1,2)
+Path wt= -2-1+2=-1
+After doing 5 iterations(n-1), on the 6th iteration if the dist array values are still reducing mans on the nth iteration ,the relaxation will be done and if the distance [] array gets updated /reduces then -ive cycle exists.
+Because wkt ,at max it will take N-1 iterations to complete distance[]but still if on nth iteration, dist[] is reducing it means we have -ive cycle exists.
+
+
+Question based on Bellman Ford:
+Given a weighted, directed and connected graph of V vertices and E edges, Find the shortest distance of all the vertex's from the source vertex S.
+Note: If the Graph contains a negative cycle then return an array consisting of only -1.
+
+E = [[0,1,9]]
+S = 0
+Output:
+0 9
+Explanation:
+Shortest distance of all nodes from
+source is printed.
+Code:
+
+vector<int> bellman_ford(int V, vector<vector<int>>& edges, int S) {
+        // Code here
+        vector<int> dis(V,1e8);
+        dis[S]=0;
+        //we will do iteration till v-1 times.
+        for(int i=1;i<=V-1;i++)
+        {
+            //iterating over all the edges
+            for(auto it:edges)
+            {
+                int u=it[0];
+                int v=it[1];
+                int wt=it[2];
+                //check if u is unvisited or dis[u]+wt<dis[v]
+                if(dis[u]!=1e8 && dis[u]+wt<dis[v])
+                {
+                    dis[v]=dis[u]+wt;
+                }
+            }
+        }
+        
+        //Checking for negative cycle by doing nth iteration
+        for(auto it:edges)
+            {
+                int u=it[0];
+                int v=it[1];
+                int wt=it[2];
+                //check if u is unvisited or dis[u]+wt<dis[v]
+                if(dis[u]!=1e8 && dis[u]+wt<dis[v])
+                {
+                    //then return array of -1
+                    return {-1};
+                }
+            }
+            //if negative cycle does not exist,then return dis array
+            return dis;
+    }

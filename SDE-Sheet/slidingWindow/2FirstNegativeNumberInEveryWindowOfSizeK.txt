@@ -1,0 +1,32 @@
+Eg:
+Let k=2 ,arr[]={12,-1,-7,8,-16,30}
+
+Then ans will be:[-1,-1,-7,-16,-16]
+Here we have to maintain a list to store negative numbers.Whenever we account a negative number we will add to our list.When we are updating our window we have to check that if my list size is 0 ,it means that we have not accounted any -ive no.,so we will push 0.
+But if accounted,then we will push the top element of list and before incrementing i ,we have to check that whether nums[i]==list.front().
+If it is so ,then we have to delete that front by writing list.pop_front().Then increment i and j.
+
+vector<int> firstNegativeNumber(nums,k)
+{
+//to store negative numbers and ans.
+vector<int> list,ans;
+int i=0,j=0;
+while(j<n)
+{
+if(nums[j]<0)list.push_back(nums[j]);
+if(j-i+1<k) j++;
+else if(j-i+1 == k)
+{
+if(l.size()==0)ans.push_back(0);
+else
+{
+ans.push_back(list.front());
+if(nums[i]==list.front()) list.pop_front();
+i++;
+j++;
+}
+}
+}
+return ans;
+}
+

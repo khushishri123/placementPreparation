@@ -1,0 +1,81 @@
+Consider a rat placed at (0, 0) in a square matrix of order N * N. It has to reach the destination at (N - 1, N - 1). Find all possible paths that the rat can take to reach from source to destination. The directions in which the rat can move are 'U'(up), 'D'(down), 'L' (left), 'R' (right). Value 0 at a cell in the matrix represents that it is blocked and rat cannot move to it while value 1 at a cell in the matrix represents that rat can be travel through it.
+Note: In a path, no cell can be visited more than one time. If the source cell is 0, the rat cannot move to any other cell.
+Example 1:
+
+Input:
+N = 4
+m[][] = {{1, 0, 0, 0},
+         {1, 1, 0, 1}, 
+         {1, 1, 0, 0},
+         {0, 1, 1, 1}}
+Output:
+DDRDRR DRDDRR
+Explanation:
+The rat can reach the destination at 
+(3, 3) from (0, 0) by two paths - DRDDRR 
+and DDRDRR, when printed in sorted order 
+we get DDRDRR DRDDRR.
+
+Solution 1: Recursion
+
+Intuition:
+
+The best way to solve such problems is using recursion.
+
+Approach:
+
+Start at the source(0,0) with an empty string and try every possible path i.e upwards(U), downwards(D), leftwards(L) and rightwards(R).
+As the answer should be in lexicographical order so it’s better to try the directions in lexicographical order i.e (D,L,R,U)
+Declare a 2D-array named visited because the question states that a single cell should be included only once in the path,so it’s important to keep track of the visited cells in a particular path.
+If a cell is in path, mark it in the visited array.
+Also keep a check of the “out of bound” conditions while going in a particular direction in the matrix. 
+Whenever you reach the destination(n,n) it’s very important to get back as shown in the recursion tree.
+While getting back, keep on unmarking the visited array for the respective direction.Also check whether there is a different path possible while getting back and if yes, then mark that cell in the visited array.
+
+Time Complexity: O(4^(m*n)), because on every cell we need to try 4 different directions.
+
+Space Complexity:  O(m*n) ,Maximum Depth of the recursion tree(auxiliary space).
+
+Code:
+  void solve(int row,int col,vector<vector<int>> &m,int n,vector<string> &ans,string move,vector<vector<int>> &vis)
+    {
+        if(row==n-1 && col==n-1)
+        {
+            ans.push_back(move);
+            return;
+        }
+        //downward
+        if(row+1<n && !vis[row+1][col] && m[row+1][col]==1)
+        {
+            vis[row][col]=1;
+            solve(row+1,col,m,n,ans,move+'D',vis);
+            vis[row][col]=0;
+        }
+        //left
+        if(col-1>=0 && !vis[row][col-1] && m[row][col-1]==1)
+        {
+            vis[row][col]=1;
+            solve(row,col-1,m,n,ans,move+'L',vis);
+            vis[row][col]=0;
+        }
+        //right
+        if(col+1<n && !vis[row][col+1] && m[row][col+1]==1)
+        {
+            vis[row][col]=1;
+            solve(row,col+1,m,n,ans,move+'R',vis);
+            vis[row][col]=0;
+        }
+        //upward
+        if(row-1>=0 && !vis[row-1][col] && m[row-1][col]==1)
+        {
+            vis[row][col]=1;
+            solve(row-1,col,m,n,ans,move+'U',vis);
+            vis[row][col]=0;
+        }
+    }
+    vector<string> findPath(vector<vector<int>> &m, int n) {
+     vector<string> ans;
+     vector<vector<int>> vis(n,vector<int>(n,0));
+     if(m[0][0]==1)solve(0,0,m,n,ans,"",vis);
+     return ans;
+    }

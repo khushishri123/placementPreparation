@@ -1,0 +1,121 @@
+Given a weighted, undirected and connected graph of V vertices and an adjacency list adj where adj[i] is a list of lists containing two integers where the first integer of each list j denotes there is edge between i and j , second integers corresponds to the weight of that  edge . You are given the source vertex S and You to Find the shortest distance of all the vertex's from the source vertex S. You have to return a list of integers denoting shortest distance between each node and Source vertex S.
+Note: The Graph doesn't contain any negative weight cycle.
+Example 1:
+Input:
+V = 2
+adj [] = {{{1, 9}}, {{0, 9}}}
+S = 0
+Output:
+0 9
+
+This question can be solved using DA. We can implement DA either by min heap (Priority_Queue) or by using set.
+Implementation by using PQ:
+In this we have to maintain min heap and we have to store a pair of 
+{dist,node} .
+The shortest distance will be on the top and if 2 distances are same ,then the shorter nde will come on  the top.
+Initially mark the distance array with infinity except dist[source]=0;
+Then we will add {0,S} to the PQ.
+Now we have to run a loop untill my priority queue is empty.
+Take the topmost element and traverse on its adjacent.
+If dist+egdeW<dist[adjNode] ,then update dist[adjNode]=dist+edgeW;
+And then push it on PQ.
+Rememeber to heapify the heap agin ,priority queue takes O(logN) time.
+TC:O(ElogV)
+Code:
+  vector <int> dijkstra(int V, vector<vector<int>> adj[], int S)
+    {
+        // Code here
+        //creating min heap
+        priority_queue<pair<int,int>,vector<pair<int,int>>,greater<pair<int,int>>> pq;
+        vector<int> dis(V,1e9);
+        dis[S]=0;
+        pq.push({0,S});
+        while(!pq.empty())
+        {
+            int dist=pq.top().first;
+            int node=pq.top().second;
+            pq.pop();
+            for(auto it:adj[node])
+            {
+                int adjNode=it[0];
+                int edgeW=it[1];
+                
+                if(dis[adjNode]>dist+edgeW)
+                {
+                    dis[adjNode]=dist+edgeW;
+                    pq.push({dis[adjNode],adjNode});
+                }
+            }
+        }
+        return dis;
+    }
+
+Implementation using set:
+Everthing will be same ,the only difference will be that while updating the distance if you find out that dist[adjNode] is not infinity,it means that it has been inserted prior in the set with a gretaer distance ,so there is no need to store that distance.
+We will use erase function of set to remove that element.
+We use set to erase already exisiting path.set.erase is a logarithmic operation.We are erasing elements to save some future iterations.
+TC will be almost same as that of PQ.
+Code:
+
+ vector <int> dijkstra(int V, vector<vector<int>> adj[], int S)
+    {
+        // Code here
+        //creating set
+        set<pair<int,int>> st;
+        vector<int> dis(V,1e9);
+        dis[S]=0;
+        st.insert({0,S});
+        while(!st.empty())
+        {
+            //extracting the top most element of the set
+         auto it=*(st.begin());
+         int dist=it.first;
+         int node=it.second;
+         //to pop that element;
+         st.erase(it);
+         for(auto i:adj[node])
+         {
+             int edgeW=i[1];
+             int adjNode=i[0];
+             if(dis[adjNode]>dist+edgeW)
+             {
+                 //erase if it existed
+                 if(dis[adjNode]!=1e9)st.erase({dis[adjNode],adjNode});
+                 dis[adjNode]=dist+edgeW;
+                 st.insert({dis[adjNode],adjNode});
+             }
+         }
+        }
+        return dis;
+    }
+Ques1) Why we used PQ ,even if we use queue DS ,it gives same output?
+Ans: No. of iterations will be increased if you don't use minimal distance first.That's why we use min heap.
+
+Ques2) Derivation of TC
+Ans:2- while(!pq.empty()) //this loop will run for V no. of times.
+{
+dis,node=top()      //log(heapSize)
+for(iterate on adjacent nodes) //no.edges of everyNode(ne),where ne=v-1,
+{            //In worst possible case every node is connected to all other
+if(condition check)
+{
+push()       //logV
+}
+}
+}
+Overall TC:
+=O(V*pop vertex from min heap+no. of edges on each vertex*push vertex on PQ)
+=O(V*log(heapSize) +ne *log(heapSize))
+=O(V*(log(heapSize)(1+V-1)))
+=O(V*Vlog(heapSize))
+=O(V^2 log(heapSize))
+
+Now what is heap Size?
+-> When we are taking something like PQ ,then the worst heap size will be V^2 because everytime it keeps on pushing V-1 nodes.
+=O(V^2 * log(heapSize))
+=O(V^2 * log(V^2))
+=O(V^2 * 2logV)
+Now, V^2=E  BECAUSE let every node is connected to everyone,i.e. V-1 .
+=V*V-1 {If one node is to V-1 edges ,then there are V nodes}
+So its Worst case TC will be:
+=O(E*log(V))

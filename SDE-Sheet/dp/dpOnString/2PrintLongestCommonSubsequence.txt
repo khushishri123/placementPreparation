@@ -1,0 +1,41 @@
+//This logic is to print only one LCS.
+
+In this we have to generate dp array as we have generated in LongestCommonSubsequence and then we have to backtrack on the dp array.
+Firstly i=n and j=m and I have to check that whether str1[i-1]==str2[j-1],if this is so then I have to add that character in my string from back.
+Afterthen I have to do i=i-1 and j=j-1,it means I have to move diagonally.
+But in case if they are not equal then dp[i][j] has got its value from either dp[i-1][j] or dp[i][j-1].Which one is max will give us dp[i][j].
+So either I have to move on left or to up which depends on the value of dp[i-1][j] and dp[i][j-1].
+But remmeber whenever the character are same I have to add it to my ans from back.
+
+Time Complexity: O(N*M)
+Reason: There are two nested loops
+Space Complexity: O(N*M)
+Reason: We are using an external array of size ‘N*M’. Stack Space is eliminated.
+
+generate dp array as we have done in LCS:
+
+//dp[n][m] will give me the Length of the LCS.
+int len=dp[n][m];
+int index=len-1;
+string ans;
+for(int i=0;i<len;i++)ans+="$";
+int i=n;
+int j=m;
+//i==0 and j==0 represents -1 index which is not valid
+while(i>0 && j>0)
+{
+if(str1[i-1]==str2[j-1])
+{
+ans[index]=str1[i-1];
+index--;
+i--;
+j--;
+}
+else
+{
+if(dp[i-1][j]>dp[i][j-1]) i--;   //moving upwards 
+else j--; //moving left
+}
+}
+return ans;
+

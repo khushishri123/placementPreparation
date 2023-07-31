@@ -1,0 +1,45 @@
+You are given a string s and an integer k. You can choose any character of the string and change it to any other uppercase English character. You can perform this operation at most k times.
+
+Return the length of the longest substring containing the same letter you can get after performing the above operations.
+
+Approach:
+To solve this, we will follow these steps −
+
+maxCount := 0, ans := 0 and n := size of the string s
+make an array cnt of size 26, and j := 0
+for i := 0 to n – 1
+increase cnt[s[i] – ‘A’] by 1
+maxCount := max of maxCount, count[s[i] – ‘A’]
+while j <= i and i – j + 1 – maxCount > k, do
+decrease cnt[s[j] – ‘A’]
+increase j by 1
+ans := max of ans, i – j + 1
+return ans
+
+
+   //Sliding Window
+    //TC:O(N) SC:O(1)
+    //Logic : In Each substring we will check that what is the maximum frequency count and what are the number of elements that have to be replaced . If it is lesser than or equal to k then it is  a valid substring else I have increse my j ,so as to reduce length
+    //length of substring - maxFreq<=k ,then only it is valid else I have to decrease my length
+    int characterReplacement(string s, int k) {
+        int left=0;
+        int right;
+        vector<int> cnt(26,0);
+        int maxFreq,ans;
+        maxFreq=0;
+        ans=0;
+        for(right=0;right<s.size();right++)
+        {
+            //incresing frequency ofelement on which I am standing
+        cnt[s[right]-'A']++;
+            maxFreq=max(maxFreq,cnt[s[right]-'A']);
+            while(left<=right && (right-left+1)-maxFreq > k)
+            {
+                cnt[s[left]-'A']--;
+                left++;
+            }
+            ans=max(ans,right-left+1);
+        
+        }
+        return ans;
+    }

@@ -1,0 +1,118 @@
+Implement Queue using Stack
+Problem Statement: Given a Stack having some elements stored in it. Can you implement a
+Queue using the given Stack?
+Queue: A Queue is a linear data structure that works on the basis of FIFO(First in First out). This means the element added at first will be removed first from the Queue.
+
+Solution 1: Using two Stacks where push operation is O(N)
+TC:O(N) for push 
+SC:O(2N)	
+
+Steps for push:
+stack1->stack2
+Add x->stack1
+stack2->stack1
+
+Step for top : return stack1.top();
+
+Step for pop: stack1.pop()
+
+size()->
+size() operation is for returning the size of a queue which can be done by using the function Stack1. size(). It will actually return the total number of elements in the queue
+
+Code:
+struct Queue
+{
+stack<int> s1,s2;
+void Push(int x)
+{
+//s1->s2
+while(!s1.empty())
+{
+s2.push(s1.top());
+s1.pop();
+}
+//x->s1
+s1.push(x);
+//s2->s1
+while(!s2.empty())
+{
+s1.push(s2.top());
+s2.pop();
+}
+}
+int Pop()
+{
+if(q1.empty())
+{
+cout<<"Queue is empty"<<endl;
+return 0;
+}
+int x=s1.top();
+s1.pop();
+return x;
+}
+int top()
+{
+if(q1.empty())
+{
+cout<<"Queue is empty"<<endl;
+return 0;
+}
+return s1.top();
+}
+};
+
+int main()
+{
+Queue q;
+  q.Push(3);
+  q.Push(4);
+  cout << "The element poped is " << q.Pop() << endl;
+  q.Push(5);
+  cout << "The top of the queue is " << q.Top() << endl;
+  cout << "The size of the queue is " << q.size() << endl;
+}
+
+Solution 2:
+Using two Stacks where push operation is O(1)
+We will take 2 stack input and output
+Push:
+-> Add to input stack
+TC for push operation will be: O(1)
+
+Pop:
+if output stack is empty ,then put all elements of input into output,then
+remove top of output stack.
+if(output.empty())
+{
+input->output
+remove output.top();
+}
+else
+{
+remove output.top();
+}
+
+TC of Pop(): pop can O(1) or O(n)
+O(1) when all the elements are already shifted,means when my output stack is not empty So we can just delete the top element. So here we can say that TC can be O(1) or amortised O(1) 
+amortised means it is not always O(1) but max no. of times it is O(1)
+
+Top:
+if output stack is empty ,then put all elements of input into output,then
+return output.top();
+if(output.empty())
+{
+input->output
+return output.top();
+}
+else
+{
+return output.top();
+}
+
+TC of Top(): top can O(1) or O(n)
+O(1) when all the elements are already shifted,means when my output stack is not empty So we can just return the top element. So here we can say that TC can be O(1) or amortised O(1) 
+amortised means it is not always O(1) but max no. of times it is O(1)
+
+Size():
+return output.size()+input.size();

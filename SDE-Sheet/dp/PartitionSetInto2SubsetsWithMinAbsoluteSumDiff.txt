@@ -1,0 +1,115 @@
+Partition Set Into 2 Subsets With Min Absolute Sum Diff:
+We are given an array ‘ARR’ with N positive integers. We need to partition the array into two subsets such that the absolute difference of the sum of elements of the subsets is minimum.
+
+We need to return only the minimum absolute difference of the sum of elements of the two partitions.
+Eg:
+[1,2,3,4]
+Output: 0
+Explanation:
+Subset 1 : 1,4
+Subset 2: 2,3
+Sum1=1+4=5
+Sum2=2+3=5
+|sum1-sum2|=0
+
+App:
+This question is a slight modification of the problem discussed in the Subset Sum equal to target. 
+The last row of tabulation tells us that by using all the elements can we create a target from 1 to k . I dp[n-1][0 to k] is true ,it means we can create that target using all the elements . Also I know that the max value can be the summ of all the elements . So totalSum-dp[n-1][target] will give the corrosponding value of sum2.
+Our work is very simple, using the last row of the dp array, we will first find which all S1 values are valid. Using the valid S1 values, we will find S2 (totSum – S1). From this S1 and S2, we will find their absolute difference. We will return the minimum value of this absolute difference as our answer.
+
+Recusrsive app:
+Time Complexity: O(N*totSum) +O(N) +O(N)
+Reason: There are two nested loops that account for O(N*totSum), at starting we are running a for loop to calculate totSum and at last a for loop to traverse the last row.
+Space Complexity: O(N*totSum) + O(N)
+Reason: We are using an external array of size ‘N * totSum’ and a stack space of O(N).
+bool subsetSumUtil(int ind, int target, vector < int > & arr, vector < vector 
+< int >> & dp) {
+  if (target == 0)
+    return dp[ind][target]=true;
+
+  if (ind == 0)
+    return dp[ind][target] = arr[0] == target;
+
+  if (dp[ind][target] != -1)
+    return dp[ind][target];
+
+  bool notTaken = subsetSumUtil(ind - 1, target, arr, dp);
+
+  bool taken = false;
+  if (arr[ind] <= target)
+    taken = subsetSumUtil(ind - 1, target - arr[ind], arr, dp);
+
+  return dp[ind][target] = notTaken || taken;
+}
+
+int minSubsetSumDifference(vector < int > & arr, int n) {
+
+  int totSum = 0;
+
+  for (int i = 0; i < n; i++) {
+    totSum += arr[i];
+  }
+
+  vector < vector < int >> dp(n, vector < int > (totSum + 1, -1));
+
+  for (int i = 0; i <= totSum; i++) {
+    bool dummy = subsetSumUtil(n - 1, i, arr, dp);
+  }
+
+  int mini = 1e9;
+  for (int i = 0; i <= totSum; i++) {
+    if (dp[n - 1][i] == true) {
+      int diff = abs(i - (totSum - i));
+      mini = min(mini, diff);
+    }
+  }
+  return mini;
+
+}
+
+Steps to convert Recursive Solution to Tabulation one:
+
+Time Complexity: O(N*totSum) +O(N) +O(N)
+
+Reason: There are two nested loops that account for O(N*totSum), at starting we are running a for loop to calculate totSum and at last a for loop to traverse the last row.
+
+Space Complexity: O(N*totSum)
+
+Reason: We are using an external array of size ‘N * totSum’. Stack Space is eliminated.
+
+Remember this solution is valid only for non negetive integers.(excluding 0)
+
+int minDifference(int arr[], int n)  { 
+	    // Your code goes here
+	    int totalSum,target,k,i;
+	    totalSum=0;
+	    for(i=0;i<n;i++)totalSum+=arr[i];
+	    vector<vector<bool>> dp(n,vector<bool>(totalSum+1,false));
+	    //base case
+	    for(i=0;i<n;i++)dp[i][0]=true;
+    	    if(arr[0]<=target)dp[0][arr[0]]=true;
+    	    //performing operation
+    	    for(i=1;i<n;i++)
+    	    {
+    	        for(target=1;target<=totalSum;target++)
+    	        {
+    	            bool notTake=dp[i-1][target];
+    	            bool take=false;
+    	            if(arr[i]<=target)
+    	            {
+    	                take=dp[i-1][target-arr[i]];
+    	            }
+    	            dp[i][target]=(notTake||take);
+    	        }
+    	    }
+    	    int mini=1e9;
+    	    for(i=0;i<=totalSum;i++)
+    	    {
+    	        if(dp[n-1][i]==true)
+    	        {
+    	            int diff=abs(i-(totalSum-i));
+    	            mini=min(mini,diff);
+    	        }
+    	    }
+    	    return mini;
+	} 

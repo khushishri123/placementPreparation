@@ -1,0 +1,59 @@
+Minimum Spanning Tree:
+A tree having N nodes and N-1 edges and every node is accessible by other is called Spanning Tree.
+The spanning tree having minimum sum is called MST.
+
+We use Priority_queue and we will maintain a min heap.
+we will store {val,node,par} in pq and a visited array.
+Remember if a node is already visited then we will not perform any operation.This condition we have to check both the time,while inserting into the pq and while popping out from the queue.
+
+Intuition:
+Greedy is the intuition.We start with 0 becuase we know that 0 will be the part of our MST. And then we are selecting the minimal edge.
+
+TC:O(ElogE)+O(ElogE) = O(ElogE)
+The number of edges in the pq will be the sum of all the edges at the worst case .So the iteration will be O(E).So while loop will run for E times.Now there is pq.top() which will take logarithmic of pq size. So in the worst case the pq can have all the edges . So the size of pq will be E.So it will take log(E) time.
+Now for adjacent nodes we can say that over all the iterations ,we will move across all the edges ,ie E and there is pq.push() so log(E) again for it.
+So total TC:
+O(ElogE): for iteration (while loop) and another 
+O(ElogE); for traversing the adjacent nodes and putting them into the PQ.
+
+SC:O(V)+O(E) //for vis and PQ. 
+
+
+Code:
+
+class Solution
+{
+	public:
+    int spanningTree(int V, vector<vector<int>> adj[])
+    {
+      //here we will not store par because we did not want MST ,
+      //we just want the sum so we will just store {val,node}
+      
+      priority_queue<pair<int,int>,vector<pair<int,int>>,greater<pair<int,int>>> pq;
+      vector<int> vis(V,0);
+      pq.push({0,0});
+      int sum=0;
+      while(!pq.empty())
+      {
+          auto it=pq.top();
+          pq.pop();
+          int val=it.first;
+          int node=it.second;
+          if(vis[node]==1)continue;
+          vis[node]=1;
+          sum+=val;
+          for(auto i:adj[node])
+          {
+              int adjNode=i[0];
+              int adjVal=i[1];
+              if(!vis[adjNode])
+              {
+                  pq.push({adjVal,adjNode});
+              }
+          }
+          
+      }
+      return sum;
+    }
+};
+

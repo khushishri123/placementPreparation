@@ -1,0 +1,68 @@
+Problem Statement: Given an undirected graph with V vertices. We say two vertices u and v belong to a single province if there is a path from u to v or v to u. Your task is to find the number of provinces.
+
+Pre-req: Connected Components, Graph traversal techniques
+
+Input: isConnected = [[1,1,0],[1,1,0],[0,0,1]]
+Output: 2
+
+Here we create unionBySize if there is an edge bet u and v .After traversing all the edsges and puting it into DS ,we will count the number of ultimate parents.That will be our ans.
+
+class DisjointSet
+{
+  public :
+  vector<int> par,size;
+  DisjointSet(int V)
+  {
+      par.resize(V);
+      for(int i=0;i<V;i++)par[i]=i;
+      size.resize(V,1);
+  }
+  int findPar(int node)
+  {
+      if(par[node]==node)return node;
+      return par[node]=findPar(par[node]);
+  }
+  void unionBySize(int u,int v)
+  {
+      int pu=findPar(u);
+      int pv=findPar(v);
+      if(size[pu]<size[pv])
+      {
+          par[pu]=pv;
+          size[pv]+=size[pu];
+      }
+      else
+  {
+      par[pv]=pu;
+      size[pu]+=size[pv];
+  }
+  }
+};
+class Solution {
+  public:
+    int numProvinces(vector<vector<int>> adj, int V) {
+        // code here
+        
+        DisjointSet ds(V);
+        for(int i=0;i<V;i++)
+        {
+            for(int j=0;j<V;j++)
+            {
+                if(adj[i][j]==1)
+                {
+                  ds.unionBySize(i,j);
+                }
+            }
+        }
+        
+        int count=0;
+        for(int i=0;i<V;i++)
+        {
+            //we just have to calculate no. of ultimate parents
+          if(ds.par[i]==i)count++;
+        }
+        return count;
+    }
+};
+
+

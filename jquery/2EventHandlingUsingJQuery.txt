@@ -1,0 +1,103 @@
+See lecture 86,87
+
+1) If you function name is also $ and somewhere you want to access Jquery $ function ,then you have to write jQuery instead of $ and you have to write a line:
+jQuery.noConflict();
+
+2) $("#abcd").on('click',function(){
+alert("Great");
+});
+
+3) $("#abcd").on('click',function(){
+$(this).css("font-size","24pt");
+});
+
+4) $("#button5").click(function(){
+$(#abcd).toggleClass("xyz");
+});
+
+5) $("#mainContainer").click(function(ev){
+if(ev.target==this) alert();
+});
+
+6) $("#childConatiner").click(function(ev){
+alert("childContainer clicked");
+ev.stopPropagation();
+});
+
+7) $("#button8").click(function(ev){
+if($("#nm").val().length==0)
+{
+ev.preventDefault(); //because of this line it it is form and submit //button is cilcked then we are preventing its default behaviour,means now //the form will not submit
+}
+});
+
+8)$("#d1").click(function(ev){
+if($(ev.target).is("#d1"))alert("d1 clicked");
+if($(ev.target).is("#d2")).alert("d2 clicked");
+});
+
+9)$("#button9").click(function(){
+alert("Button 9 clciked");
+$("#button10").trigger("click"); //here we are programmatically calling 
+//function that will get invoked when we click button10 using trigger func
+$(this).off('click');
+});
+
+10)$(#button10).click(function(){
+alert("Button 10 clicked");
+});
+
+Lecture 87
+1) To do keydown event handling on the entire document:
+keydown:When the key is on its way down.
+keypress: key is pressed down
+keyup: when the key is released
+
+$(document).keydown(function(ev){
+$("#board").append(ev.which+","+ev.key+","+ev.code);
+if(ev.ctrlKey) $("#board").append("CTRL key pressed");
+if(ev.altKey) $("#board").append("ALT key pressed");
+if(ev.shiftKey) $("#board").append("SHIFT key pressed");
+if(ev.metaKey) $("#board").append("META pressed");
+ev.preventDefault();
+});
+
+2)  So see what is the value of the atribute of a css class
+$("#button1").click(function(){
+alert($("#d1.something").css("font-size"));
+alert($("#d1.something").css("color"));
+//something class does not contain font-family,then whatever will be the 
+//default family ,it will print that
+alert($("#d1.something").css("font-family"));
+//now to set that attribute
+$("#d1.something").css("font-family","Verdana");
+});
+
+3) Different ways to toggle:
+
+Way 1:
+//Toggling d2 programatically
+var d2State=1;
+$("#button2").click(function(){
+if(d2State)
+{
+//$("#d2").hide("slow");
+//making use of different effects
+//$("#d2").fadeOut("slow");
+$("#d2").slideUp("slow");
+}
+else
+{
+//$("#d2").show("fast");
+//$("#d2").fadeIn("slow");
+$("#d2").slideDown("slow");
+}
+d2State=!d2State;
+});
+
+
+Way2: 
+$("#button2").click(function(){
+//$("#d2").slideToggle("slow");
+$("#d2").fadeToggle("5000");
+});

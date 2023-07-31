@@ -1,0 +1,16 @@
+here we will first find out in which range our key may lie
+int search(vector<int> &nums)
+{
+int low=0;
+int high=1;
+//we will increase high unless and untill it is greater than key,so that //our key will lie in that range.While moving to the next high ,assign the 
+//previous high to the low.
+
+while(nums[high]<key)
+{
+low=high;
+high=high*2;
+}
+//after finding the search space just perform the BS.
+BS(nums,low,high,key);
+}

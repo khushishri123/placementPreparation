@@ -1,0 +1,19 @@
+This is not a question but contains importatnt information about bit manipulation and how to use trie for them.
+
+We will represent 9 in binary as in 32 bits as: 
+        <---- 32 bits----->
+9->     0   0   0   0 ..... 1 0 0 1
+index-  31  30  29  28..... 3 2 1 0
+
+Even no of 1's will give the resultant 0 while odd 1's will gie resultant 1.
+Right shift is represented as: >>
+Left Shift is represented as:  <<
+
+Now to check whether a bit is set or not ,we will perform right shift of that number with the index and then we will perform 'and' opeartion with 1.
+Formula:
+(num>>i)&1
+
+How to turn on a bit ?
+Firstly perform left shift of 1 with index and then perform 'or' with number.
+Formula:
+num|(1<<i);

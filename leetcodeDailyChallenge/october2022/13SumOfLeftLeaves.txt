@@ -1,0 +1,51 @@
+Given the root of a binary tree, return the sum of all left leaves.
+
+A leaf is a node with no children. A left leaf is a leaf that is the left child of another node.
+
+ 
+
+Example 1:
+
+
+Input: root = [3,9,20,null,null,15,7]
+Output: 24
+Explanation: There are two left leaves in the binary tree, with values 9 and 15 respectively.
+
+Example 2:
+Input: root = [1]
+Output: 0
+
+
+I do a simple DFS from root and find the left leaf nodes.
+To find a left leaf nodes I keep a direction tracker, i.e., from with direction did we reached to this node.
+if we found a leaf node that we came while going in left direction, then we add it to our global result variable.
+Here goes the code for my approach mentioned above:
+
+class Solution {
+public:
+    // global variable for result
+    int res = 0;
+    
+    void dfs(TreeNode* root, int direction){
+        if(root == NULL) return;
+        
+        // leaf node
+        if(root->left == NULL && root->right == NULL){
+            
+            // left leaf
+            if(direction == 0)
+                res += root->val;
+            
+            return;
+        }
+        
+        dfs(root->left, 0); // 0 means left direction
+        dfs(root->right, 1); // 1 means right direction
+    }
+    
+    int sumOfLeftLeaves(TreeNode* root) {
+        dfs(root, -1);
+        return res;
+    }
+};
+

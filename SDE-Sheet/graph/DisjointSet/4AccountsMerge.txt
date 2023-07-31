@@ -1,0 +1,116 @@
+Given a list of accounts where each element accounts[i] is a list of strings, where the first element accounts[i][0] is a name, and the rest of the elements are emails representing emails of the account.
+
+Now, we would like to merge these accounts. Two accounts definitely belong to the same person if there is some common email to both accounts. Note that even if two accounts have the same name, they may belong to different people as people could have the same name. A person can have any number of accounts initially, but all of their accounts definitely have the same name.
+
+After merging the accounts, return the accounts in the following format: the first element of each account is the name, and the rest of the elements are emails in sorted order. The accounts themselves can be returned in any order.
+
+ 
+
+Example 1:
+
+Input: accounts = [["John","johnsmith@mail.com","john_newyork@mail.com"],["John","johnsmith@mail.com","john00@mail.com"],["Mary","mary@mail.com"],["John","johnnybravo@mail.com"]]
+Output: [["John","john00@mail.com","john_newyork@mail.com","johnsmith@mail.com"],["Mary","mary@mail.com"],["John","johnnybravo@mail.com"]]
+Explanation:
+The first and second John's are the same person as they have the common email "johnsmith@mail.com".
+The third John and Mary are different people as none of their email addresses are used by other accounts.
+We could return these lists in any order, for example the answer [['Mary', 'mary@mail.com'], ['John', 'johnnybravo@mail.com'], 
+['John', 'john00@mail.com', 'john_newyork@mail.com', 'johnsmith@mail.com']] would still be accepted.
+
+Example 2:
+Input: accounts = [["Gabe","Gabe0@m.co","Gabe3@m.co","Gabe1@m.co"],["Kevin","Kevin3@m.co","Kevin5@m.co","Kevin0@m.co"],["Ethan","Ethan5@m.co","Ethan4@m.co","Ethan0@m.co"],["Hanzo","Hanzo3@m.co","Hanzo1@m.co","Hanzo0@m.co"],["Fern","Fern5@m.co","Fern1@m.co","Fern0@m.co"]]
+Output: [["Ethan","Ethan0@m.co","Ethan4@m.co","Ethan5@m.co"],["Gabe","Gabe0@m.co","Gabe1@m.co","Gabe3@m.co"],["Hanzo","Hanzo0@m.co","Hanzo1@m.co","Hanzo3@m.co"],["Kevin","Kevin0@m.co","Kevin3@m.co","Kevin5@m.co"],["Fern","Fern0@m.co","Fern1@m.co","Fern5@m.co"]]
+
+
+App:
+We will be using DisjointSet and Mapping.
+Here the 0 th col will contain name and then from 1st col we will have mails.Also we can say that 2 people are same only when one of the mail is same between them.Does not matter whether they have same name or not.
+Firstly  if the map does not contain that mail then,we will map  mail with their  row index.Otherwise we will call unionBySize method of DS to connect the current row with the one which is already present in the map.
+Note: Here don't connect col number ,because if we found that atleast one col is same then it means that all the mails belong to the same preson.
+
+After that create vector<string> merged[n]; 
+we will traverse the map and evertime we will find out who is the ultimate parent to that mail and we will push that mail against it.
+
+After then we created vector<vector<string>> ans.
+This 'ana' will finally store our ans.It will contain the name and sorted merged mails.
+
+See code and you tube video:
+https://www.youtube.com/watch?v=FMwpt_aQOGw
+
+int mod=1e9+7;
+class   DisjointSet
+{
+private:
+vector<long long> par,size;
+public:
+DisjointSet(int V)
+{
+    size.resize(V,1);
+    par.resize(V);
+    for(int i=0;i<V;i++)par[i]= i;
+}
+void unionBySize(int u,int v)
+{
+    int pu=findPar(u);
+    int pv=findPar(v);
+    if(size[pu]<size[pv])
+    {
+        par[pu]=pv;
+        size[pv]=(size[pv] + size[pu])%mod;
+    }
+    else
+    {
+        par[pv]=pu;
+        size[pu]=(size[pu] + size[pv])%mod;
+    }
+}
+int findPar(int node)
+{
+    if(par[node]==node)return node;
+    return par[node]=findPar(par[node]);
+}
+};
+class Solution {
+public:
+    vector<vector<string>> accountsMerge(vector<vector<string>>& accounts) {
+      //Remember that this accounts array contain name at accounts[i][0] and from 1st col it contains mails.
+        int n=accounts.size();
+        DisjointSet ds(n);
+        map<string ,int> m;
+        //Step 1: Connecting nodes and creating the disjoint set and making ultimate parent
+        for(int i=0;i<n;i++)
+        {
+            for(int j=1;j<accounts[i].size();j++)
+            {
+                if(m.find(accounts[i][j])==m.end())
+                {
+                    m[accounts[i][j]]=i;
+                }
+                else
+                {
+                    ds.unionBySize(m[accounts[i][j]],i);
+                }
+            }
+        }
+//Step2: merging the mail according to the disjoint set data structure
+        vector<string> merged[n];
+        for(auto it:m)
+        {
+            string mail=it.first;
+       int node=ds.findPar(it.second); //node will give us the ultimate parent of this string
+       merged[node].push_back(mail);
+        }
+
+//step3: rearranging them in order to merge with their names.        
+        vector<vector<string>> ans;
+        for(int i=0;i<n;i++)
+        {
+            if(merged[i].size()==0)continue;
+            vector<string> temp;
+            temp.push_back(accounts[i][0]); //accounts[i][0] will give us the name
+            sort(merged[i].begin(),merged[i].end());
+            for(auto &it:merged[i])temp.push_back(it);
+            ans.push_back(temp);
+        }
+        return ans;
+    }
+};

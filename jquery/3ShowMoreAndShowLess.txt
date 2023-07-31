@@ -1,0 +1,75 @@
+Lec 88:
+To create a hyperlink aof more ,so that if someone clicks on more then above section got expanded and more will be converted to "show less".
+So to do that we will apply a trick in which we will create 2 paragraphs .
+The first para will contain that content which will be visible initially.
+The second para will contain that content which will be toggled.
+The second para is nopt visible initially.
+So for that we have written:
+$("#d1 p").eq(1).hide();
+
+Next , when someone click on more button then in its click event we will toggle the second para.
+$("#d1ReadMore").click(function(){
+$("")
+if($("#d1 p").eq(1).is(":hidden"))
+{
+$("#d1ReadMore").text("Read More..");
+}
+else
+{
+$("#d1ReadMNore").text("Read Less..");
+}
+});
+
+
+Full Code:
+
+$(()=>{
+$("#d1 p").eq(1).hide();
+$("#d1ReadMore").click(function(){
+if(#d1 p).eq(1).is(":hidden")
+{
+$("#d1ReadMore").text("Show More..");
+}
+else
+{
+$("#d1ReadMore").text("Show Less..");
+}
+});
+});
+
+Now we can change several attributes while doing this:
+$(()=>{
+$("#d1 p").eq(1).hide();
+$("#d1ReadMore").click(function(){
+$("#d1 p").eq(1).animate({"height":"toggle","opacity":"toggle","font-size":x},1000,function(){
+if(#d1 p).eq(1).is(":hidden")
+{
+$("#d1ReadMore").text("Show More..");
+}
+else
+{
+$("#d1ReadMore").text("Show Less..");
+}
+});
+});
+});
+
+
+How to create multiple animations from copy:
+$("#button1").click(function(){
+$("#d1").animate({"margin-top":"0px","margin-left":"0px"},"slow");
+});
+
+Now we want that firstly it should go to the top and then to the left.
+$("#button1").click(function(){
+$("#d1").animate({"margin-top":"0px"},"slow").animate({"margin-left":"0px"},"fast");
+});
+
+Use of queue function:
+We will pass the address of a function to this queue function :
+$("#d1").animate({"margin-top":"0px"},"slow").animate({"margin-left":"0px"},{"duration":"slow",queue:true}).queue(function(xx){
+alert("God is great");
+xx();
+}).hide('slow');
+
+Remember hide() will be called only when it will be called from the function whose address is passed to the queue function. To call , xx parameter is passed to the anonymous function.

@@ -1,0 +1,26 @@
+Input:[10,3,4,7,15,20] ,k=3
+Output: 7
+Since we have to find kth smallest,we will create max heap.As soon as the size of heap is greater than k then we will pop  top element from heap.
+ 
+TC:O(NlogK)
+
+Code in Java:
+int kthSmallest(nums)
+{
+PriorityQueue<Integer> pq=new PriorityQueue<>(Collections.reverseOrder());
+for(int i=0;i<nums.size();i++)
+{
+pq.add(nums[i]);
+if(pq.size()>k)pq.poll();
+}
+return pq.peek();
+}
+
+Code in C++:
+priority_queue<int> maxHeap;
+for(int i=0;i<nums.size();i++)
+{
+maxHeap.push(nums[i]);
+if(maxHeap.size()>k)maxHeap.pop();
+}
+return maxHeap.top();

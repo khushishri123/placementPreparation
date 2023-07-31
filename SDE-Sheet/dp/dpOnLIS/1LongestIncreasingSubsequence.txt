@@ -1,0 +1,51 @@
+Now I store 2 things first one will be ind and second one will be prev_ind because to pick the current index it is very necessary to know about the prev_index data. I can only pick the curr index if a[ind]>a[prev_ind].
+
+f(0,-1)->length of LIS starting from 0 index whose prev index is -1.
+f(3,0)->length of LIS starting from 3rd index whose prev index is 0.
+
+Evertime I have two options : take or nottake
+
+Initially I will pass (0,-1)
+0->ind and -1->prev
+
+Recursive: 
+TC: 2^N
+SC:O(N)
+f(ind,prev)
+{
+if(ind==n)return 0;
+int notTake=0+f(ind+1,prev);
+int take=INT_MIN;
+if(prev==-1 || a[ind]>a[prev]) take=1+f(ind+1,ind);
+return max(take,notTake);
+}
+
+Memoization:
+TC:O(N*N)
+SC:O(N*N) +O(N)
+
+During memoi. we have to right shift index for prev because prev can be -1
+So:
+prev -> -1 0 1 2 3..
+pev ->   0 1 2 3 4..
+        int f(int ind,int prev,vector<int> &nums,vector<vector<int>> &dp)
+        {
+                if(ind==nums.size())return 0;
+                if(dp[ind][prev+1]!=-1)return dp[ind][prev+1];     
+                int notTake=0+f(ind+1,prev,nums,dp);
+                int take=INT_MIN;
+                if(prev==-1 || nums[ind]>nums[prev])
+                {
+                        take=1+f(ind+1,ind,nums,dp);
+                }
+                return dp[ind][prev+1]=max(take,notTake);
+        }
+    int lengthOfLIS(vector<int>& nums) {
+            int n=nums.size();
+       vector<vector<int>>  dp(n,vector<int>(n+1,-1));
+            return f(0,-1,nums,dp);
+    }
+
+
+Best TC is NlogN which we will learn in upcoming lectures.
+

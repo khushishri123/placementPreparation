@@ -1,0 +1,175 @@
+Problem Statement: Given an array of integers A of size N and an integer B.
+The College library has N bags, the ith book has A[i] number of pages.
+You have to allocate books to B number of students so that the maximum number of pages allocated to a student is minimum.
+Conditions given :
+A book will be allocated to exactly one student.
+Each student has to be allocated at least one book.
+Allotment should be in contiguous order, for example, A student cannot be allocated book 1 and book 3, skipping book 2.
+Calculate and return the minimum possible number. Return -1 if a valid assignment is not possible.
+Input: A = [12, 34, 67, 90]
+       B = 2
+Output: 113
+Explanation: Let’s see all possible cases of how books can be allocated for each student.
+Student 1   Student 2   Maximum number of pages
+12           34,67,90    191
+12,34         67,90       157
+12,34,67      90           113
+So, the maximum number of pages allocated in each case is [191,157,113]. So, the minimum number among them is 113. Hence, our result is 113.
+
+Appraoch :Recursion (But avoid telling it during interview)
+
+Solution: Using Binary Search
+
+Intuition : 
+
+Let’s analyze a case. 
+
+We are given A = [12, 34, 67, 90] and B = 1. So, for one student we can allocate all books to this student. Why so? Because we have to maximize the number of pages allocated to a student and then find the minimum out of it. So, this fact gives us an idea that a single student will be allocated the sum of all pages available.
+
+Let’s analyze another case.
+
+We are required to find the minimum number of pages among all possible maximum number of pages of allocations. So, in the worst case, the minimum possible will be minimum pages among all given books.
+
+Now, we know the lowest possible answer and the maximum possible answer and for general cases, the answer will lie in between these edge cases. Thus, we have a search space. This search space will be sorted. Guess what? We reached our approach to use a binary solution.
+
+Approach :
+
+We will set a search space. The lower boundary will be of minimal value among all the books given. The upper boundary will be the sum of all book pages given. Then apply binary search. How to change the range of searching? While searching, allocate pages to each student in such a way that the sum of allocated pages of each student is not greater than the mid-value of search space. If allocating students increases more than the number of students provided, this shows that mid-value should be more, and hence, we move right by restricting our lower boundary as mid+1. If an allocation is possible then reduce the search upper boundary by mid-1. Also, an edge case to check while allocating, each book page should not be greater than mid-value chosen as a barrier.
+
+Workout on 12,34,67,90 and students=2
+
+low=12
+high=203 (sum of all pages)
+so search space [12,.....,203]
+
+We will find mid of the search space and set it as a barrier. Here, mid = (12+203)/2 =107. Now, we will find if the allocation is possible among two students.
+
+Number of students possible for allocation:
+Student 1: 12+34=46<107
+Student 2: 67<107
+Student 3: 90<107
+
+Since the number of students is gretaer than  students provided,hence this allocation is wrong and we need to increse out barrier by moving low=mid+1
+low=108
+
+[108,.......,203]
+Now, low = 108, high = 203, so mid = (108+203)/2 = 155. Again check if allocation is possible.
+
+Number of students possible for allocation:
+Student 1: 12+34+67=113<155
+Student 2: 90<155
+
+Here allocation is possible .This can be one of the possible answer.So we reduce out search space to high=mid-1=154 because we want minimum of them
+
+Now, low = 108, high = 154, so mid = (108+154)/2 = 131. Again check if allocation is possible.
+barrier=131
+
+Number of students possible for allocation:
+Student 1: 12+34+67=113<131
+Student 2: 90<131
+
+Here allocation is possible .This can be one of the possible answer.So we reduce out search space to high=mid-1=130 because we want minimum of them
+
+Now, low = 108, high = 130,so mid = (108+130)/2 = 119. Again check if allocations are possible.
+Number of students possible for allocation:
+Student 1: 12+34+67=113<119
+Student 2: 90<119
+
+Here allocation is possible .This can be one of the possible answer.So we reduce out search space to high=mid-1=118 because we want minimum of them
+
+Now, low = 108, high = 118,so mid = (108+118)/2 = 113. Again check if allocations are possible.
+Number of students possible for allocation:
+Student 1: 12+34+67=113<=113
+Student 2: 90<113
+
+Here allocation is possible .This can be one of the possible answer.So we reduce out search space to high=mid-1=112 because we want minimum of them
+
+
+Now, low = 108, high = 112,so mid = (108+112)/2 = 110. Again check if allocations are possible.
+
+Number of students possible for allocation:
+Student 1: 12+34=46<=110
+Student 2: 67<110
+Student 3: 90<110
+
+Since the number of students is gretaer than  students provided,hence this allocation is wrong and we need to increse out barrier by moving low=mid+1
+low=111
+Now, low = 111, high = 112,so mid = (111+112)/2 = 111. Again check if allocations are possible.
+Number of students possible for allocation:
+Student 1: 12+34=46<=111
+Student 2: 67<111
+Student 3: 90<111
+
+Since the number of students is gretaer than  students provided,hence this allocation is wrong and we need to increse out barrier by moving low=mid+1
+low=112
+
+Now, low = 112, high = 112,so mid = (112+112)/2 = 112. Again check if allocations are possible.
+Number of students possible for allocation:
+Student 1: 12+34=46<=112
+Student 2: 67<112
+Student 3: 90<112
+
+Since the number of students is gretaer than  students provided,hence this allocation is wrong and we need to increse out barrier by moving low=mid+1
+low=113
+
+Now, low = 113, high = 112. Since, low > high, binary search ends and our result is equal to low = 113.
+
+Time Complexity : O(NlogN)
+
+Reason: Binary search takes O(log N). For every search, we are checking if an allocation is possible or not. Checking for allocation takes O(N).
+
+Space Complexity: O(1)
+
+Reason: No extra data structure is used to store spaces.
+
+Code:
+
+bool isPossible(vector<int> &A,int pages,int students)
+{
+    int count=1;
+    int sum=0;
+    for(int i=0;i<A.size();i++)
+    {
+        if(A[i]>pages)return false;
+        if(sum+A[i]>pages)
+        {
+            count++;
+            sum=A[i];
+        }
+        else sum+=A[i];
+    }
+    if(count>students)return false;
+    return true;
+}
+
+int Solution::books(vector<int> &A, int B) {
+    if(A.size()<B)return -1;
+    int i,mid;
+    int low=A[0];
+    int high=0;
+    for(i=0;i<A.size();i++)
+    {
+        low=min(low,A[i]);
+        high=high+A[i];
+    }
+    while(low<=high)
+    {
+        mid=(low+high) >> 1;
+        if(isPossible(A,mid,B))
+        {
+            high=mid-1;
+        }
+        else {
+            low=mid+1;
+        }
+    }
+    return low;
+}
+
+
+
+
+
+
+
+

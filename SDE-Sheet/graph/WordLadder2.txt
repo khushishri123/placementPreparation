@@ -1,0 +1,79 @@
+App:
+This time I will also I will use queue but the app will be slightly different from WordLadder problem.
+This time we will store sequence  of wrod in queue and everytime I will change the last word of the sequence.
+Initally wewill just push strating word ,so it is the only word of our sequence .In loop ,I will pop the last word of the sequnce and I will check what are the valid combinations possible .
+Let beginWord=bat
+and it can be changed to bot,pat ,so I will push 2 sequences {bat,pat} and  {bat,bot}
+Remember Now I will remove bat because that level is completed.
+
+        bat      -->Level 1,after completion of Level 1 we will remove bat                      from the set
+     pat  bot    -->Level 2 ,after the completion of level 2 we will                      remove pat and bot from set
+   pot     pot  -->Level3 ,here we can understand that why we are reomving 
+                //after the completion of the level becuase if I have                 //removed pot earlier then it won't be available for bot.
+Remeber we have to push entire sequence and we have to change only the last word of the sequence.
+{bat,pat,pot}
+{bat,bot,pot}
+
+TC:you cannot determine ,it depends on example to example
+SC:O(N)+O(N)
+
+ vector<vector<string>> findSequences(string beginWord, string endWord, vector<string>& wordList) {
+        // code here
+        queue<vector<string>> q;
+            unordered_set<string> s(wordList.begin(),wordList.end());
+            //initailly push begin word in the queue
+            vector<string> usedAtLevel;
+            usedAtLevel.push_back(beginWord);
+            q.push({beginWord});
+            s.insert(beginWord);
+            int level=0;
+            vector<vector<string>> ans;
+            while(!q.empty())
+        {
+            vector<string> vec=q.front();
+            q.pop();
+            
+            
+            //erase all the words that is used to transform
+            
+            if(vec.size()>level)
+            {
+                level++;
+            for(auto it:usedAtLevel)
+            {
+                s.erase(it);
+            }
+            //usedAtLevel.clear();
+            }
+            
+            //now we are picking the last word
+            string word=vec.back();
+            if(word==endWord)
+            {
+                if(ans.size()==0)ans.push_back(vec);
+                else if(ans[0].size()==vec.size())ans.push_back(vec);
+            }
+            for(int i=0;i<word.size();i++)
+            {
+                char original=word[i];
+                for(char c='a';c<='z';c++)
+                {
+                    word[i]=c;
+                    if(s.count(word)>0)
+                    {
+                        vec.push_back(word);
+                        q.push(vec);
+                        usedAtLevel.push_back(word);
+                        //since I have to try out every posiible combination I have to pop out last word
+                        //Eg: let the word be bat ,now bat can be replaced by pat and bot , but on adding pat the 
+                        //string will become bat,pat and we have lost the original word which is bat
+                        //so firstly I added pat in the vector of string and then I pushed it into queue and 
+                        //usedAtLevel and after that I have removed it from the vector.
+                        vec.pop_back();
+                    }
+                }
+                word[i]=original;
+            }
+        }
+        return ans;
+    }

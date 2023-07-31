@@ -1,0 +1,77 @@
+Floyd Warshall shortest path algo :
+It is different from Dijkstra and Bellman Ford because they are single source shortest path algo.
+But in this algo, from every node we have to tell the shortest path to every other node.
+That's why it is known as multisource shortest path algo.
+It helps to detect -ive cycles as well.
+Algo states that go via every vertex/node.
+For a[i][j]:min(d[i][k]+d[k][j])
+
+So,it is quite related to DP,where we need previously computed solution.
+W e will be storing adj matrix ,in order to store this graph.
+dis[node][node]=0;
+{0,1,2}
+{1,0,2}
+{1,2,3}
+{3,0,3}
+{3,2,4}
+{3,1,5}
+if there is not direct edge then mark it with infinity.
+We will be iterating via root 0and the updated adj. matrix will be:
+[1][0]=[1][0]+[0][0]=1
+[1][2]=[1][0]+[0][2]=inf
+..
+via root 0,updated matrix formed will be:
+   0  1  2  3
+0  0  2  in in
+1  1  0  3  5
+2  in in 0  in
+3  3  5  4   0
+
+we will do same by via 1 ,via 2 ,via 3 
+Using previous matrix we will update the next matrix.
+Then finale matrix wil contain the shortest distance.
+
+Is it more of a brute force,where all combination of paths have been tried to get the shortest path.
+
+Ques .1) How to detect -ive cycle
+Ans.1- {0,1,-2}
+{1,2,-3}
+{2,0,2}
+Path wt :dis[0][0]=-2+2-3=-3
+
+But apparently distance of a node to itself should be 0.
+If the costing of any node is <0 or di[node][node]<0 then there is  a -ive cycle.
+
+
+
+void shortest_distance(vector<vector<int>>&matrix){
+	    // Code here
+	    int n=matrix.size();
+	    int m=matrix[0].size();
+	    for(int i=0;i<n;i++)
+	    {
+	        for(int j=0;j<m;j++)
+	        {
+	            if(matrix[i][j]==-1)matrix[i][j]=1e9;
+	            if(i==j)matrix[i][j]=0;
+	        }
+	    }
+	    for(int k=0;k<n;k++)
+	    {
+	    for(int i=0;i<n;i++)
+	    {
+	        for(int j=0;j<m;j++)
+	        {
+	            matrix[i][j]=min(matrix[i][j],matrix[i][k]+matrix[k][j]);
+	        }
+	    }
+	    }
+for(int i=0;i<n;i++)
+{
+    for(int j=0;j<m;j++)
+    {
+        if(matrix[i][j]==1e9)matrix[i][j]=-1;
+    }
+}
+	    
+}

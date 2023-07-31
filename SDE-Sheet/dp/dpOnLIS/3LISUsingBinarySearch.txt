@@ -1,0 +1,27 @@
+Implementing LIS using Binary search
+ 
+See from video its explanation.
+https://www.youtube.com/watch?v=on2hvxBXJH4&list=PLgUwDviBIf0qUlt5H_kiKYaNSqJ81PMMY&index=44
+
+I have make a separate lower_bound.txt ,see it.
+TC:O(NlogN)
+SC:O(N)
+int longestSubsequence(int n, int a[])
+    {
+       // your code here
+       //using binary search
+       vector<int> temp;
+       //Remember that temp will not store LIS ,it will just tell us the length of LIS
+       temp.push_back(a[0]);
+       for(int i=1;i<n;i++)
+       {
+           if(a[i]>temp.back())temp.push_back(a[i]);
+           else
+           {
+               //to do binary search we have lower_bound funtion in c++
+               int ind=lower_bound(temp.begin(),temp.end(),a[i])-temp.begin();
+               temp[ind]=a[i];
+           }
+       }
+       return temp.size();
+    }

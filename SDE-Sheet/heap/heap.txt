@@ -1,0 +1,28 @@
+How to identify it's a HEAP qustion?
+-> K is given and you have to find out either sammlest or largest.
+
+K+smallest -> create max heap
+K+largest-> create min heap
+
+Mostly questions of heap is realted to sorting.But if we will sort the entire array then it will give NlogN TC. But if we will use heap then TC will be reduced to NlogK. That's why K is given in questions of heap.
+
+To heapify a heap ,it takes logN time.There is top,push and pop.
+
+In C++:
+To create Max Heap: priority_queue<int> maxHeap;
+To create Min Heap: priority_queue<int,vector<int>,greater<int>> minHeap; 
+top(),push(element),pop()
+
+In Java:
+To create Min heap: 
+Priority_Queue<Integer> minHeap=new Priority_Queue<>();
+To create Max heap: 
+Priority_Queue<Integer> maxHeap=new Priority_Queue<>(Collections.reverseOrder());
+peek(),add(element),poll(),remove(element),contains(element)
+
+Also if you want to create a pair of pair<int,pair<int,int>>,then instead of writing this everywhere ,we can simply do type define in the starting:
+type def pair<int,pair<int,int>> ppi;
+Now we can write:
+priority_queue<ppi> maxHeap;
+or
+priority_queue<ppi,vector<ppi>,greater<ppi>> minHeap;

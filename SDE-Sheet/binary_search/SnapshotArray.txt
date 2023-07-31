@@ -1,0 +1,38 @@
+It's similar to 981. Time Based Key-Value Store.
+
+For each index, we store values in the map for each snap id. We maintain the current snap id and use it in set. When we do snap, we just increase snap id. Therefore, our map will only contain snap ids when the value was set.
+
+For get, we use binary search to find the most recent value for the requested snap id.
+
+Complexity: 
+Assuming n is the number of set + snap operations, and m is the number of get operations:
+
+Note: for the complexity analysis, we consider set + snap as one operation. Otherwise, neither set nor snap alone increases the number of values we need to consider for the get operation.
+
+Time Complexity:
+Set: O(1) single operation, and total O(n).
+Get: O(log n) for a single operation, and total O(m log n).
+Space Complexity: O(n)
+
+class SnapshotArray {
+public:
+unordered_map<int,map<int,int>> m;
+int curr_snap=0;
+    SnapshotArray(int length) {
+        
+    }
+    
+    void set(int index, int val) {
+        m[index][curr_snap]=val;
+    }
+    
+    int snap() {
+        return curr_snap++;
+    }
+    
+    int get(int index, int snap_id) {
+        auto it=m[index].upper_bound(snap_id);
+        if(it==m[index].begin())return 0; //there is not snap_id
+        return prev(it)->second; //upper_bound returns immediate next //number,so there is prev to access just next number.
+    }
+};

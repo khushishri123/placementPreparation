@@ -1,0 +1,133 @@
+In this we will see that every operand is a partition point.We can divide into subproblems at the partition point.
+Initially we have entire expression.So this we have different options.Either we can solve this part or that part.So it is similar to MCM problem.
+The operands are at a distance of 2.Eg:
+T ^ F | T & F ^ T | F
+0 1 2 3 4 5 6 7 8 9 10
+So all operands are sep[arated by a distance of 2.
+So if there is $ operator then we know that left and right both should be true to get the total expression as true.
+Let say the number of ways in which left can be true is x and number of ways in which can right can be true is y,then the total no. of ways will be 
+Total Ways=x*y;
+
+Now lets say we are doing partition on | , left | right.
+So if left  is true for x1 times and right is true for y1 times ,then 
+Total Ways: x1*y1 but it is not the ans because it is or operator.
+It might be possible that right is false for y2 times and left is true for x1 times ,then also it will give us true.
+Total ways +=x1*y2
+Similarly It might be possible that left is false for x2 times and right is true for y1 times ,then also it will give us true.
+Total ways +=x2*y1
+
+So ,total ways in case of |= x1*y1 + x2*y1 + x1*y2
+
+Now we will partition on the basis on ^
+total ways: x1*y2+x2*y1 
+
+So whichever range we are solving we have to figure out in how many ways it will create true and in how many it will create false.
+So we will create a variable 'isTrue'
+f(i,j,isTrue)
+
+Let my string is:
+array->  T ^ F | T & F ^ T | F
+indexes: 0 1 2 3 4 5 6 7 8 9 10
+So initially we will pass f(0,10) and this states that in how many ways can you make the initial expression true?
+So we will set isTrue as 1 becuase we are looking for the no. of true.
+f(0,10,1)
+f(0,n-1,1)
+
+Basce case will be if the partition is over means if i>j ,then there is 0 way .
+if(i>j)return 0;
+
+If there is a single guy in the partition so it could be either true or false.
+If the value of isTrue is 1 ,ot means that we are looking that in how many ways we can make true.
+if(i==j)
+{
+if(isTrue==1)return a[i]=='T'; //a[i]=='T' will return 1 if it is true and                 //0 if it is false
+else return a[i]=='F'; 
+}
+here else part shows that isTrue=0 means we are looking that in how many ways we can make it true.
+So these are the two base cases.
+
+Now to explore all partiotions w.k.t first partiton starts with i+1 and last will be at j-1.
+Then we just have to do +2 and we will get all partitions.
+Let lt be the no. of ways in which I can make the left partition as true.
+Let lf be the no. of ways in which I can make the left partition as false.
+Let rt be the no. of ways in which I can make the right partition as true.
+Let rf be the no. of ways in which I can make the right partition false.
+Initially no of ways=0
+for(ind=i+1;ind<=j-1;ind+=2)
+{
+lt=f(i,ind-1,1);
+lf=f(i,ind-1,0);
+rt=f(ind+1,j,1);
+rf=f(ind+1,j,0);
+if(a[ind]='&')
+{
+if(isTrue) ways+=lt*rt;
+else ways+=(lt*rf)+(lf*rf)+(lf*rt);
+}
+
+else if(a[ind]=='|')
+{
+if(isTrue)ways+=lt*rt + lf*rt + lt*rf;
+else ways+=lf*rf;
+}
+
+else if(a[ind]=='^')
+{
+if(isTrue)ways+=lt*rf + lf*rt;
+else ways+=lt*rt + lf*rf;
+}
+}
+return ways;
+
+Remember we want both the things: number of ways in which we can create true and number of ways in which we can create false.
+
+Memoization:
+dp[N][N][2]
+return dp[i][j][isTrue]=ways;
+TC:O(N*N*2) *N=O(N^3)
+	SC:O(N^2)+ASS.
+
+This is not the exavt corret code becuase it cleared 10 out of 11 test case.
+int mod=1000000007;
+long long f(int i,int j,int isTrue,string &S,vector<vector<vector<long long>>> &dp)
+        {
+                if(i>j)return 0;
+                if(i==j)
+                {
+                        if(isTrue)return S[i]=='T';
+                        else return S[i]=='F';
+                }
+                if(dp[i][j][isTrue]!=-1)return dp[i][j][isTrue];
+                long long ways=0;
+                for(int ind=i+1;ind<=j-1;ind+=2)
+                {
+                        int lt=f(i,ind-1,1,S,dp)%mod;
+                        int lf=f(i,ind-1,0,S,dp)%mod;
+                        int rt=f(ind+1,j,1,S,dp)%mod;
+                        int rf=f(ind+1,j,0,S,dp)%mod;
+                        if(S[ind]=='&')
+                        {
+                          if(isTrue) ways=(ways+(lt*rt)%mod)%mod;
+                          else ways=(ways+(lt*rf)%mod+(lf*rf)%mod+(lf*rt)%mod)%mod;
+
+                        }
+                      else  if(S[ind]=='|')
+                        {
+                          if(isTrue)ways=(ways + (lt*rt)%mod + (lf*rt)%mod + (lt*rf)%mod)%mod;
+                          else ways=(ways+(lf*rf)%mod)%mod;
+                        }
+                        else //XOR
+                        {
+                                if(isTrue)ways=(ways+ (lt*rf)%mod + (lf*rt)%mod)%mod;
+                                 else ways=(ways+(lt*rt)%mod + (lf*rf)%mod)%mod;
+
+                        }
+                }
+                return dp[i][j][isTrue]=ways;
+        }
+int evaluateExp(string &S) {
+    // Write your code here.
+    int N=S.size();
+    vector<vector<vector<long long>>> dp(N,vector<vector<long long>>(N,vector<long long>(2,-1)));
+            return f(0,N-1,1,S,dp);
+}

@@ -1,0 +1,30 @@
+Printing all subsequences through recursion.
+Intuition: For every index,i have couple of options: either I can choose that index or I cannot.
+TC:O(2^N)*N
+2^N because for every index we have 2 options either we are picking it or we are not picking it.
+N because for every subsequence we are printing it by running a loop.
+
+SC:O(N)
+
+Code:
+void suseq(int ind,vector<int> &vec,int arr[],int n)
+{
+if(ind>=n)
+{
+for(auto v:vec)cout<<v<<" ";
+cout<<endl;
+return;
+}
+vec.push_back(arr[ind]);
+subseq(ind+1,vec,arr,n);
+vec.pop_back();
+subseq(ind+1,vec,arr,n);
+}
+int main()
+{
+int arr[]={3,1,2};
+vector<int> vec;
+int n=arr.size();
+subseq(0,vec,arr,n);
+return 0;
+}

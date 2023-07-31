@@ -1,0 +1,80 @@
+Given an array arr[] of non-negative integers and an integer sum, the task is to count all subsets of the given array with a sum equal to a given sum.
+
+/*
+Remember this solution is for only +ive integers,not even for 0.
+nums[i]>=1
+If there are -ive elements then instead of using dp 2d array you can use map<pair<int,int>,int> where key will be {index,sum} and value is count.
+*/
+
+Input: N = 6, arr[] = {2, 3, 5, 6, 8, 10}
+       sum = 10
+Output: 3
+Explanation: {2, 3, 5}, {2, 8}, {10}
+
+
+Recursive:TC:O(2^N)
+SC:O(N)
+
+If nums[i]>=0 means if 0 is allowed then my base condition will slightly change .To understand this we will work on the example:
+{0,0,1},tar=1
+if my base condition will be target==0 return 1 ,then it will not give me correct ans. The correct ans of above eg will be 4 :
+{0,0,1},{1},{0,1},{0,1}
+But if I mentioned this base condition thenit will give me only 1 as ans which is wrong.So now the base condition will be:
+
+if(ind==0)
+{
+if(tar==0 && arr[0]==0)return 2;
+if(tar==0 || tar==arr[0])return 1;
+return 0;
+}
+
+To understand why I am returning 2 ,workout on {0,1},tar=1
+
+
+Code:
+f(int,tar)
+{
+if(ind==0)
+{
+if(tar==0 && arr[0]==0)return 2;
+if(tar==0 || tar==arr[0])return 1;
+return 0;
+}
+int notPick=f(ind-1,tar);
+int pick=0;
+if(arr[ind]<=tar)pick=f(ind-1,tar-arr[ind]);
+return (pick+notPick)%mod;
+}
+
+
+
+
+
+
+Tabulation:
+TC: O(N*Sum)
+SC: O(N*Sum)
+
+/*
+Imp:
+Remember here in the inner loop we have started target from 0 not from 1 because if(arr[0]==0 && target==0)then we will get 2 subsets ,not 1 subset.
+*/
+int findWays(vector<int> &num, int sum)
+{
+       int n=num.size();
+  vector<vector<int>> dp(num.size(),vector<int>(sum+1,0));
+   for(int i=0;i<n;i++)dp[i][0]=1;
+       if(num[0]<=sum) dp[0][num[0]]=1;
+       
+       for(int i=1;i<n;i++)
+       {
+           for(int target=0;target<=sum;target++)
+           {
+               int notTake=dp[i-1][target];
+               int take=0;
+               if(num[i]<=target)take=dp[i-1][target-num[i]];
+               dp[i][target]=take+notTake;
+           }
+       }
+       return dp[n-1][sum];
+}

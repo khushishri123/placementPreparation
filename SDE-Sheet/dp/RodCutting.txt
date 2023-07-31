@@ -1,0 +1,77 @@
+
+
+App:
+N=5
+{2,5,7,8,9}
+
+we can cut a rod of length 5 in different ways:
+1) By cutting the rod of length 5 into 5  equal pieces of length 1
+Then the the market value of rod of length 1 is 2.
+So I will get 5*2=10
+2) 1 , 2 ,2 then the profit I can geenrate is 2+5*2=12
+...
+3) 2,3 then Profit=5+7=12
+
+So max profit is 12
+
+App:
+We will try to pick up lengths in all possible ways and sum them to made N.
+Whenever there is all possibll ways then it comes to Recursion.
+We can pick up a rod as many times as I can.So there is infinite supply.
+It means that we will stay at ind only we are able to pick.
+Remember if I am standing on index=0 then it means that length of rod is 1.
+We have to max the price.
+f(ind,N) shows that what is the max price you can obtain to create a rod of length N.
+
+Base case:
+if ind==0 it means that length of rod will be 1, so to create a rod of length N you will require N rods of length 1.So price will be N*price[0];
+
+Recursive: 
+f(ind,N)
+{
+if(ind==0)
+{
+return N*price[0];
+}
+int rodLength=ind+1;
+int notPick=f(ind-1,N);
+int pick=INT_MIN;
+if(rodLength<=N)pick=price[ind]+f(ind,N-rodLength);
+return max(pick,notPick);
+}
+
+
+Tabulation:
+It contains both recursive and tabulation one.
+  int f(int ind,int n,int price[],vector<vector<int>> &dp)
+  {
+      //base case
+      if(ind==0)return n*price[0];
+      if(dp[ind][n]!=-1)return dp[ind][n];
+      int notPick=f(ind-1,n,price,dp);
+      int rodLength=ind+1;
+      int pick=INT_MIN;
+      if(rodLength<=n)pick=price[ind]+f(ind,n-rodLength,price,dp);
+      return dp[ind][n]=max(pick,notPick);
+  }
+    int cutRod(int price[], int n) {
+        //code here
+        vector<vector<int>> dp(n,vector<int>(n+1,0));
+        //return f(n-1,n,price,dp);
+        //base case
+        for(int i=0;i<=n;i++)dp[0][i]=i*price[0];
+        
+        for(int ind=1;ind<n;ind++)
+        {
+            for(int N=0;N<=n;N++)
+            {
+                int notPick=dp[ind-1][N];
+      int rodLength=ind+1;
+      int pick=INT_MIN;
+      if(rodLength<=N)pick=price[ind]+dp[ind][N-rodLength];
+   dp[ind][N]=max(pick,notPick);
+            }
+        }
+        return dp[n-1][n];
+        
+    }  

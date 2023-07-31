@@ -1,0 +1,93 @@
+This we are allowed to have atmost 2 transactions.So this time we will take 3d array ,index,buy and capacity.
+Initially our capacity will be 2 and a transaction is completed only when we sell a product.So when we sell the product then only we will decrease our capacity by one .
+Other than that we will have one more base case i.e. when out cap==0 then we cannot make any profit. So we will return 0
+For memoization
+TC:O(N*2*3)
+SC:O(N*2*3)+O(N)
+
+For Tabulation:
+TC:O(N*2*3)
+SC:O(N*2*3)
+class Solution {
+public:
+//Memoization code.
+        int f(int ind,int buy,int cap,vector<int> &prices,vector<vector<vector<int>>> &dp)
+        {
+                //if I completed 2 transactions then I will return 0
+                if(cap==0)return 0;
+                if(ind==prices.size())return 0;
+                int profit=0;
+                if(dp[ind][buy][cap]!=-1)return dp[ind][buy][cap];
+                if(buy)
+                {
+                        profit=max(-prices[ind]+f(ind+1,0,cap,prices,dp) , 0+f(ind+1,1,cap,prices,dp));
+                }
+                else
+                {
+                        profit=max(prices[ind]+f(ind+1,1,cap-1,prices,dp) , f(ind+1,0,cap,prices,dp));
+                }
+                return dp[ind][buy][cap]=profit;
+                
+        }
+    int maxProfit(vector<int>& prices) {
+        //this time I will take a 3d array becuase now I have to store 3 things i.e. index,buy(which can be either 0 or 1) ,cap(capacity which is 2,so its posiible values are 0,1,2)
+            int n=prices.size();
+            vector<vector<vector<int>>> dp(n+1,
+                        vector<vector<int>>(2,vector<int> (3,0)));
+            //return f(0,1,2,prices,dp);
+//here we are not dealing with base cases because we have already marked //them  with 0
+            for(int ind=n-1;ind>=0;ind--)
+            {
+                    for(int buy=0;buy<=1;buy++)
+                    {
+                            for(int cap=1;cap<=2;cap++)
+                            {
+                                    int profit=0;
+                if(buy)
+                {
+                        profit=max(-prices[ind]+dp[ind+1][0][cap], 0+dp[ind+1][1][cap]);
+                }
+                else
+                {
+                profit=max(prices[ind]+dp[ind+1][1][cap-1],dp[ind+1][0][cap]);
+                }
+                dp[ind][buy][cap]=profit;
+                            }
+                    }
+            }
+                                   return dp[0][1][2];
+    }
+};
+
+Space optimization:
+TC:O(N*2*3)
+SC:O(2*3) near about constant
+
+int maxProfit(vector<int>& prices) {
+        //this time I will take a 3d array becuase now I have to store 3 things i.e. index,buy(which can be either 0 or 1) ,cap(capacity which is 2,so its posiible values are 0,1,2)
+            int n=prices.size();
+            vector<vector<int>> prev(2,vector<int>(3,0));
+                       vector<vector<int>> cur(2,vector<int>(3,0));
+            //return f(0,1,2,prices,dp);
+            for(int ind=n-1;ind>=0;ind--)
+            {
+                    for(int buy=0;buy<=1;buy++)
+                    {
+                            for(int cap=1;cap<=2;cap++)
+                            {
+                                    int profit=0;
+                if(buy)
+                {
+                        profit=max(-prices[ind]+prev[0][cap], 0+prev[1][cap]);
+                }
+                else
+                {
+                profit=max(prices[ind]+prev[1][cap-1],prev[0][cap]);
+                }
+                cur[buy][cap]=profit;
+                            }
+                    }
+                    prev=cur;
+            }
+                                   return prev[1][2];
+    }

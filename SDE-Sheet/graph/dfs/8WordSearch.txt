@@ -1,0 +1,62 @@
+Given an m x n grid of characters board and a string word, return true if word exists in the grid.
+
+The word can be constructed from letters of sequentially adjacent cells, where adjacent cells are horizontally or vertically neighboring. The same letter cell may not be used more than once.
+Example 1:
+Input: board = [["A","B","C","E"],["S","F","C","S"],["A","D","E","E"]], word = "ABCCED"
+Output: true
+Example 2:
+Input: board = [["A","B","C","E"],["S","F","C","S"],["A","D","E","E"]], word = "SEE"
+Output: true
+Example 3:
+Input: board = [["A","B","C","E"],["S","F","C","S"],["A","D","E","E"]], word = "ABCB"
+Output: false
+
+App:
+To solve this problem you need to follow thease steps:
+
+Start from a charecter which matches with first charecter of given word.
+Traverse in all 4 direction by following few constraints.
+If your path length is equal to length of word then return true.
+Maintain a visited array to track visited nodes(we will apply backtracking at visited matrix).
+
+class Solution {
+public:
+int dx[4]={-1,0,1,0};
+int dy[4]={0,1,0,-1};
+bool dfs(int i,int j,int index,vector<vector<char>> &grid,string word,vector<vector<bool>> &vis)
+{
+    //if we found all the characters then we have came to the end of string,then we have to return true
+if(index==word.size())return true;
+int n=grid.size();
+int m=grid[0].size();
+if(i<0 || j<0 || i>=n || j>=m || grid[i][j]!=word[index] || vis[i][j])return false;
+
+vis[i][j]=true;
+for(int k=0;k<4;k++)
+{
+int nx=dx[k]+i;
+int ny=dy[k]+j;
+if(dfs(nx,ny,index+1,grid,word,vis))return true;
+}
+//very very important to mark that character unvisited because now it is //not the part of our string
+vis[i][j]=false;
+return false;
+}
+    bool exist(vector<vector<char>>& grid, string word) {
+        int n=grid.size();
+        int m=grid[0].size();
+        vector<vector<bool>> vis(n,vector<bool>(m,false));
+//everytime I have to start comparision with the first character of word  and then I have to do DFS to check to check for the rest of the characters
+        for(int i=0;i<n;i++)
+        {
+            for(int j=0;j<m;j++)
+            {
+    if(grid[i][j]==word[0] && dfs(i,j,0,grid,word,vis))
+                {
+                   return true;
+                }
+            }
+        }
+  return false;      
+    }
+};

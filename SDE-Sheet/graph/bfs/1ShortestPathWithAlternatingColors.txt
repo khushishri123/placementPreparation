@@ -1,0 +1,76 @@
+You are given an integer n, the number of nodes in a directed graph where the nodes are labeled from 0 to n - 1. Each edge is red or blue in this graph, and there could be self-edges and parallel edges.
+
+You are given two arrays redEdges and blueEdges where:
+
+redEdges[i] = [ai, bi] indicates that there is a directed red edge from node ai to node bi in the graph, and
+blueEdges[j] = [uj, vj] indicates that there is a directed blue edge from node uj to node vj in the graph.
+Return an array answer of length n, where each answer[x] is the length of the shortest path from node 0 to node x such that the edge colors alternate along the path, or -1 if such a path does not exist.
+
+ 
+
+Example 1:
+
+Input: n = 3, redEdges = [[0,1],[1,2]], blueEdges = []
+Output: [0,1,-1]
+Example 2:
+
+Input: n = 3, redEdges = [[0,1]], blueEdges = [[2,1]]
+Output: [0,1,-1]
+
+
+In the const. it is given that the length of redEdge[i] and blueEdge[i] can be upto 2 .So we have taken vis array of length vis[n][2]
+
+
+class Solution {
+public:
+    vector<int> shortestAlternatingPaths(int n, vector<vector<int>>& redEdges, vector<vector<int>>& blueEdges) {
+        vector<pair<int,int>> adj[n]; //pair becuase this time we will //have to keep track of color too
+            //In our case 0 will show that it is red edge and 1 will show //that it is blue edge
+            for(auto it:redEdges)
+            {
+                    adj[it[0]].push_back({it[1],0});
+            }
+            for(auto it:blueEdges)
+            {
+                    adj[it[0]].push_back({it[1],1});
+            }
+            
+            vector<int> dist(n,-1);
+            //this time we will keep track of edges
+           vector<vector<bool>> vis(n,vector<bool>(2,0));
+            queue<pair<int,int>> q;
+            q.push({0,0});
+            q.push({0,1});
+            dist[0]=0;
+            vis[0][0]=true;
+            vis[0][1]=true;
+            int level=0;
+            
+            while(!q.empty())
+            {
+                    int size=q.size();
+                    while(size--)
+                    {
+                    auto i=q.front();
+                    q.pop();
+                    int node=i.first;
+                    int color=i.second;
+                            
+                    //if you are visiting that node for the first time //then initially its value will be -1 ,so we will just update its //value,else if we are revisiting that node then we will not update it
+  
+                  dist[node]= dist[node]==-1 ? level :dist[node];
+                    
+                    for(auto it:adj[node])
+                    {
+                       if(it.second!=color && !vis[it.first][color])     
+                       {
+                               vis[it.first][color]=true;
+                               q.push({it.first,it.second});
+                       }
+                    }
+                    }
+                    level++;
+            }
+           return dist;
+    }
+};

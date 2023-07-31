@@ -1,0 +1,70 @@
+You are given an integer array coins representing coins of different denominations and an integer amount representing a total amount of money.
+
+Return the number of combinations that make up that amount. If that amount of money cannot be made up by any combination of the coins, return 0.
+
+You may assume that you have an infinite number of each kind of coin.
+
+The answer is guaranteed to fit into a signed 32-bit integer.
+
+ 
+
+Example 1:
+
+Input: amount = 5, coins = [1,2,5]
+Output: 4
+Explanation: there are four ways to make up the amount:
+5=5
+5=2+2+1
+5=2+1+1+1
+5=1+1+1+1+1
+
+Whenever we have infinite supply then always remember that whenever it is possible to pick elements then I have to stand on the same index and not move to the previous index
+
+Recursive:
+TC:exponential {whenever there is infinte supply then it is not possible to calculate the TC of recursive app.}
+SC:O(amount)
+Memoization:
+TC:O(N*Amount)
+SC:O(N*Amount)+O(amount)
+
+   int f(int ind,int target,vector<int> &arr,vector<vector<int>> &dp)
+        {
+                
+                if(ind==0)
+                {
+                return (target%arr[0]==0);
+                }
+                if(dp[ind][target]!=-1)return dp[ind][target];
+                int notPick=f(ind-1,target,arr,dp);
+                int pick=0;
+                if(arr[ind]<=target)pick=f(ind,target-arr[ind],arr,dp);
+                return dp[ind][target]=pick+notPick;
+        }
+    int change(int amount, vector<int>& coins) {
+            int n=coins.size();
+        vector<vector<int>> dp(n,vector<int>(amount+1,-1));
+            return f(n-1,amount,coins,dp);
+    }
+
+Tabulation:
+int change(int amount, vector<int>& coins) {
+            int n=coins.size();
+        vector<vector<int>> dp(n,vector<int>(amount+1,0));
+//            return f(n-1,amount,coins,dp);
+            //if(target%coins[0]==0) for this base case target value can  //range from 0 to target
+            
+            for(int i=0;i<=amount;i++)if(i%coins[0]==0)dp[0][i]=1;
+            
+            for(int ind=1;ind<n;ind++)
+            {
+                    for(int target=0;target<=amount;target++)
+                    {
+                int notPick=dp[ind-1][target];
+                int pick=0;
+                if(coins[ind]<=target)pick=dp[ind][target-coins[ind]];
+                 dp[ind][target]=pick+notPick;
+                    }
+            }
+            
+            return dp[n-1][amount];
+    }

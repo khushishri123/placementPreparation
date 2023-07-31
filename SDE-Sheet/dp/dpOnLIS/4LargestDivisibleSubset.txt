@@ -1,0 +1,47 @@
+arr[i]%arr[j] or arr[j]%arr[i]
+This condition should be fulfilled while you are creating a subset.
+
+EG;
+arr[]={1,16,7,8,4}
+Answer: {1,16,8,4}
+
+Everthing will be same as that of algorithmic approach.
+Here it is very very importatnt to sort the data
+
+class Solution {
+public:
+    vector<int> largestDivisibleSubset(vector<int>& nums) {
+        int n=nums.size();
+            vector<int> temp;
+            vector<int> dp(n,1),hash(n);
+            sort(nums.begin(),nums.end());
+            int maxi=1;
+            int lastIndex=0;
+            for(int ind=0;ind<n;ind++)
+            {
+                    hash[ind]=ind;
+                    for(int prev=0;prev<=ind-1;prev++)
+                    {
+                            if(nums[ind]%nums[prev]==0 && dp[ind]<dp[prev]+1)
+                            {
+                                    dp[ind]=dp[prev]+1;
+                                    hash[ind]=prev;
+                            }
+                    }
+                    if(maxi<dp[ind])
+                    {
+                            maxi=dp[ind];
+                            lastIndex=ind;
+                    }
+            }
+            temp.push_back(nums[lastIndex]);
+            while(hash[lastIndex]!=lastIndex)
+            {
+                    lastIndex=hash[lastIndex];
+                    temp.push_back(nums[lastIndex]);
+            }
+            reverse(temp.begin(),temp.end());
+            return temp;
+            
+    }
+};

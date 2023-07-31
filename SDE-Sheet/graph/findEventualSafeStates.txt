@@ -1,0 +1,69 @@
+Key observation:
+terminal node is one whose outdegree is 0.
+Any node that is a part of my cycle cannot be  a safe node.
+Any one that leads to the cycle cannot be a safe node.
+App:
+So we will check that if a cycle exists in graph using dfs .
+For cycle checking we will require two things :
+vis and pathVis array.
+A path exists we both vis and pathVis is 1.
+If some node is connected to the cycle then it is also not a safe node.Now to detect that whether a node is connected to the cycle or not,what I will do is that whenever I found out a cycle I will not mark taht particular node(which is part of my cycle) as pathVis=0 becuase w.k.t whever a dfs call is over we do pathVis=0 but for the node that is part of my cycle I will not do that thing.
+So by doing this I will detect the node that is a connected to the cycle.
+
+
+Code:
+
+class Solution {
+public:
+        bool dfs(int node,vector<int> adj[],vector<int> &vis,vector<int> &pathVis,int checkSafe[])
+        {
+                vis[node]=1;
+                pathVis[node]=1;
+                checkSafe[node]=0;
+                for(auto it:adj[node])
+                {
+                        if(!vis[it])
+                        {
+                                if(dfs(it,adj,vis,pathVis,checkSafe)) return true;
+                        }
+                        else
+                        {
+                                if(pathVis[it]==1)
+                                {
+                                        checkSafe[node]=0;
+                                        return true;
+                                }
+                        }
+                }
+                pathVis[node]=0;
+                checkSafe[node]=1;
+                return false;
+        }
+    vector<int> eventualSafeNodes(vector<vector<int>>& graph) {
+            int V=graph.size();
+        vector<int> adj[V];
+            for(int i=0;i<V;i++)
+            {
+                    for(auto it:graph[i])
+                    {
+                            adj[i].push_back(it);
+                    }
+            }
+            vector<int> vis(V,0);
+            vector<int> pathVis(V,0);
+            int checkSafe[V];
+            for(int i=0;i<V;i++)
+            {
+                    if(!vis[i])
+                    {
+                            dfs(i,adj,vis,pathVis,checkSafe);
+                    }
+            }
+            vector<int> safeNodes;
+            for(int i=0;i<V;i++)
+            {
+                    if(checkSafe[i]==1)safeNodes.push_back(i);
+            }
+            return safeNodes;
+    }
+};

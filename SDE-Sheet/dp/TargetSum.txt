@@ -1,0 +1,51 @@
+Eg:{1,2,3,1}
+tar=3
+Output: 2
+1st {+3,+2} and{-1,-1}
+2nd {+3,+1,+1} and {-2}
+
+We have to find out how many ways we can assign signs such that we get given target.
+Also one sol can be the recursive app and then followed by memo.,tab.
+But other sol can be the logic of CountPartitionsWithTheGivenDifference problem.
+In the above ex:
+3+2 -1-1
+Can I create 2 subsets from it by taking - common:
+{3,2} - {1,1}
+s1-s2=target
+s1+s2=totalSum
+=>s2=(totalSum-d)/2
+So I have to find out the total no. of ways in whick I can form the target which is s2.
+
+Code: 
+Tabulation:
+TC:O(N*target)
+SC:O(N*target)
+
+int findTargetSumWays(vector<int>& nums, int d) {
+     
+            int totalSum=0;
+            int n=nums.size();
+            for(int i=0;i<n;i++)totalSum+=nums[i];
+            //edge condition
+            if(totalSum-d<0 || (totalSum-d)%2)return 0;
+            int target=(totalSum-d)/2;
+            vector<vector<int>> dp(n,vector<int>(target+1,0));
+            //base condition here target is 0
+            if(nums[0]==0)dp[0][0]=2;
+            else dp[0][0]=1;
+            
+            //here target can be anything
+            if(nums[0]!=0 && nums[0]<=target)dp[0][nums[0]]=1;
+            
+            for(int ind=1;ind<n;ind++)
+            {
+                    for(int tar=0;tar<=target;tar++)
+                    {
+                            int notPick=dp[ind-1][tar];
+                            int pick=0;
+                            if(nums[ind]<=tar)pick=dp[ind-1][tar-nums[ind]];
+                            dp[ind][tar]=pick+notPick;
+                    }
+            }
+            return dp[n-1][target];
+    }

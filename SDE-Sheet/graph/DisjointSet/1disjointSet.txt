@@ -1,0 +1,157 @@
+This is very very imp topic for interview and OA.
+Ques.1) Why Disjoint Set data structure is used?
+Ans.1) Let we have a single graph having two components:
+1->2->3->4
+5->6->7
+now if somebody ask that whether 1 and 5 belong to the same component?
+Then we will simply do a DFS/BFS ad we will see that 1 and 5 does not belong to the same component.
+But this is a brute force app. having TC of O(N+E)
+This is when Disjoint set comes.
+We will solve the same problem in constant time.
+
+Note: Disjoint Set is usually used in Dynamic Graphs ,those graphs that change there configuration at every moment.
+
+Disjoint set gives us two important functionality:
+1) Find Parent:
+findPar()
+2) Union()
+union can be done in two methods : rank and size
+
+Now let suppose we have folloowing edges:
+(1,2)
+(2,3)
+(4,5)
+(6,7)
+(5,6)
+(3,7)
+Initially we suppose that all the nodes are alone means they are not connected with anyone. Now we say that connect 1,2 ,so union do that work for us.
+How union will connect it ,we will dicuss it later.
+While connecting ,at any stage if someone come and asked you that 
+that whether 3 and 7 are connected then we need to traverse the entire graph to find out that , but since our graph is changing at every point we  need to traverse again and again. As a brute force app we can apply dfs or bfs.
+But we want to do it in constant time. So DisjointSet data structure will be used. 
+unionByRank will connect u and v.Whenever we have to connect u and v we will call unionByRank.
+We can also implement Disjoint Set using UnionBySize.But firstly we will understand unionByRank
+We will be requiring rank and parent array of size N nodes.Initially rank will be 0 and parent[i]=i; means every node is the parent of the itself.
+
+Steps of UnionByRank(int u,int v):
+1) Find the ultimate parent of u(pu) and v(pv).
+2) Find rank of pu and pv.
+3) Always attach smaller rank with larger one .
+4) if rank is same than either you can attach pu with pv or pv with pu.We will attach pv with pu and this time rank will increase by one.
+
+findPar will give us ultimate parent .
+findPar(int node)
+{
+if(parent[node]==node)return node;
+return findPar(parent[node]);
+}
+
+This findPar will take logN time. But we want to do this in constant time.
+So we nned to do pathCompression.
+In path compression we will directly connect a node with the ultimate parent node. Not with the parent node.So when we are finding ultimate parent we need not traverse the entire path everytime.	So now the code of findPath will be:
+
+int findPath(int node)
+{
+if(parent[node]==node)return node;
+return parent[node]=findPar(parent[node]);
+}
+
+Reason of connecting smaller to lower rank:
+-> We don't want to increse the height .If we will connect larger to smaller then the height of the smaller parent will increse but we don't want that.Because if want to find parent of last node then we have to travel more. So we want that the time taken to find the parent should be less.
+
+
+TC:O(4*alpha) 
+-> 4 alpha is constant and no one will ask for its derivation.
+SC:O(2*N)
+
+Code:
+
+class DisjointSet
+{
+vector<int> rank,parent;
+public:
+DisjointSet(int n) // n is the number of nodes and it is inclusive
+{
+rank.resize(n+1);
+for(int i=0;i<=n;i++)rank[i]=0;
+parent.resize(n+1);
+for(int i=0;i<=n;i++)parent[i]=i;
+}
+int findPar(int node)
+{
+if(parent[node]==node)return node;
+return parent[node]=findPar(parent[node]);
+}
+void unionByRank(int u,int v)
+{
+int pu=findPar(u);
+int pv=findPar(v);
+//if rank[pu]<rank[pv] ,we will attach pu will pv so the parent of pu //will be pv.Now we will not increase the rank
+if(rank[pu]<rank[pv])
+{
+parent[pu]=pv; 
+}
+else if(rank[pv]<rank[pu])
+{
+parent[pv]=pu;
+}
+else
+{
+parent[pv]=pu;
+rank[pu]++;
+}
+}
+};
+int main()
+{
+DisjointSet d(7);
+d.unionByRank(1,2);
+d.unionByRank(2,3);
+d.unionByRank(4,5);
+d.unionByRank(6,7);
+d.unionByRank(5,6);
+
+//now we have to check whether 3 and 7 belong to the same component but //now they does not belong 
+if(d.findPar(3)!=d.findPar(7))
+{
+cout<<"Not Same"<<endl;
+}
+else
+{
+cout<<"Same"<<endl;
+}
+unionByRank(3,7);
+//now if we will check ,then they belong to the ssame component
+if(d.findPar(3)!=d.findPar(7))
+{
+cout<<"Not Same"<<endl;
+}
+else
+{
+cout<<"Same"<<endl;
+}
+return 0;
+}
+
+In unionBySize , we will increase the  size evertime whenever we are connecting to the parent.Remeber here we don't have to do size[pu]++ instead we have to add the size of pv.
+size[pu]+=size[pv];
+See code .
+ Here initially the size will be 1.
+vector<int> size;
+in the constructor set size(n+1,1);
+
+void unionBySize(int u,int v)
+{
+int pu=findPar(u);
+int pv=findPar(v);
+if(size[u]<size[v])
+{
+parent[u]=v;
+size[v]+=size[u];
+}
+else
+{
+parent[v]=u;
+size[u]+=size[v];
+}
+}

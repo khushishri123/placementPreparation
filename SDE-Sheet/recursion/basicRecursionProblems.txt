@@ -1,0 +1,23 @@
+Recursion:
+When a function call itself untill a special condition is met.
+** TC to print fibonacci series via recursion is O(2^N).
+1.) Print 1 to N but through backtrack.
+->Through backtrack means while calling recursive function we are not allowed to call it by doing i+1.
+If we have to simply print numbers from 1 to N through recursion then we can do so by calling rec. function as f(i+1,N) and the base condition will be if(i>N)return.
+But here we have to do that through backtrack.
+So code will we like this:(Remeber that you are allowed to do i-1 but you are not allowed to do i+1)
+
+Code:
+
+int f(int i,int n)
+{
+if(i<1)return;
+f(i-1,n);
+print(i);
+}
+int main()
+{
+int n=5;
+f(n,n);
+return 0;
+}

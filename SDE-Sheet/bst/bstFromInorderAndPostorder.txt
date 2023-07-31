@@ -1,0 +1,37 @@
+Given two integer arrays inorder and postorder where inorder is the inorder traversal of a binary tree and postorder is the postorder traversal of the same tree, construct and return the binary tree.
+Eg:
+Input: inorder = [9,3,15,20,7], postorder = [9,15,7,20,3]
+Output: [3,9,20,null,null,15,7]
+
+Eg2: inorder=[40 20 50 10 60 30]
+postorder=[40 50 20 60 30 10]
+
+We kow that the last element in postOrder is our root,because postorder is left,right,root. 
+
+See table:
+                 inStart    inEnd   postStart       postEnd
+leftSubtree  : inStart     elem-1   postStart       postStart+nElem-1
+rightSubtree : elem+1      inEnd    postStart+nElem postEnd-1
+
+Code:
+TreeNode *buildTree(vector<int> &inorder,vector<int> &postorder)
+{
+int inStart=0;
+int inEnd=inorder.size()-1;
+int postStart=0;
+int postEnd=postorder.size()-1;
+map<int,int> m;
+for(int i=0;i<=inEnd;i++)m[inorder[i]]=i;
+return constructTree(inorder,inStart,inEnd,postorder,postStart,postEnd,m);
+}
+TreeNode *constructTree(vector<int> &inorder,int inStart,int inEnd,vector<int> &postorder,int postStart,int postEnd,map<int,int> &m)
+{
+if(inStart>inEnd || postStart>postEnd)return NULL;
+TreeNode *root=new TreeNode(postorder[postEnd]);
+int elem=m[root->val];
+int nElems=elem-inStart;
+
+root->left=constructTree(inorder,inStart,elem-1,postorder,postStart,postStart+nElems-1,m);
+root->right=constructTree(inorder,elem+1,inEnd,postorder,postStart+nElem,postEnd-1,m);
+return root;
+}

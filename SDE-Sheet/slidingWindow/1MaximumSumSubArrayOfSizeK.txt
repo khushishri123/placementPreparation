@@ -1,0 +1,32 @@
+To identify that it is a sliding window problem:
+1) there should be a array or string
+2) there should be a subarray or substring
+3) there should be some window size or condition
+
+Window size=j-i+1
+While moving j we will add sum
+
+Code:
+int maximumSumSubarray(vector<int> &nums,int k)
+{
+i=0;
+j=0;
+maxi=0;
+sum=0;
+while(j<n)
+{
+sum=sum+nums[j];
+//window size is less than k,then just increment j
+if(j-i+1 < k)j++;
+else if(j+i-1==k)
+{
+maxi=max(sum,maxi);
+//before moving i , check for maxi and do sum-=nums[i] because now i will 
+//not be a part of our window
+sum-=nums[i];
+i++;
+j++;
+}
+}
+return maxi;
+}

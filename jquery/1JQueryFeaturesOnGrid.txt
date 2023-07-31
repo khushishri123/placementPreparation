@@ -1,0 +1,53 @@
+See lecture 85 of J2EE
+1) $("#someSection > div").addClass("cool");
+2) $("#someSection div:not('.cool')").addClass("hot");
+-> container having id as someSection. All those div that are contained in that container and does not have cool class applied on them, will be selected and hot class will be applied on them.
+3) $("#someSection div.cool").addClass("superCool");
+->div that are the part of conatiner having id cool will be selected and superCool class will be applied on them.Remember only outer div will be selected.
+4) $("input[tmtm]").css("color","red");
+->Input tag having tmtm attribute will be selected and this css will be applied.
+5) $("input[tmtm=ok]").css("font-size","40pt");
+->input tag having attribute tmtm and value ok will be selected and css will be applied.
+6) $("input[tmtm^=good]").css("font-weight","bold");
+->tmtm value starting with good
+7) $("input[tmtm$=dog]").css("font-size","40pt");
+->tmtm having ending value dog.
+8) $("li:eq(1)").css("color","yellow");
+->li having index 1 will will be selected. eg has 0 based indexing.
+9) $("li:even").css("color","yellow");
+-> all even indices will be selected
+10) $("li:nth-child(3)").css();
+->nth child is 1 based .So 3rd eleemnt will be selected.
+
+Appying JQuery at Table
+
+11) $("table").addClass("tbl");
+-> table tags will be selected and tbl class will be applied.
+
+12) $("table th").addClass("tbl");
+->table heading will be selected
+
+13) $("table td").addClass("tbl");
+
+14) $("table thead").css("background","gray");
+
+15) $("table th:nth-child(2)").css("border-right","1px solid white");
+    $("table th:nth-child(1)").css("border-right","1px solid white");
+
+16) $("table tbody tr").filter(":even").css("background","lightgray");
+
+17) $("table tbody td:contains('Ujjain')").css("color","#00FFFF");
+
+18) $("table tbody td:conatins('Amar')").next().css("color","red");
+-> The cell just after the cell at which Amar is found will be selected .
+
+19) $("table tbody td:contains('3.')").nextAll().addBack().css(..);
+->all  the cells that are coming after and including the cell where 3. is found will be selected.
+
+20) $("table tbody td:conatins("Pawan")").parent().css("font-weight","20pt");
+->the entire tr will be selected because here the parent is tr.
+
+21) $("table tbody td:conatins("Mumbai")").children().css("font-weight","20pt");
+->the inner tag will be selected .
+
+

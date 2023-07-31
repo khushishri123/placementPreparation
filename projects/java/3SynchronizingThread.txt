@@ -1,0 +1,74 @@
+Eg2:
+class cmn
+{
+private String something;
+public void keep(String something)
+{
+this.something=something;
+SOP(this.something);
+try
+{
+Thread.sleep(100); //sleep is a static method of Thread class.
+}catch(InterruptedException ie)
+{
+S.O.P(ie.getMessage());
+}
+}
+}
+class Worker extends Thread
+{
+private cmn somePlace;
+private String something;
+Worker(cmn somePlace,String something)
+{
+this.somePlace=somePlace;
+this.something=something;
+start();
+}
+public void run()
+{
+this.somePlace.keep(this.something);
+}
+}
+class eg2psp
+{
+public static void main(String gg[])
+{
+cmn commonPlace=new CommonPlace();
+Worker w1=new Worker(commonPlace,"Gold");
+Worker w2=new Worker(commonPlace,"Silver");
+Worker w3=new Worker(commonPlace,"Diamond");
+}
+}
+
+Here commonPlace object is the shared resource.So right now we will not get correct output.
+We will get output like:
+Gold
+Silver
+Diamond
+Diamond 
+Diamond
+Diamond
+So here we require synchronization of threads.Multithreading often leads to a situation where multiple threads try to access the same resources and finally produce errorneous and unforeseen results.That's why we need synchronization of threads.
+For synchronization, declare that method as "synchronized" or call that method from a synchronized block.
+If a method is synch. ,then when first thread calls keep method ,then it will check that whether keep method is declared as synchronized ? So ans is Yes.Then it will check that for which object that method is being called? 1000 pe jo cmn ka object hai uske lia chalegi. Then it will check that whether a monitor has been created for that object or not? If not created then a monitor will be created for that object.
+First thread ne jo keep method ko call kiya hai ,vo monitor se paas hoga.
+Monitor will allow thread 1 to access keep method.
+Context switch hoga,thread2 keep invoke hogi. Same process.But this time ,as the call passes the  monitor ,it will get stuck. When thread1 finishes its work then monitor will allow thread2 to access the keep method.
+
+
+Change in above code:(here we are calling that keep method from a synchronized block) While creating the synchronized block ,after the "synchronized" word,within the parenthesis() you have to specify the object for which you want to create the Monitor.
+.
+.
+class Worker extends Thread
+{
+
+public void run()
+{
+synchronized(somePlace) //somePlace is the object for which you want to  
+{                  //create monitor
+this.somePlace.keep(this.something);
+}
+}
+}
+

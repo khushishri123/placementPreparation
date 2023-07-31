@@ -1,0 +1,93 @@
+Nth Root of a Number using Binary Search
+Problem Statement: Given two numbers N and M, find the Nth root of M.
+The nth root of a number M is defined as a number X when raised to the power N equals M.
+
+Example 1:
+Input: N=3 M=27
+Output: 3
+Explanation: The cube root of 27 is 3.
+
+
+Binary search is not only limited to look elements in an array.
+A binary search can be implemented to any search space which is monotonic in nature.It can be either be linearly increasing or linearly decreasing.
+For eg:
+N=3 and M=27
+
+1x1x1=1
+2x2x2=8
+3x3x3=27
+
+Here we can observe that 
+when we take 1, we get a 1 
+when we take 2, we get a 8 
+when we take 3, we get a 27
+
+So bigger the value is, we get bigger result
+This we can say as monotonically incresing function.
+ 
+So here we can apply binary search.
+
+Next we have to identify search space .Where can our answer lie.
+In above eg: the search space will be between 1 to 27.
+Because the min value I can have is 1 and max it can go upto M.
+Then we will simply apply binary search.
+But we will perform binary search till (high-low)>1e-6
+1e-6= 10^-6
+Generally the condition of binary search is:
+low<=high 
+But here we are shrinking the search space such that they are almost equal.
+
+Approach: In order to find the Nth root of any given integer we are gonna use Binary Search.
+
+Step 1: Take low and high. Low will be equal to 1 and high will be M. We will take the mid of low and high such that the searching space is reduced using low + high / 2.
+
+Step 2: Make a separate function to multiply mid N times.
+
+Step 3: Run the while loop till (high – low > eps). Take eps as 1e-6, since we have to find answers to 6 decimal places.
+
+Step 4:  If the mid^n is less than M, then we will reduce search space to low and mid. Else, if it is greater than M then search space will be reduced to mid and high.
+
+Step 5: After the loop breaks we will have our answer as low or high.
+
+We have to find the answer to 6 decimals. So, we will have a double 1e-6. We will run the while loop till (high – low > eps). When we will come out of the loop we will have the answer which will be equal to low as well as high.
+
+
+https://www.youtube.com/watch?v=WjpswYrS2nY&list=PLgUwDviBIf0p4ozDR_kJJkONnb1wdx2Ma&index=64
+
+To understand TC see video.
+
+Time Complexity: N x log(M x 10^d)
+Space Complexity: O(1)
+
+Code:
+double multiply(double number,int n)
+{
+double ans=1.0;
+for(int i=1;i<=n;i++)ans=ans*number;
+return ans;
+}
+void getNthRooth(int n,int m)
+{
+double low=1;
+double high=m;
+double eps=1e-6; //eps stands for epsilon
+while((high-low)>eps)
+{
+double mid=(low+high)/2.0;
+if(multiply(mid,n)<m)low=mid;
+else high=mid;
+}
+cout<<low<<" "<<high<<endl;
+//to check
+cout<<pow(m,(double)(1.0/(double)n))<<endl;
+}
+int main()
+{
+int n,m;
+cin>>n>>m;
+getNthRoot(n,m);
+return 0;
+}
+
+
+

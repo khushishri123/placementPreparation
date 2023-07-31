@@ -1,0 +1,94 @@
+https://www.codingninjas.com/codestudio/problems/partitions-with-given-difference_3751628?source=youtube&campaign=striver_dp_videos&utm_source=youtube&utm_medium=affiliate&utm_campaign=striver_dp_videos&leftPanelTab=0
+
+For problem Statement refer this.
+Eg:
+n=4 ,d=3, {5,2,5,1}
+Output :2
+Explanation: {5,2,1},{5}
+and {2,5,1},{5}
+
+
+App:
+S1-S2= d
+=> s1=d+s2
+and also in the question it is mentioned that s1+s2=totalSum
+=> d+s2+s2=totalSum
+=>s2=(totalSum-d)/2;
+So actually I am looking for a subset having tar=(totalSum-d)/2;
+If it exists then s1 will also exists.
+But here are some edge cases:
+1) totalSum-d <0 then it is not possible to divide the array elements into     2 subsets having diff d.
+2) totalSum-d should be an even no.,then only it is possible to divide the array into 2 subsets.
+
+Memoization:
+TC:O(N*target)
+SC:O(N*target)+O(N)
+Code:
+
+#include <bits/stdc++.h> 
+int mod=(int)(1e9+7);
+int count(int ind,int target,vector<int> &arr,vector<vector<int>> &dp)
+{
+    //now we are omitting the base condition if(target==0) 
+    //to understand why we are omitting this condition workout on {0,0,1}
+    //its ans is 4 but if we put targte==0 condition then we will get wrong ans.
+    if(ind==0)
+    {
+        if(target==0 && arr[0]==0)return 2;
+        if(target==0 || arr[0]==target)return 1;
+        return 0;
+    }
+    if(dp[ind][target]!=-1)return dp[ind][target];
+    int notTake=count(ind-1,target,arr,dp);
+    int take=0;
+    if(arr[ind]<=target)take=count(ind-1,target-arr[ind],arr,dp);
+    return dp[ind][target]=(take+notTake)%mod;
+}
+int countPartitions(int n, int d, vector<int> &arr) {
+    // Write your code here.
+    int totalSum=0;
+    for(int i=0;i<n;i++)totalSum+=arr[i];
+    //given in the question , s1>s2 and s1=totalSum-s2
+    // s1-s2=D => totalSum-s2-s2=D
+    // s2=(totalSum-D)/2;
+    //So since 0<=nums[i] so it cannot be possible that totalSum-D is -ive also it should be an even no.
+    
+    //new edge Case condition
+    if(totalSum-d <0 || (totalSum-d)%2 !=0)return false;
+    
+    vector<vector<int>> dp(n,vector<int>(totalSum,-1));
+    return count(n-1,(totalSum-d)/2,arr,dp);
+}
+
+
+Tabulation:O(N*target)
+SC:O(N*target)
+
+int count(vector<int> &arr,int tar)
+{
+    int n=arr.size();
+    vector<vector<int>> dp(n,vector<int> (tar+1,0));
+    //base cases
+    if(arr[0]==0)dp[0][0]=2;
+    else dp[0][0]=1;
+    if(arr[0]!=0 && arr[0]<=tar) dp[0][arr[0]]=1;
+    
+    for(int ind=1;ind<n;ind++)
+    {
+        for(int target=0;target<=tar;target++)
+        {
+    int notTake=dp[ind-1][target];
+    int take=0;
+    if(arr[ind]<=target)take=dp[ind-1][target-arr[ind]];
+    dp[ind][target]=(take+notTake)%mod;
+        }
+    }
+    
+   return dp[n-1][tar];
+}
+int countPartitions(int n, int d, vector<int> &arr) {
+    int totalSum=0;
+    for(int i=0;i<n;i++)totalSum+=arr[i];    
+    if(totalSum-d <0 || (totalSum-d)%2 !=0)return false;
+    return count(arr,(totalSum-d)/2);
+}

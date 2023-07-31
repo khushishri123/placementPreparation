@@ -1,0 +1,50 @@
+Given an array arr of positive integers sorted in a strictly increasing order, and an integer k.
+
+Return the kth positive integer that is missing from this array.
+
+ 
+
+Example 1:
+
+Input: arr = [2,3,4,7,11], k = 5
+Output: 9
+Explanation: The missing positive integers are [1,5,6,8,9,10,12,13,...]. The 5th missing positive integer is 9.
+Example 2:
+
+Input: arr = [1,2,3,4], k = 2
+Output: 6
+Explanation: The missing positive integers are [5,6,7,...]. The 2nd missing positive integer is 6.
+
+
+The idea here is that :
+
+Since all the number in the array are in increasing order , so If NONE of the elemts is missing then for each index i we should have the value (i+1). Here we are considering 0 based indexing.
+
+But if some the elements upto any index is missing , then we can find the number of missing elements using above logic.
+
+No of missing numbers at index i = (Current Value at index i ) - ( Correct Value as per contiguous sequence )
+= A[i]-(i+1) // At any index i
+
+Now , we can use binary search in this question by checking if number of missing number at mid is less than K , that means we need to check for Kth number on right side of mid.
+
+Otherwise , if number of missing values is greater than K , then our missing number lies in left of the array
+
+Time Complexity : O (log(n)) // Number of array elements
+Space Complexity : O(1)
+
+class Solution {
+public:
+    int findKthPositive(vector<int>& arr, int k) {
+        int low=0;
+        int high=arr.size();
+        int mid;
+        while(low<high)
+        {
+               mid=low+(high-low)/2;
+               //to find out how many numbers are missing till mid index we will use formula: (current value at index mid) - (mid+1) becuase if no values are missing then value at index i should be i+1 but now some values are missing ,so to find out how many values are missing we will use arr[mid]-mid-1 . If arr[mid]-mid-1 < k means there are lesser values that are missing so we will move on right side otherwise left side.
+               if(arr[mid]-mid-1 < k)low=mid+1;
+               else high=mid;
+        }
+        return low+k;
+    }
+};

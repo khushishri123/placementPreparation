@@ -1,0 +1,36 @@
+Given a nearly sorted array, we have to find to find target.
+Nearly sorted array can be defined as the element that should be present a t i th index ,is either present on i-1 th index or i index or i+1 index.
+
+Eg:
+Input: [2,5,30,20,40] , 5
+Output: 1
+
+Idea:
+If the array is sorted the it would be [2,5,20,30,40]
+The index of 20 in input array is 3 while after sorting it is at 2.
+So the concept is that the elment can be present at i-1,i or i+1 index.
+So while searching target , I have to write 3 conditions because the target can be equal to arr[mid-1] or arr[mid] or arr[mid+1]
+Also while shifting low ,i have to do mid+2 because I have already checked for mid+1
+and similarly for high=mid-2
+
+TC: O(logN)
+SC: O(1)
+Code:
+
+int search(vector<int> &nums,int target)
+{
+int mid,low,high;
+int n=nums.size();
+low=0;
+high=n-1;
+while(low<=high)
+{
+mid=low+(high-low)/2;
+if(nums[mid]==target)return mid;
+else if(mid-1>=low && nums[mid-1]==target)return mid-1;
+else if(mid+1<n && nums[mid+1]==target)return mid+1;
+else if(nums[mid]>target)high=mid-2;
+else low=mid+2;
+}
+return -1;
+}
