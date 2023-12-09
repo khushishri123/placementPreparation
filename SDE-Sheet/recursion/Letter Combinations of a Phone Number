@@ -1,0 +1,44 @@
+Given a string containing digits from 2-9 inclusive, return all possible letter combinations that the number could represent. Return the answer in any order.
+A mapping of digits to letters (just like on the telephone buttons) is given below. Note that 1 does not map to any letters.
+Example 1:
+
+Input: digits = "23"
+Output: ["ad","ae","af","bd","be","bf","cd","ce","cf"]
+Example 2:
+
+Input: digits = ""
+Output: []
+Example 3:
+
+Input: digits = "2"
+Output: ["a","b","c"]
+
+class Solution {
+public:
+    // we will be doing recursion, we will start from the back of the digits
+    vector<string> ans;
+    void f(int num,string vec, vector<string> & arr)
+    {   
+        if( num ==0 )
+        {
+            ans.push_back(vec);
+            return ;
+        }
+        int digit= num%10;
+        string str= arr[digit];
+        for(auto it: str)
+        {
+            f(num/10, it+vec, arr);
+        }
+    }
+    vector<string> letterCombinations(string digits) {
+        if(digits.empty()) return {};
+        string vec = "";
+        // we have taken 2 empty strings becuase 0 and 1 does not represent any variable
+        vector<string> arr = { "", "", "abc", "def", "ghi", "jkl","mno", "pqrs", "tuv", "wxyz"};
+        int num = stoi(digits);
+        f(num, vec, arr);
+        return ans;
+
+    }
+};
